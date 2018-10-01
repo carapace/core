@@ -1,0 +1,21 @@
+syntax="proto3";
+package IAM;
+option go_package = "v1";
+
+import "definitions/identity.proto";
+import "definitions/response.proto";
+
+
+message SigningPayload {
+    bytes Payload = 1;
+    Signatures Signatures = 2;
+}
+
+message SigningPayloadResponse {
+    bytes Payload = 1;
+    Response.Response Response = 2;
+}
+
+service SigningService {
+    rpc Search (SigningPayload) returns (SigningPayloadResponse);
+}

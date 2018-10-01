@@ -1,0 +1,11 @@
+syntax="proto3";
+package IAM;
+option go_package = "v1";
+
+enum Asset {
+    AssetUnknown = 0;
+    Bitcoin = 1;
+    Ethereum = 2;
+    Ripple = 3;
+    Ark = 4;
+}

@@ -18,5 +18,7 @@ carapace-EE offers more functionality:
 - modules with code attestion
 - regulatory module support for FCC/SEC/KYC compliance
 - 24/7 support
+- broadcasting support to ensure your transactions actually reach
+  a transaction pool.
 
 For price inquiries, contact sales at sales@carapace.io

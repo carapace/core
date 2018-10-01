@@ -1,0 +1,13 @@
+syntax="proto3";
+package IAM;
+option go_package = "v1";
+
+
+message Account {
+    string user = 1;
+}
+
+message Signatures {
+    repeated bytes Signatures  = 1;
+    repeated Account Accounts = 2;
+}
