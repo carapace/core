@@ -1,9 +1,9 @@
 package ark
 
 import (
+	"encoding/json"
 	ArkV2 "github.com/ArkEcosystem/go-crypto/crypto"
 	"github.com/carapace/core/api/v1/proto/generated"
-	"github.com/gin-gonic/gin/json"
 )
 
 const (

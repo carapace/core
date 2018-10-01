@@ -1,8 +1,8 @@
 package ark
 
 import (
+	"encoding/json"
 	ArkV2 "github.com/ArkEcosystem/go-crypto/crypto"
-	"github.com/gin-gonic/gin/json"
 )
 
 func newService() *Service {

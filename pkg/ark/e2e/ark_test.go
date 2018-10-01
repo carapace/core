@@ -4,9 +4,9 @@ import (
 	"bytes"
 	"testing"
 
+	"encoding/json"
 	ArkV2 "github.com/ArkEcosystem/go-crypto/crypto"
 	"github.com/carapace/core/pkg/ark"
-	"github.com/gin-gonic/gin/json"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
