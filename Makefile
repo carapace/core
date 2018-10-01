@@ -4,4 +4,5 @@ proto: ## Generate up to date protobuf code based on protobuf defintions in api/
 	rmdir api/v1/proto/generated/definitions
 
 test: proto
+	golangci-lint run
 	go test ./... -v -race
