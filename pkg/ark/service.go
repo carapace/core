@@ -19,6 +19,7 @@ type Service struct {
 	Config
 }
 
+//nolint: structcheck
 type Config struct {
 	FirstSecret  string
 	SecondSecret string
