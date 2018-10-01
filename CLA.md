@@ -32,6 +32,12 @@ If you already submitted a PR you can correct your user.name and user.email
 and then use use `git commit --amend --reset-author` and then `git push --force` to
 correct the PR.
 
+#### 4. By agreeing with this CLA
+
+You are granting ownership of your code to carapace.io, to alter, distribute, limit
+and commercialize as they see fit.
+
+
 ## Troubleshooting
 
 If you have problems signing the CLA, send an email message to: `help@carapace.io`.
