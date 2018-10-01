@@ -1,0 +1,31 @@
+version: 2
+
+jobs:
+  build:
+    docker:
+    - image: redfoxio/go:1.10.3
+
+    working_directory: /go/src/github.com/carapace/core
+    steps:
+    - checkout
+    - restore_cache:
+        keys:
+        - v1-pkg-cache
+    - save_cache:
+        key: v1-pkg-cache
+        paths:
+        - "/go/pkg"
+    - run:
+        name: configure dependencies
+        command: |
+          chmod u+x configure
+          ./configure
+    - run:
+        name: Test and run linters.
+        command: |
+          make test
+
+workflows:
+  version: 2
+  tests:
+    jobs: [test]
