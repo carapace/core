@@ -2,6 +2,11 @@ package storage
 
 import (
 	"github.com/carapace/core/api/v1/proto/generated"
+	"github.com/pkg/errors"
+)
+
+var (
+	SecretLocked = errors.New("Namespace has been locked")
 )
 
 type SecretsStore interface {
@@ -10,4 +15,6 @@ type SecretsStore interface {
 
 	// Store a secret under a namespace and asset. Order of secrets should remain, so fifo
 	PutSecret(namespace v1.Namespace, asset v1.Asset, secret v1.Secret) error
+
+	LockSecret(namespace v1.Namespace, asset v1.Asset) error
 }
