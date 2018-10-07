@@ -3,6 +3,7 @@ proto: ## Generate up to date protobuf code based on protobuf defintions in api/
 	mv api/v1/proto/generated/definitions/** api/v1/proto/generated
 	rmdir api/v1/proto/generated/definitions
 
+
 test: ## Run the same suite of tests and lints as ran in the CI
 	git log -1 --pretty=%B | gitlint
 	golangci-lint run

@@ -1,25 +1,35 @@
 syntax="proto3";
-package transaction;
+package v1.transaction;
 option go_package = "v1";
 
 
 import "definitions/identity.proto";
 import "definitions/response.proto";
+import "definitions/namespace.proto";
 
+enum TransactionType {
+    TransactionTypeUnknown = 0;
+    Transfer = 1;
+    SCCreation = 2;
+    SCInvocation = 3;
+    Vote = 4;
+}
 
 message Transaction {
-    string Sender = 1;
+    TransactionType Type = 1;
     string Recipient = 2;
     double Amount = 3;
-    double Fee = 6;
+    double Fee = 4;
     bytes Meta = 5; // used in Ethereum and others for smart contract invocation
 
-    IAM.Signatures Signatures = 4;
+    v1.IAM.Signatures Signatures = 6;
+    v1.namespace.Namespace Namespace = 7;
 }
 
 message TransactionResponse {
     bytes Payload = 1;
-    Response.Response Response = 2;
+    v1.response.Response Response = 2;
+    v1.namespace.Namespace Namespace = 3;
 }
 
 service TransactionService {

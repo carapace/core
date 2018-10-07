@@ -1,5 +1,5 @@
 syntax="proto3";
-package Response;
+package v1.response;
 option go_package = "v1";
 
 message Response {

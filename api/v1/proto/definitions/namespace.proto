@@ -1,0 +1,8 @@
+syntax="proto3";
+package v1.namespace;
+option go_package = "v1";
+
+message Namespace {
+    string Name = 1;
+    string Region = 2;
+}

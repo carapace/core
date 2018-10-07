@@ -1,5 +1,5 @@
 syntax="proto3";
-package IAM;
+package v1.IAM;
 option go_package = "v1";
 
 
