@@ -1,19 +1,14 @@
 package ark
 
 import (
-	"bytes"
-	"context"
 	"encoding/json"
-	"io"
+	"github.com/carapace/core/internal/services/asset"
 
 	"github.com/carapace/core/api/v1/proto/generated"
-	"github.com/carapace/core/internal/signing"
-	"github.com/carapace/core/internal/transactions"
 )
 
 // compile time assertion to verify we match interface internal/transactions.AssetService
-var _ signing.AssetService = &Service{}
-var _ transactions.AssetService = &Service{}
+var _ asset.AssetService = &Service{}
 
 type Service struct {
 	Config
@@ -25,43 +20,41 @@ type Config struct {
 	SecondSecret string
 
 	validator *Validator
+
+	conf *asset.Config
 }
 
 type Option func(*Service)
 
-func (s Service) Sign(reader io.Reader) (io.Reader, error) {
-	tx, err := s.parse(reader)
+func (s *Service) Configure(config *asset.Config) error {
+	s.conf = config
+	return nil
+}
+
+func (s Service) Create(params v1.Transaction) (*v1.TransactionResponse, error) {
+	passphrases, err := s.conf.GetSecret(*params.Namespace, v1.Asset_Ark)
 	if err != nil {
 		return nil, err
 	}
-	s.sign(tx)
 
-	js, err := json.Marshal(tx)
+	tx, err := s.createTX(&params, passphrases)
 	if err != nil {
 		return nil, err
 	}
-	return bytes.NewReader(js), nil
-}
 
-func (s Service) Validate(reader io.Reader) error {
-	tx, err := s.parse(reader)
+	payload, err := json.Marshal(tx)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	return s.validator.Validate(tx)
+	return &v1.TransactionResponse{
+		Payload:   payload,
+		Namespace: params.Namespace,
+	}, nil
 }
 
-func (s Service) Verify(reader io.Reader) (bool, error) {
-	tx, err := s.parse(reader)
-	if err != nil {
-		return false, err
-	}
-	return s.verify(tx)
-}
-
-func (s Service) Create(ctx context.Context, params *v1.Transaction) (*v1.TransactionResponse, error) {
-	return s.createTX(params)
+func (s *Service) Validate(transaction v1.Transaction) error {
+	return s.validator.Validate(transaction)
 }
 
 func New(config Config, opts ...Option) *Service {
