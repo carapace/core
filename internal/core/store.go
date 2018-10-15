@@ -5,5 +5,5 @@ import (
 )
 
 type ConfigStore interface {
-	Add(version, kind string, config v1.Config) (Response, error)
+	Add(config v1.Config) (Response, error)
 }

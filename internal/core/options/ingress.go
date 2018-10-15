@@ -3,7 +3,7 @@ package options
 import (
 	"github.com/carapace/core/internal/core"
 	"github.com/carapace/core/internal/ingress"
-	"github.com/carapace/core/internal/store/mock"
+	"github.com/carapace/core/pkg/store/mock"
 )
 
 // compile time assertion to check interface

@@ -6,7 +6,7 @@ proto: ## Generate up to date protobuf code based on protobuf defintions in api/
 	rmdir api/v1/proto/generated/definitions
 
 	# mock messages
-	protoc -I=./internal/handlers/mock --go_out=plugins=grpc:./internal/handlers/mock ./internal/handlers/mock/*.proto
+	protoc -I=./pkg/handlers/mock --go_out=plugins=grpc:./pkg/handlers/mock ./pkg/handlers/mock/*.proto
 
 test: ## Run the same suite of tests and lints as ran in the CI
 	golangci-lint run
