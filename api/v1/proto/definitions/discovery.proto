@@ -1,0 +1,37 @@
+syntax="proto3";
+package v1.discovery;
+option go_package = "v1";
+
+import "definitions/response.proto";
+
+enum APIProtocol {
+    MSGProtocolUnknown  = 0;
+    HTTP                = 1;
+    GRPC                = 2;
+}
+
+enum ServiceType {
+    ServiceTypeUnknown  = 0;
+    ArkNodeV1           = 1;
+    ArkNodeV2           = 2;
+}
+
+message ServiceResponse {
+    Service Service = 1;
+    v1.response.Response Response   = 2;
+}
+
+message Service {
+    APIProtocol Protocol    = 1;
+    ServiceType Type        = 2;
+}
+
+message GetServiceMSG {
+    APIProtocol Protocol    = 1;
+    ServiceType Type        = 2;
+}
+
+service ServiceDiscovery {
+    rpc GetService(GetServiceMSG) returns (ServiceResponse);
+    rpc Register(Service) returns (v1.response.Response);
+}

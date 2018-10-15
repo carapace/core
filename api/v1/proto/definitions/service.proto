@@ -1,0 +1,12 @@
+syntax="proto3";
+package v1.response;
+option go_package = "v1";
+
+
+import "definitions/response.proto";
+import "definitions/config.proto";
+
+
+service Core {
+    rpc Config (config.Config) returns (response.Response);
+}

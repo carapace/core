@@ -1,0 +1,23 @@
+syntax="proto3";
+package v1.config;
+option go_package = "v1";
+
+import "google/protobuf/any.proto";
+
+message Header {
+    string ApiVersion = 1;
+    string Kind = 2;
+    google.protobuf.Any Meta = 3;
+}
+
+message Witness {
+    map<string, bytes> Signatures = 1;
+    string State = 2;
+}
+
+message Config {
+    Header Header = 1;
+    Witness Witness = 2;
+    google.protobuf.Any Spec = 3;
+}
+

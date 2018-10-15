@@ -1,0 +1,7 @@
+syntax="proto3";
+package v1.config;
+option go_package = "v1";
+
+message walletGen {
+    string Name = 1;
+}

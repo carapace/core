@@ -2,6 +2,16 @@ syntax="proto3";
 package v1.response;
 option go_package = "v1";
 
-message Response {
 
+enum Code {
+    CodeUnknown = 0;
+    OK = 200;
+    Internal = 500;
+    NotImplemented = 501;
+}
+
+message Response {
+    Code Code = 1;
+    string MSG = 2;
+    string Err = 3;
 }

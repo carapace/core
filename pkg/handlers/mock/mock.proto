@@ -1,0 +1,7 @@
+syntax="proto3";
+package mock;
+option go_package = "mock";
+
+message Mock {
+    string Mock = 1;
+}
