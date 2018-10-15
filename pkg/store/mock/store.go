@@ -12,7 +12,7 @@ import (
 // The mock store can be used by using the core.WithMock options.
 type Store struct{}
 
-func (s *Store) Add(version, kind string, config v1.Config) (core.Response, error) {
-	handler := scheme.Get(version, kind)
+func (s *Store) Add(config v1.Config) (core.Response, error) {
+	handler := scheme.Get(config.Header.ApiVersion, config.Header.Kind)
 	return handler.Call(config)
 }
