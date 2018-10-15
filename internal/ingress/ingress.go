@@ -21,7 +21,7 @@ func (d *DefaultConfig) In(ctx context.Context, conf v1.Config) (result string, 
 	}
 
 	// point of no return; the config is being committed to the store
-	res, err := d.Store.Add(conf.Header.ApiVersion, conf.Header.Kind, conf)
+	res, err := d.Store.Add(conf)
 	if err != nil {
 		return "", err
 	}
