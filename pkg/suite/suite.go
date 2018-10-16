@@ -1,18 +1,19 @@
 package test
 
 import (
-	"sync"
+	"github.com/ory/dockertest"
+	"go.uber.org/zap"
 )
 
-var Suite = New()
+var pool *dockertest.Pool
 
-type suite struct {
-	mu    sync.RWMutex
-	ports map[string]struct{}
-}
+func init() {
+	Logger.Info("initializing docker pool")
 
-func New() *suite {
-	return &suite{
-		ports: make(map[string]struct{}),
+	var err error
+	pool, err = dockertest.NewPool("")
+	if err != nil {
+		Logger.Panic("Could not connect to docker", zap.Error(err))
 	}
+	Logger.Info("finished pool initialization")
 }
