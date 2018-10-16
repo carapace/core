@@ -6,6 +6,8 @@ import (
 )
 
 func TestRedis(t *testing.T) {
+	t.Parallel()
+
 	r, exit := Redis()
 	defer exit()
 	assert.NoError(t, r.Ping().Err())
