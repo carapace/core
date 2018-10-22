@@ -12,6 +12,8 @@ import (
 func Postgres() (db *sql.DB, cleanup func()) {
 	Logger.Debug("creating postgres instance")
 
+	decrement := resourceLimit.allow()
+
 	resource, err := pool.Run("circleci/postgres", "10", []string{"POSTGRES_USER=root", "POSTGRES_DB=db", "POSTGRES_PASSWORD=secret"})
 	if err != nil {
 		Logger.Panic("Could not start postgres resource:", zap.Error(err))
@@ -44,5 +46,7 @@ func Postgres() (db *sql.DB, cleanup func()) {
 		if err != nil {
 			Logger.Warn("unable to close postgres resource", zap.Error(err))
 		}
+
+		decrement()
 	}
 }

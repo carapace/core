@@ -4,7 +4,9 @@ import (
 	"github.com/ory/dockertest"
 	"github.com/spf13/viper"
 	"go.uber.org/zap"
+	"sync"
 	"testing"
+	"time"
 )
 
 var pool *dockertest.Pool
@@ -48,3 +50,37 @@ func Strategy(t *testing.T, level int) {
 		t.Skip("skipping test, level too high")
 	}
 }
+
+// If the machine running the tests is not very beefy, the maximum number of containers deployed can be configured,
+// in some cases allowing for faster test execution. By default there is no limit.
+type limiter struct {
+	mu         *sync.RWMutex
+	resourceNr int
+}
+
+func init() {
+	viper.BindEnv("TEST_RESOURCE_MAX")
+	viper.SetDefault("TEST_RESOURCE_MAX", 1000)
+}
+
+func (l limiter) allow() (clear func()) {
+	l.mu.Lock()
+	defer l.mu.Unlock()
+
+	for {
+		if l.resourceNr < viper.GetInt("TEST_RESOURCE_MAX") {
+			l.resourceNr++
+			return l.decrement
+		}
+		time.Sleep(1 * time.Second)
+	}
+}
+
+func (l limiter) decrement() {
+	l.mu.Lock()
+	defer l.mu.Unlock()
+
+	l.resourceNr = l.resourceNr - 1
+}
+
+var resourceLimit = limiter{mu: &sync.RWMutex{}, resourceNr: 0}

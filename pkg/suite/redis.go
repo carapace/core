@@ -8,6 +8,8 @@ import (
 func Redis() (db *redis.Client, cleanup func()) {
 	Logger.Debug("creating redis instance")
 
+	decrement := resourceLimit.allow()
+
 	resource, err := pool.Run("redis", "latest", []string{})
 	if err != nil {
 		Logger.Panic("Could not start redis resource:", zap.Error(err))
@@ -48,5 +50,7 @@ func Redis() (db *redis.Client, cleanup func()) {
 		if err != nil {
 			Logger.Warn("unable to close redis resource", zap.Error(err))
 		}
+
+		decrement()
 	}
 }
