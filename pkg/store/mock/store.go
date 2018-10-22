@@ -1,6 +1,7 @@
 package mock
 
 import (
+	"context"
 	"github.com/carapace/core/api/v1/proto/generated"
 	"github.com/carapace/core/internal/core"
 	"github.com/carapace/core/internal/scheme"
@@ -14,5 +15,15 @@ type Store struct{}
 
 func (s *Store) Add(config v1.Config) (core.Response, error) {
 	handler := scheme.Get(config.Header.ApiVersion, config.Header.Kind)
-	return handler.Call(config)
+	return handler.Call(context.Background(), []*v1.Config{&config}, Committer{})
+}
+
+type Committer struct{}
+
+func (c Committer) Rollback() error {
+	return nil
+}
+
+func (c Committer) Commit() error {
+	return nil
 }

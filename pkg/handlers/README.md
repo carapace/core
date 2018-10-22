@@ -17,8 +17,11 @@ package mock defines a mock configHandler
 */
 package mock
 
+import (
+	"github.com/carapace/core/internal/core"
+	)
 
-# The version and kind used to identify the correct handler
+// The version and kind used to identify the correct handler
 const (
 	Version = "v0"
 	Kind    = "mock"
@@ -58,7 +61,7 @@ func (h *Handler) Init(core.Services) error {
 
 // Init does nothing, as the mock handler does not require any services
 func (h *Handler) Call(config v1.Config) (result core.Response, err error) {
-	return &Response{msg: "mocking!", err: ""}, nil
+	return &core.Response{msg: "mocking!", err: ""}, nil
 }
 
 // Validate checks that only the field mock is present in the spec
@@ -82,7 +85,7 @@ type Response struct {
 func (r *Response) MSG() string { return r.msg }
 func (r *Response) Err() error  { return nil }
 
-### mock.proto
+// mock.proto
 
 syntax="proto3";
 package mock;
@@ -92,7 +95,7 @@ message Mock {
     string Mock = 1;
 }
 
-### install.go
+// install.go
 
 // register the handler in our API scheme.
 func init() {

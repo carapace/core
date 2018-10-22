@@ -1,6 +1,7 @@
 package mock
 
 import (
+	"context"
 	"github.com/carapace/core/api/v1/proto/generated"
 	"github.com/carapace/core/internal/core"
 	"github.com/golang/protobuf/ptypes"
@@ -45,7 +46,8 @@ func (h *Handler) Init(core.Services) error {
 }
 
 // Init does nothing, as the mock handler does not require any services
-func (h *Handler) Call(config v1.Config) (result core.Response, err error) {
+func (h *Handler) Call(ctx context.Context, config []*v1.Config, committer core.Committer) (result core.Response, err error) {
+	defer committer.Commit()
 	return &Response{msg: "mocking!", err: ""}, nil
 }
 

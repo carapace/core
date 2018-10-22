@@ -1,2 +1,2 @@
 #!/usr/bin/env bash
-go get -v ./...
+go mod download

@@ -8,6 +8,8 @@ proto: ## Generate up to date protobuf code based on protobuf defintions in api/
 	# mock messages
 	protoc -I=./pkg/handlers/mock --go_out=plugins=grpc:./pkg/handlers/mock ./pkg/handlers/mock/*.proto
 
+
+
 test: ## Run the same suite of tests and lints as ran in the CI
 	golangci-lint run
 	go test ./... -v -race

@@ -28,6 +28,7 @@ func Example() {
 		&mock.Mock{
 			Mock: "true",
 		})
+
 	message := v1.Config{
 		Header: &v1.Header{
 			ApiVersion: mock.Version,
