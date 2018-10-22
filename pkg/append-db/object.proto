@@ -1,0 +1,49 @@
+syntax="proto3";
+package append;
+option go_package = "append";
+
+import "google/protobuf/any.proto";
+import "google/protobuf/timestamp.proto";
+
+enum DataType {
+    DataTypeUnknown = 0;
+    Create = 1;
+    Amend = 2;
+}
+
+
+// An object represents a user provided key value pair. Keys are required to be globally unique within a DB.
+message Object {
+    string Key = 1;
+    google.protobuf.Any Value = 2;
+    Meta Meta = 3;
+}
+
+// State represents the integritiy check at object level.
+message State {
+    uint64 ObjHash = 1;     // ObjHash is the hash of the provided object + Meta
+    uint64 ChainHash = 2;   // ChainHash is the hash of the previous ObjHash + current ObjHash
+    bytes Signature = 3;    // Signature is the signed object + Meta
+
+}
+
+// Meta allows for user set annotations, which may be used in indexing as well. Timestamp is set by the DB
+message Meta {
+    DataType Type = 1;
+    google.protobuf.Timestamp Timestamp = 2;
+    google.protobuf.Any Fields = 3;
+}
+
+// Chunk represents a full entry in the DB
+message Chunk {
+    State State = 1;
+    Object Obj = 2;
+}
+
+// Test is used in some unit tests to generate an any.Any.
+message Test {
+    string Value = 1;
+}
+
+
+
