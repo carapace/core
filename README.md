@@ -1,6 +1,17 @@
 # Carapace
+[![CircleCI](https://circleci.com/gh/carapace/core/tree/master.svg?style=svg)](https://circleci.com/gh/carapace/core/tree/master)
+[![Build Status](https://travis-ci.com/carapace/core.svg?branch=master)](https://travis-ci.com/carapace/core)
+[![Coverage Status](https://coveralls.io/repos/github/carapace/core/badge.svg?branch=master)](https://coveralls.io/github/carapace/core?branch=master)
 
-An open-source enterprise level hardware wallet. Running carapace requires
+[![](https://godoc.org/github.com/carapace/core?status.svg)](http://godoc.org/github.com/carapace/core)
+[![Go Report Card](https://goreportcard.com/badge/github.com/carapace/core)](https://goreportcard.com/report/github.com/carapace/core)
+
+An open-source enterprise level digital asset wallet. 
+
+
+
+
+Running carapace requires
 Intel® SGX compatible CPU architecture.
 
 ### core
