@@ -1,0 +1,111 @@
+package append
+
+import (
+	"fmt"
+	"sync"
+	"time"
+
+	"github.com/boltdb/bolt"
+	"github.com/carapace/cellar"
+	"github.com/carapace/core/pkg/state"
+	"github.com/pkg/errors"
+	"go.uber.org/zap"
+)
+
+type DB struct {
+	config Config
+
+	cellar *cellar.DB
+	mu     *sync.RWMutex
+}
+
+type Config struct {
+	Folder string
+	Logger *zap.Logger
+	MetaDB cellar.MetaDB
+
+	Hasher   state.Hasher
+	Signer   state.Signer
+	Verifier state.Verifier
+	Cache    Cache
+
+	CellarOptions []cellar.Option
+}
+
+// Build validates the configuration and sets defaults if not provided
+func (c Config) Build() error {
+	if c.Folder == "" {
+		return errors.New("chain-db: invalid folder")
+	}
+
+	if c.Logger == nil {
+		c.Logger = defaultLogger()
+	}
+
+	if c.MetaDB == nil {
+		metadb, err := bolt.Open(
+			fmt.Sprintf("%s/%s", c.Folder, "meta.bolt"),
+			0600,
+			&bolt.Options{Timeout: 2 * time.Second},
+		)
+		if err != nil {
+			return err
+		}
+		c.MetaDB = &cellar.BoltMetaDB{DB: metadb}
+		c.MetaDB.Init()
+	}
+
+	if c.Hasher == nil {
+		return errors.New("chain-db: no hasher provided")
+	}
+
+	if c.Signer == nil {
+		return errors.New("chain-db: no signer provided")
+	}
+
+	if c.Cache == nil {
+		return errors.New("chain-db: no cache provided")
+	}
+
+	if c.Verifier == nil {
+		return errors.New("chain-db: no signature validator provided")
+	}
+	return nil
+}
+
+func New(config Config, options ...ConfOption) (*DB, error) {
+	db := &DB{
+		config: config,
+		mu:     &sync.RWMutex{},
+	}
+
+	config.CellarOptions = append(
+		config.CellarOptions,
+		cellar.WithLogger(config.Logger),
+		cellar.WithMetaDB(db.config.MetaDB),
+	)
+
+	var err error
+	db.cellar, err = cellar.New(config.Folder,
+		config.CellarOptions...,
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	for _, opt := range options {
+		err = opt(db)
+		if err != nil {
+			return nil, err
+		}
+	}
+	return db, nil
+}
+
+func (db *DB) Close() error {
+	return db.cellar.Close()
+}
+
+func (db *DB) Logger() *zap.Logger {
+	return db.config.Logger
+}
