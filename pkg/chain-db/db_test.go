@@ -1,4 +1,4 @@
-package append
+package chaindb
 
 import (
 	"fmt"
@@ -50,7 +50,7 @@ func newConf(t *testing.T) Config {
 		Hasher:        state.EasyHasher{},
 		Signer:        state.NewHMAC([]byte(defaultSecret)),
 		Verifier:      state.NewHMAC([]byte(defaultSecret)),
-		Cache:         NewMemCace(),
+		Cache:         NewMemCache(),
 		MetaDB:        metadb,
 		CellarOptions: []cellar.Option{cellar.WithNoFileLock},
 		Logger:        defaultLogger(),
@@ -71,7 +71,7 @@ func getDB(t *testing.T) *DB {
 
 func newDB(conf Config, t *testing.T) *DB {
 	var err error
-	db, err = New(conf, WithCellarOption(cellar.WithNoFileLock))
+	db, err = New(conf)
 	require.NoError(t, err)
 	return db
 }

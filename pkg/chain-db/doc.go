@@ -6,4 +6,4 @@ An object in chain-db is a proto.Message, marshalled into an any.Any and embedde
 When querying, a chain of all puts on that object is returned, and the chain is verified for integrity. It is
 up to the caller to unmarshal their values into appropriate structs.
 */
-package append
+package chaindb

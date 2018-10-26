@@ -1,4 +1,4 @@
-package append
+package chaindb
 
 import (
 	pb "github.com/carapace/core/pkg/chain-db/proto"
@@ -13,21 +13,27 @@ type Option struct {
 	Cached bool // allow the use of an internal memory cache, or completely reread from file
 }
 
-func defOpt() *Option {
+// defaultOpt returns the default behaviour when getting/putting
+func defaultOpt() *Option {
 	return &Option{Cached: false}
 }
 
+// Put enters a new item in the DB.
+//
+// Currently the user needs to provide if they are creating or amending an item; from the DB's perspective;
+// this should not be necessary. This enforces a stricter business logic however, thus it is part of the API.
 func (db *DB) Put(key string, kind pb.DataType, val proto.Message, meta proto.Message, option *Option) error {
 	db.mu.Lock()
 	defer db.mu.Unlock()
 
 	if option == nil {
-		option = defOpt()
+		option = defaultOpt()
 	}
 
 	return db.put(key, kind, val, meta, option)
 }
 
+// put does the actual work of put, but is not threadsafe.
 func (db *DB) put(key string, kind pb.DataType, val proto.Message, meta proto.Message, option *Option) error {
 	chainHash, err := db.ChainHash(key, option)
 	if err != nil {
@@ -102,6 +108,7 @@ func setObj(key string, kind pb.DataType, any *any.Any, meta *any.Any) pb.Object
 	}
 }
 
+// setState hashes, embeds and signs the object; returning a writable chunk.
 func (db *DB) setState(object pb.Object, prevchainHash uint64) (*pb.Chunk, error) {
 
 	objHash, err := db.config.Hasher.Hash(object)

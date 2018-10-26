@@ -1,4 +1,4 @@
-package append
+package chaindb
 
 import (
 	"fmt"
@@ -12,6 +12,7 @@ import (
 	"go.uber.org/zap"
 )
 
+// DB is the god level struct holding chain-db
 type DB struct {
 	config Config
 
@@ -19,6 +20,8 @@ type DB struct {
 	mu     *sync.RWMutex
 }
 
+// Config contains user provided settings. Calling build will validate the config and fill defaults,
+// or return an error if the user must provide the setting.
 type Config struct {
 	Folder string
 	Logger *zap.Logger
@@ -32,7 +35,7 @@ type Config struct {
 	CellarOptions []cellar.Option
 }
 
-// Build validates the configuration and sets defaults if not provided
+// Build validates the configuration and sets defaults if not provided.
 func (c Config) Build() error {
 	if c.Folder == "" {
 		return errors.New("chain-db: invalid folder")
@@ -70,9 +73,14 @@ func (c Config) Build() error {
 	if c.Verifier == nil {
 		return errors.New("chain-db: no signature validator provided")
 	}
+
+	if c.CellarOptions == nil {
+		c.CellarOptions = []cellar.Option{}
+	}
 	return nil
 }
 
+// New is the constructor for config
 func New(config Config, options ...ConfOption) (*DB, error) {
 	db := &DB{
 		config: config,

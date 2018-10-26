@@ -1,4 +1,4 @@
-package append
+package chaindb
 
 import (
 	"github.com/carapace/cellar"
@@ -40,12 +40,19 @@ func (db *DB) ChainHash(key string, option *Option) (uint64, error) {
 
 }
 
+// Get returns a chain from the DB, or an error if it is not present
 func (db *DB) Get(key string, option *Option) (Chain, error) {
 	db.mu.RLock()
 	defer db.mu.RUnlock()
+
+	if option == nil {
+		option = defaultOpt()
+	}
+
 	return db.get(key, option)
 }
 
+// get does the same as Get, but is not threadsafe and does not set a default op
 func (db *DB) get(key string, option *Option) (Chain, error) {
 	reader := db.cellar.Reader()
 
@@ -77,7 +84,7 @@ func (db *DB) get(key string, option *Option) (Chain, error) {
 		if !ok {
 			return chunks, err
 		}
-		// no need to return the chain if the error was not an integrity error
+		// no need to return the chain if the error was not an integrity error, it is an io err or something then.
 		return nil, err
 	}
 	return chunks, nil

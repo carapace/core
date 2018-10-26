@@ -1,4 +1,4 @@
-package append
+package chaindb
 
 import (
 	"math"
@@ -27,7 +27,7 @@ func TestMemCache_SetObjHash_GetObjHash(t *testing.T) {
 		},
 	}
 
-	c := NewMemCace()
+	c := NewMemCache()
 
 	for _, tc := range tcs {
 		c.SetObjHash(tc.key, tc.hash)
@@ -56,7 +56,7 @@ func TestMemCache_SetChainHash_GetChainHash(t *testing.T) {
 		},
 	}
 
-	c := NewMemCace()
+	c := NewMemCache()
 
 	for _, tc := range tcs {
 		c.SetChainHash(tc.key, tc.hash)

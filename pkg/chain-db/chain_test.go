@@ -1,4 +1,4 @@
-package append
+package chaindb
 
 import (
 	"fmt"

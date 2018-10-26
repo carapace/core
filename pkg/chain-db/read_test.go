@@ -1,10 +1,11 @@
-package append
+package chaindb
 
 import (
 	"fmt"
+	"testing"
+
 	"github.com/golang/protobuf/proto"
 	"github.com/golang/protobuf/ptypes"
-	"testing"
 
 	pb "github.com/carapace/core/pkg/chain-db/proto"
 	"github.com/stretchr/testify/assert"
@@ -13,13 +14,13 @@ import (
 
 func TestDB_ObjectHash_Not_Set_Cached(t *testing.T) {
 	db := getDB(t)
-	_, err := db.ObjectHash("myobj", &Option{Cached: true})
+	_, err := db.ObjectHash("TestDB_ObjectHash_Not_Set_Cached", &Option{Cached: true})
 	assert.Error(t, err)
 }
 
 func TestDB_ObjectHash_Not_Set_No_Cached(t *testing.T) {
 	db := getDB(t)
-	_, err := db.ObjectHash("myobj", &Option{Cached: false})
+	_, err := db.ObjectHash("TestDB_ObjectHash_Not_Set_No_Cached", &Option{Cached: false})
 	assert.Error(t, err)
 }
 
@@ -67,7 +68,7 @@ func TestDB_ChainHash_Set_Cached(t *testing.T) {
 	)
 	require.NoError(t, err)
 
-	_, err = db.ObjectHash("TestDB_ChainHash_Set_Cached", &Option{Cached: true})
+	_, err = db.ChainHash("TestDB_ChainHash_Set_Cached", &Option{Cached: true})
 	assert.NoError(t, err)
 }
 
@@ -83,7 +84,7 @@ func TestDB_ChainHash_Set_No_Cache(t *testing.T) {
 	)
 	require.NoError(t, err)
 
-	_, err = db.ObjectHash("TestDB_ChainHash_Set_No_Cache", &Option{Cached: true})
+	_, err = db.ChainHash("TestDB_ChainHash_Set_No_Cache", &Option{Cached: true})
 	assert.NoError(t, err)
 }
 
@@ -146,7 +147,7 @@ func TestDB_Write_Read_No_Cache_Two_Keys(t *testing.T) {
 		assert.NoError(t, err, fmt.Sprintf("error at testcase: %d", i))
 	}
 
-	chain, err := db.Get("TestDB_Write_Read_No_Cache_Two_Keys", &Option{Cached: false},)
+	chain, err := db.Get("TestDB_Write_Read_No_Cache_Two_Keys", &Option{Cached: false})
 	require.NoError(t, err)
 	for _, c := range chain {
 		assert.Equal(t, c.Obj.Key, "TestDB_Write_Read_No_Cache_Two_Keys")
@@ -156,7 +157,7 @@ func TestDB_Write_Read_No_Cache_Two_Keys(t *testing.T) {
 		assert.Equal(t, "TestDB_Write_Read_No_Cache_Two_Keys", val.Value)
 	}
 
-	chain, err = db.Get("TestDB_Write_Read_No_Cache_Two_Keys2", &Option{Cached: false},)
+	chain, err = db.Get("TestDB_Write_Read_No_Cache_Two_Keys2", &Option{Cached: false})
 	require.NoError(t, err)
 	for _, c := range chain {
 		assert.Equal(t, c.Obj.Key, "TestDB_Write_Read_No_Cache_Two_Keys2")
@@ -166,5 +167,3 @@ func TestDB_Write_Read_No_Cache_Two_Keys(t *testing.T) {
 		assert.Equal(t, "TestDB_Write_Read_No_Cache_Two_Keys2", val.Value)
 	}
 }
-
-// {"level":"ERROR","time":"2018-10-26T13:31:47.901+0200","caller":"chain-db/chain.go:62","message":"","LOGGER":"CHAIN-DB","WANT":5111841754052677443,"GOT":10339202987362910372}

@@ -1,4 +1,4 @@
-package append
+package chaindb
 
 import (
 	pb "github.com/carapace/core/pkg/chain-db/proto"
@@ -7,6 +7,9 @@ import (
 	"go.uber.org/zap"
 )
 
+// Chain represents a stored object in chain-db
+//
+// Get calls on chain-db return a validated chain, which may also be revalidated by calling CheckIntegrity
 type Chain []*pb.Chunk
 
 func (c Chain) Len() int { return len(c) }
