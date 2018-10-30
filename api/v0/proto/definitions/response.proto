@@ -1,0 +1,19 @@
+syntax = "proto3";
+package v0;
+option go_package = "v0";
+
+enum Code {
+    CodeUnknown = 0;
+    OK = 200;
+    Internal = 500;
+    NotImplemented = 501;
+    BadRequest = 400;
+    UnAuthorized = 401;
+    Forbidded = 403;
+}
+
+message Response {
+    Code Code = 1;
+    string MSG = 2;
+    string Err = 3;
+}

@@ -1,17 +1,24 @@
 package core
 
 import (
-	"context"
-
-	"github.com/carapace/core/api/v1/proto/generated"
+	"go.uber.org/zap"
 )
 
-// Config is the endpoint defined in api/proto/v1/services.proto. It is used to pass
-// human defined configuration files.
-func (c *Core) Config(ctx context.Context, conf *v1.Config) (*v1.Response, error) {
-	r, err := c.Conf.In.In(ctx, *conf)
-	if err != nil {
-		return ResponseFromErr(err), nil
-	}
-	return ResponseSuccess(r), nil
+type Config struct {
+	Logger *zap.Logger
+	Router Router
+
+	HealthManager
+
+	Health Health
+}
+
+type Health struct {
+	Port string
+	Host string
+}
+
+func (c Config) Build() (*Config, error) {
+
+	return &c, nil
 }

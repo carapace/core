@@ -3,9 +3,9 @@ package v1.transaction;
 option go_package = "v1";
 
 
-import "definitions/identity.proto";
-import "definitions/response.proto";
-import "definitions/namespace.proto";
+import "identity.proto";
+import "response.proto";
+import "namespace.proto";
 
 enum TransactionType {
     TransactionTypeUnknown = 0;

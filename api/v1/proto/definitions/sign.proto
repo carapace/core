@@ -2,8 +2,8 @@ syntax="proto3";
 package v1.sign;
 option go_package = "v1";
 
-import "definitions/identity.proto";
-import "definitions/response.proto";
+import "identity.proto";
+import "response.proto";
 
 
 message SigningPayload {

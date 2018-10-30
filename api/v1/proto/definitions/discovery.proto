@@ -2,7 +2,7 @@ syntax="proto3";
 package v1.discovery;
 option go_package = "v1";
 
-import "definitions/response.proto";
+import "response.proto";
 
 enum APIProtocol {
     MSGProtocolUnknown  = 0;

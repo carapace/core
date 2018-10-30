@@ -1,12 +1,10 @@
 proto: ## Generate up to date protobuf code based on protobuf defintions in api/proto/defintions and other packages.
 
-	# official API proto v1
-	protoc -I=./api/v1/proto --go_out=plugins=grpc:./api/v1/proto/generated api/v1/proto/definitions/*.proto
-	mv api/v1/proto/generated/definitions/** api/v1/proto/generated
-	rmdir api/v1/proto/generated/definitions
+	./generate.sh
 
-	# mock messages
-	protoc -I=./pkg/handlers/mock --go_out=plugins=grpc:./pkg/handlers/mock ./pkg/handlers/mock/*.proto
+#
+#	# mock messages
+#	protoc -I=./pkg/handlers/mock --go_out=plugins=grpc:./pkg/handlers/mock ./pkg/handlers/mock/*.proto
 
 
 

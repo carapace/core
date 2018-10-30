@@ -2,8 +2,8 @@ syntax="proto3";
 package v1.keys;
 option go_package = "v1";
 
-import "definitions/namespace.proto";
-import "definitions/assets.proto";
+import "namespace.proto";
+import "assets.proto";
 
 
 message Secret {

@@ -1,0 +1,17 @@
+syntax = "proto3";
+package v0;
+option go_package = "v0";
+
+message OwnerSet {
+    int32 Quorum = 1;
+    repeated Owner Owners = 2;
+}
+
+message Owner {
+    string Name = 1;
+    string Email = 2;
+    string PrimaryPublicKey = 3;
+    repeated string RecoveryPublicKey = 4;
+    int32 Weight = 5;
+}
+

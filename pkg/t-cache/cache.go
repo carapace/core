@@ -4,6 +4,8 @@ import (
 	"sync"
 )
 
+// Cache implements a transactional Cache, where the transaction is obtained by calling Lock()
+// and released through the returned committer obj.
 type Cache struct {
 	mu       *sync.RWMutex
 	cache    map[string]interface{}

@@ -1,0 +1,17 @@
+syntax = "proto3";
+package v0;
+option go_package = "v0";
+
+enum Mode {
+    ModeUnknown = 0;
+    Debug = 1;
+}
+
+message Info {
+    string ApiVersion = 1;
+    string Semantic = 2;
+    Mode Mode = 3;
+
+    repeated string Kinds = 4;
+    string Description = 5;
+}
