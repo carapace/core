@@ -2,7 +2,7 @@ package install
 
 import (
 	"github.com/carapace/core/api/v0/proto"
-	"github.com/carapace/core/internal/core/router"
+	"github.com/carapace/core/pkg/router"
 	"github.com/carapace/core/pkg/v0"
 	"github.com/carapace/core/pkg/v0/ownerset"
 )

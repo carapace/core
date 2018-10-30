@@ -3,7 +3,7 @@ package health
 import (
 	"context"
 	"github.com/carapace/core/api/v0/proto"
-	"github.com/carapace/core/internal/core"
+	"github.com/carapace/core/core"
 	"github.com/pkg/errors"
 	"github.com/robfig/cron"
 	"net/http"

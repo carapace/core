@@ -2,9 +2,9 @@ package carapace
 
 import (
 	"github.com/carapace/core/api/v0/proto"
-	"github.com/carapace/core/internal/core"
-	"github.com/carapace/core/internal/core/health"
-	"github.com/carapace/core/internal/core/router"
+	"github.com/carapace/core/core"
+	"github.com/carapace/core/pkg/health"
+	"github.com/carapace/core/pkg/router"
 	"google.golang.org/grpc"
 )
 
