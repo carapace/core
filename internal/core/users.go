@@ -25,6 +25,7 @@ type SearchOpts struct {
 
 type UserManager interface {
 	GetUsers(SearchOpts) ([]User, error)
-	GetUser(SearchOpts)
-	CreateUser(User)
+	GetUser(SearchOpts) (User, error)
+	CreateUser(User) error
+	RemoveUser(User) error
 }
