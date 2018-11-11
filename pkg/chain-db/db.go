@@ -15,8 +15,6 @@ import (
 // DB is the god level struct holding chain-db
 type DB struct {
 	config Config
-
-	cellar *cellar.DB
 	mu     *sync.RWMutex
 }
 
@@ -31,8 +29,7 @@ type Config struct {
 	Signer   state.Signer
 	Verifier state.Verifier
 	Cache    Cache
-
-	CellarOptions []cellar.Option
+	Store    StorageEngine
 }
 
 // Build validates the configuration and sets defaults if not provided.
@@ -74,9 +71,10 @@ func (c Config) Build() error {
 		return errors.New("chain-db: no signature validator provided")
 	}
 
-	if c.CellarOptions == nil {
-		c.CellarOptions = []cellar.Option{}
+	if c.Store == nil {
+		// init sqlite storage
 	}
+
 	return nil
 }
 
@@ -87,20 +85,7 @@ func New(config Config, options ...ConfOption) (*DB, error) {
 		mu:     &sync.RWMutex{},
 	}
 
-	config.CellarOptions = append(
-		config.CellarOptions,
-		cellar.WithLogger(config.Logger),
-		cellar.WithMetaDB(db.config.MetaDB),
-	)
-
 	var err error
-	db.cellar, err = cellar.New(config.Folder,
-		config.CellarOptions...,
-	)
-	if err != nil {
-		return nil, err
-	}
-
 	for _, opt := range options {
 		err = opt(db)
 		if err != nil {
@@ -111,7 +96,7 @@ func New(config Config, options ...ConfOption) (*DB, error) {
 }
 
 func (db *DB) Close() error {
-	return db.cellar.Close()
+	return db.config.Store.Close()
 }
 
 func (db *DB) Logger() *zap.Logger {

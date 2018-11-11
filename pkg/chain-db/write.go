@@ -72,19 +72,7 @@ func (db *DB) put(key string, kind pb.DataType, val proto.Message, meta proto.Me
 		return err
 	}
 
-	serialized, err := proto.Marshal(chunk)
-	if err != nil {
-		return err
-	}
-
-	// do some clever indexing with pos later
-	_, err = db.cellar.Append(serialized)
-	if err != nil {
-		return err
-	}
-
-	// flushing the DB is akin to committing
-	err = db.cellar.Flush()
+	err = db.config.Store.Put(key, chunk)
 	if err != nil {
 		return err
 	}

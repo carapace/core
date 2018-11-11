@@ -13,20 +13,22 @@ import (
 )
 
 func TestDB_ObjectHash_Not_Set_Cached(t *testing.T) {
-	db := getDB(t)
+	db, cleanup := getDB(t)
+	defer cleanup()
 	_, err := db.ObjectHash("TestDB_ObjectHash_Not_Set_Cached", &Option{Cached: true})
 	assert.Error(t, err)
 }
 
 func TestDB_ObjectHash_Not_Set_No_Cached(t *testing.T) {
-	db := getDB(t)
+	db, cleanup := getDB(t)
+	defer cleanup()
 	_, err := db.ObjectHash("TestDB_ObjectHash_Not_Set_No_Cached", &Option{Cached: false})
 	assert.Error(t, err)
 }
 
 func TestDB_ObjectHash_Set_Cached(t *testing.T) {
-	db := getDB(t)
-
+	db, cleanup := getDB(t)
+	defer cleanup()
 	err := db.Put(
 		"TestDB_ObjectHash_Set_Cached",
 		pb.DataType_Create,
@@ -41,8 +43,8 @@ func TestDB_ObjectHash_Set_Cached(t *testing.T) {
 }
 
 func TestDB_ObjectHash_Set_No_Cache(t *testing.T) {
-	db := getDB(t)
-
+	db, cleanup := getDB(t)
+	defer cleanup()
 	err := db.Put(
 		"TestDB_ObjectHash_Set_No_Cache",
 		pb.DataType_Create,
@@ -57,8 +59,8 @@ func TestDB_ObjectHash_Set_No_Cache(t *testing.T) {
 }
 
 func TestDB_ChainHash_Set_Cached(t *testing.T) {
-	db := getDB(t)
-
+	db, cleanup := getDB(t)
+	defer cleanup()
 	err := db.Put(
 		"TestDB_ChainHash_Set_Cached",
 		pb.DataType_Create,
@@ -73,8 +75,8 @@ func TestDB_ChainHash_Set_Cached(t *testing.T) {
 }
 
 func TestDB_ChainHash_Set_No_Cache(t *testing.T) {
-	db := getDB(t)
-
+	db, cleanup := getDB(t)
+	defer cleanup()
 	err := db.Put(
 		"TestDB_ChainHash_Set_No_Cache",
 		pb.DataType_Create,
@@ -89,8 +91,8 @@ func TestDB_ChainHash_Set_No_Cache(t *testing.T) {
 }
 
 func TestDB_Write_Read_No_Cache_Two_Keys(t *testing.T) {
-	db := getDB(t)
-
+	db, cleanup := getDB(t)
+	defer cleanup()
 	tcs := []struct {
 		key      string
 		dataType pb.DataType

@@ -12,8 +12,8 @@ import (
 )
 
 func TestDB_Put_Create_NoCache(t *testing.T) {
-	db := getDB(t)
-
+	db, cleanup := getDB(t)
+	defer cleanup()
 	err := db.Put(
 		"TestDB_Put_Create_NoCache",
 		pb.DataType_Create,
@@ -25,8 +25,8 @@ func TestDB_Put_Create_NoCache(t *testing.T) {
 }
 
 func TestDB_Put_Create_Cached(t *testing.T) {
-	db := getDB(t)
-
+	db, cleanup := getDB(t)
+	defer cleanup()
 	err := db.Put(
 		"TestDB_Put_Create_Cached",
 		pb.DataType_Create,
@@ -38,8 +38,8 @@ func TestDB_Put_Create_Cached(t *testing.T) {
 }
 
 func TestDB_Put_Create_NoOpt(t *testing.T) {
-	db := getDB(t)
-
+	db, cleanup := getDB(t)
+	defer cleanup()
 	err := db.Put(
 		"TestDB_Put_Create_NoOpt",
 		pb.DataType_Create,
@@ -51,8 +51,8 @@ func TestDB_Put_Create_NoOpt(t *testing.T) {
 }
 
 func TestDB_Put_Double_Create_Fails_No_Cache(t *testing.T) {
-	db := getDB(t)
-
+	db, cleanup := getDB(t)
+	defer cleanup()
 	err := db.Put(
 		"TestDB_Put_Double_Create_Fails_No_Cache",
 		pb.DataType_Create, &pb.Test{Value: "TestDB_Put_Double_Create_Fails"},
@@ -72,8 +72,8 @@ func TestDB_Put_Double_Create_Fails_No_Cache(t *testing.T) {
 }
 
 func TestDB_Put_Double_Create_Fails_Cached(t *testing.T) {
-	db := getDB(t)
-
+	db, cleanup := getDB(t)
+	defer cleanup()
 	err := db.Put(
 		"TestDB_Put_Double_Create_Fails_Cached",
 		pb.DataType_Create, &pb.Test{Value: "TestDB_Put_Double_Create_Fails_Cached"},
@@ -93,8 +93,8 @@ func TestDB_Put_Double_Create_Fails_Cached(t *testing.T) {
 }
 
 func TestDB_Put_Create_Then_Amends_Cached(t *testing.T) {
-	db := getDB(t)
-
+	db, cleanup := getDB(t)
+	defer cleanup()
 	tcs := []struct {
 		key      string
 		dataType pb.DataType
@@ -135,8 +135,8 @@ func TestDB_Put_Create_Then_Amends_Cached(t *testing.T) {
 }
 
 func TestDB_Put_Create_Then_Amends_No_Cached(t *testing.T) {
-	db := getDB(t)
-
+	db, cleanup := getDB(t)
+	defer cleanup()
 	tcs := []struct {
 		key      string
 		dataType pb.DataType
@@ -177,7 +177,8 @@ func TestDB_Put_Create_Then_Amends_No_Cached(t *testing.T) {
 }
 
 func TestDB_Put_Create_Then_Amends_Mixed_Keys_No_Cache(t *testing.T) {
-	db := getDB(t)
+	db, cleanup := getDB(t)
+	defer cleanup()
 
 	tcs := []struct {
 		key      string
@@ -240,8 +241,8 @@ func TestDB_Put_Create_Then_Amends_Mixed_Keys_No_Cache(t *testing.T) {
 }
 
 func TestDB_Put_Create_Then_Amends_Mixed_Keys_Cached(t *testing.T) {
-	db := getDB(t)
-
+	db, cleanup := getDB(t)
+	defer cleanup()
 	tcs := []struct {
 		key      string
 		dataType pb.DataType
@@ -300,14 +301,6 @@ func TestDB_Put_Create_Then_Amends_Mixed_Keys_Cached(t *testing.T) {
 }
 
 func TestDB_Put_Create_Then_Amends_Mixed_Keys_With_Closing_No_Cache(t *testing.T) {
-	db2 := getDB(t)
-	defer func() {
-		db.Close()
-		// This test closes and reopens the DB. To ensure other tests don't break,
-		// we recreate it anyways afterwards
-		db = newDB(newConf(t), t)
-	}()
-
 	tcs := []struct {
 		key      string
 		dataType pb.DataType
@@ -359,12 +352,13 @@ func TestDB_Put_Create_Then_Amends_Mixed_Keys_With_Closing_No_Cache(t *testing.T
 		},
 	}
 
+	var cleanup func()
+	var db *DB
 	for i, tc := range tcs {
-		err := db2.Put(tc.key, tc.dataType, tc.val, tc.meta, tc.option)
+		db, cleanup = getDB(t)
+		err := db.Put(tc.key, tc.dataType, tc.val, tc.meta, tc.option)
 		assert.NoError(t, err, fmt.Sprintf("error at testcase: %d", i))
-		err = db2.Close()
-		require.NoError(t, err)
-		db = newDB(newConf(t), t)
-		db2 = db
+		db.Close()
 	}
+	cleanup()
 }

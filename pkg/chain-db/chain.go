@@ -10,7 +10,7 @@ import (
 // Chain represents a stored object in chain-db
 //
 // Get calls on chain-db return a validated chain, which may also be revalidated by calling CheckIntegrity
-type Chain []*pb.Chunk
+type Chain []pb.Chunk
 
 func (c Chain) Len() int { return len(c) }
 func (c Chain) Less(i, j int) bool {
@@ -44,7 +44,7 @@ func (db *DB) CheckIntegrity(chain Chain) (bool, int, error) {
 
 	for i, c := range chain {
 		// first we check the signature
-		ok, err := verifySignature(db, *c, c.State.Signature)
+		ok, err := verifySignature(db, c, c.State.Signature)
 		if err != nil {
 			return false, i, err
 		}

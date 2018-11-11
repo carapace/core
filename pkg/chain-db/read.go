@@ -1,11 +1,5 @@
 package chaindb
 
-import (
-	"github.com/carapace/cellar"
-	pb "github.com/carapace/core/pkg/chain-db/proto"
-	"github.com/golang/protobuf/proto"
-)
-
 // ObjectHash returns the latest object hash belonging to a key
 func (db *DB) ObjectHash(key string, option *Option) (uint64, error) {
 	db.mu.RLock()
@@ -54,21 +48,7 @@ func (db *DB) Get(key string, option *Option) (Chain, error) {
 
 // get does the same as Get, but is not threadsafe and does not set a default op
 func (db *DB) get(key string, option *Option) (Chain, error) {
-	reader := db.cellar.Reader()
-
-	chunks := []*pb.Chunk{}
-	err := reader.Scan(func(pos *cellar.ReaderInfo, data []byte) error {
-		chunk := &pb.Chunk{}
-		err := proto.Unmarshal(data, chunk)
-		if err != nil {
-			return err
-		}
-
-		if chunk.Obj.Key == key {
-			chunks = append(chunks, chunk)
-		}
-		return nil
-	})
+	chunks, err := db.config.Store.Get(key)
 
 	if err != nil {
 		return nil, err

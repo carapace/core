@@ -8,6 +8,9 @@ import (
 	"testing"
 	"time"
 
+	"github.com/carapace/core/pkg/chain-db/sqlite3"
+	"github.com/carapace/core/pkg/suite"
+
 	"github.com/boltdb/bolt"
 	"github.com/carapace/cellar"
 	"github.com/carapace/core/pkg/state"
@@ -46,32 +49,32 @@ func newConf(t *testing.T) Config {
 	metadb.Init()
 
 	c = Config{
-		Folder:        ".",
-		Hasher:        state.EasyHasher{},
-		Signer:        state.NewHMAC([]byte(defaultSecret)),
-		Verifier:      state.NewHMAC([]byte(defaultSecret)),
-		Cache:         NewMemCache(),
-		MetaDB:        metadb,
-		CellarOptions: []cellar.Option{cellar.WithNoFileLock},
-		Logger:        defaultLogger(),
+		Folder:   ".",
+		Hasher:   state.EasyHasher{},
+		Signer:   state.NewHMAC([]byte(defaultSecret)),
+		Verifier: state.NewHMAC([]byte(defaultSecret)),
+		Cache:    NewMemCache(),
+		MetaDB:   metadb,
+		Logger:   defaultLogger(),
 	}
 	require.NoError(t, c.Build())
 	return c
 }
 
-var db *DB
-var once = &sync.Once{}
-
-func getDB(t *testing.T) *DB {
-	once.Do(func() {
-		db = newDB(getConf(t), t)
-	})
-	return db
+func getDB(t *testing.T) (*DB, func()) {
+	sql, exit := test.Sqlite3(t)
+	db := newDB(getConf(t), t)
+	store := sqlite3.New(sql)
+	store.Migrate()
+	db.config.Store = store
+	return db, func() {
+		exit()
+	}
 }
 
 func newDB(conf Config, t *testing.T) *DB {
 	var err error
-	db, err = New(conf)
+	db, err := New(conf)
 	require.NoError(t, err)
 	return db
 }

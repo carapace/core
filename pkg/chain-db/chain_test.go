@@ -58,14 +58,14 @@ func genChain(t *testing.T, db *DB, length int) Chain {
 	obj := &pb.Object{Meta: &pb.Meta{Type: pb.DataType_Create, Timestamp: ptypes.TimestampNow()}}
 	chunk, err := db.setState(*obj, 0)
 	require.NoError(t, err)
-	chain = append(chain, chunk)
+	chain = append(chain, *chunk)
 
 	for i := 1; i < length-1; i++ {
 		obj := &pb.Object{Meta: &pb.Meta{Type: pb.DataType_Create, Timestamp: ptypes.TimestampNow()}}
 		chunk, err := db.setState(*obj, chain[i-1].State.ChainHash)
 		require.NoError(t, err)
 
-		chain = append(chain, chunk)
+		chain = append(chain, *chunk)
 	}
 	return chain
 }
@@ -81,7 +81,8 @@ func TestChain_Len(t *testing.T) {
 }
 
 func TestDB_CheckIntegrity(t *testing.T) {
-	db := getDB(t)
+	db, cleanup := getDB(t)
+	defer cleanup()
 
 	// chain integrity is okay now
 	chain := genChain(t, db, 10)
