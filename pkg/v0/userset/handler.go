@@ -68,7 +68,7 @@ func (h *Handler) ConfigService(ctx context.Context, config *v0.Config, tx *sql.
 			return nil, err
 		}
 	}
-	return response.OK("correctly created new users"), nil
+	return response.OK("correctly created new users"), errors.Wrapf(tx.Commit(), "UserSet handler commit")
 }
 
 func (h *Handler) InfoService() (*v0.Info, error) {

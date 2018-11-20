@@ -74,7 +74,7 @@ func (h *Handler) processNewOwners(ctx context.Context, config *v0.Config, tx *s
 		return nil, err
 	}
 
-	return v0_handler.WriteSuccess("correctly altered ownerSet"), nil
+	return v0_handler.WriteSuccess("correctly altered ownerSet"), errors.Wrapf(tx.Commit(), "OwnerSet handler.processNewOwners")
 }
 
 func (h *Handler) createNewOwners(ctx context.Context, config *v0.Config, tx *sql.Tx) (*v0.Response, error) {
@@ -95,5 +95,5 @@ func (h *Handler) createNewOwners(ctx context.Context, config *v0.Config, tx *sq
 			return nil, err
 		}
 	}
-	return v0_handler.WriteSuccess("correctly created ownerSet"), nil
+	return v0_handler.WriteSuccess("correctly created ownerSet"), errors.Wrapf(tx.Commit(), "OwnerSet handler.createNewOwners")
 }
