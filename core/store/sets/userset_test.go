@@ -38,7 +38,7 @@ func TestManager_PutUserSet_GetUserSet(t *testing.T) {
 		}
 		require.NoError(t, err)
 
-		set, _, err := m.UserSet.Get(tx, "testset1")
+		set, err := m.UserSet.Get(tx, "testset1")
 		require.NoError(t, err, tc.desc)
 		assert.EqualValues(t, tc.set.Set, set.Set, tc.desc)
 		assert.EqualValues(t, tc.set.Users, set.Users, tc.desc)

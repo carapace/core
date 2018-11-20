@@ -4,36 +4,32 @@ import (
 	"database/sql"
 	"github.com/carapace/core/core/store/sets"
 	"github.com/carapace/core/core/store/users"
+	"github.com/pressly/goose"
 )
 
 type Manager struct {
 	db *sql.DB
 
-	Sets  sets.Manager
-	Users user.Manager
+	Sets  *sets.Manager
+	Users *user.Manager
 }
 
 func (m *Manager) Begin() (*sql.Tx, error) {
 	return m.db.Begin()
 }
 
-func New(db *sql.DB) (*Manager, error) {
-	m := &Manager{db: db}
-
-	tx, err := m.Begin()
-	if err != nil {
-		return nil, err
+func New(db *sql.DB) *Manager {
+	return &Manager{
+		db:    db,
+		Sets:  &sets.Manager{},
+		Users: &user.Manager{},
 	}
-	defer tx.Rollback()
+}
 
-	err = m.Sets.AutoMigrate(tx)
+func (m Manager) AutoMigrate() error {
+	err := goose.SetDialect("sqlite3") // TODO make this database independent
 	if err != nil {
-		return nil, err
+		return err
 	}
-
-	err = m.Users.AutoMigrate(tx)
-	if err != nil {
-		return nil, err
-	}
-	return m, tx.Commit()
+	return goose.Up(m.db, ".")
 }

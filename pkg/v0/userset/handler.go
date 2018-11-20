@@ -17,10 +17,10 @@ const (
 )
 
 type Handler struct {
-	store *core.StoreAPI
+	store *core.Store
 }
 
-func New(store *core.StoreAPI) *Handler {
+func New(store *core.Store) *Handler {
 	return &Handler{store: store}
 }
 

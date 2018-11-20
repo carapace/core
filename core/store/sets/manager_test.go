@@ -15,13 +15,13 @@ func newManager(t *testing.T, db *sql.DB) *Manager {
 	require.NoError(t, err)
 	defer tx.Commit()
 
-	err = m.AutoMigrate(tx)
+	err = Up0000001(tx)
 	require.NoError(t, err)
 
 	return m
 }
 
-func TestManager_AutoMigrate(t *testing.T) {
+func TestInitialUp(t *testing.T) {
 	db, cleanup := test.Sqlite3(t)
 	defer cleanup()
 
@@ -29,7 +29,6 @@ func TestManager_AutoMigrate(t *testing.T) {
 	defer tx.Rollback()
 	require.NoError(t, err)
 
-	m := &Manager{}
-	err = m.AutoMigrate(tx)
+	err = Up0000001(tx)
 	assert.NoError(t, err)
 }

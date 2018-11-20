@@ -14,27 +14,54 @@ var (
 	ErrNoOwners = errors.New("no ownerSet found")
 )
 
-type StoreAPI struct {
-	*store.Manager
-}
+func NewStore(db *sql.DB) (*Store, error) {
+	manager := store.New(db)
 
-func NewStore(db *sql.DB) (*StoreAPI, error) {
-	m, err := store.New(db)
+	err := manager.AutoMigrate()
 	if err != nil {
 		return nil, err
 	}
-	return &StoreAPI{m}, nil
+
+	return &Store{
+		DB: db,
+		Sets: Sets{
+			OwnerSet: manager.Sets.OwnerSet,
+			UserSet:  manager.Sets.UserSet,
+		},
+		Users: manager.Users,
+	}, nil
 }
 
-type SetStore interface {
-	GetOwnerSet(*sql.Tx) (*v0.OwnerSet, error)
-	PutOwnerSet(tx *sql.Tx, set *v0.OwnerSet) error
+type Store struct {
+	DB *sql.DB
+	Sets
+	Users UserStore
+}
+
+func (s *Store) Begin() (*sql.Tx, error) {
+	return s.DB.Begin()
+}
+
+type Sets struct {
+	OwnerSet OwnerSet
+	UserSet  UserSet
+}
+
+type OwnerSet interface {
+	Get(*sql.Tx) (*v0.OwnerSet, error)
+	Put(tx *sql.Tx, set *v0.OwnerSet) error
+}
+
+type UserSet interface {
+	Get(*sql.Tx, string) (*v0.UserSet, error)
+	Put(tx *sql.Tx, set *v0.UserSet) error
+	All(*sql.Tx) ([]*v0.UserSet, error)
 }
 
 type UserStore interface {
 	Create(tx *sql.Tx, user v0.User) error
 	Alter(tx *sql.Tx, user v0.User) error
-	Get(tx *sql.Tx, publicKey string) (*v0.User, error)
-	Delete(tx *sql.Tx, publicKey string) error
-	AlterOrCreate(TX, user v0.User) error
+	Get(tx *sql.Tx, publicKey []byte) (*v0.User, error)
+	Delete(tx *sql.Tx, user v0.User) error
+	BySet(tx *sql.Tx, set string) ([]*v0.User, error)
 }

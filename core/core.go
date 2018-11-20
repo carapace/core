@@ -28,5 +28,3 @@ func New(config *Config, options ...Option) (*App, error) {
 
 	return app, nil
 }
-
-var Store *StoreAPI

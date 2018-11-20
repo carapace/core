@@ -7,7 +7,7 @@ import (
 type Config struct {
 	Logger *zap.Logger
 	Router Router
-	Store  *StoreAPI
+	Store  *Store
 	HealthManager
 
 	Health Health

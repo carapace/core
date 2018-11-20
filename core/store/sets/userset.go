@@ -24,26 +24,25 @@ func (u *UserSet) Put(tx *sql.Tx, set *v0.UserSet) error {
 	return err
 }
 
-func (u *UserSet) Get(tx *sql.Tx, name string) (*v0.UserSet, int32, error) {
-	row := tx.QueryRow(`SELECT user_set, ID FROM user_sets WHERE deleted_at IS NULL AND name = ?;`, name)
+func (u *UserSet) Get(tx *sql.Tx, name string) (*v0.UserSet, error) {
+	row := tx.QueryRow(`SELECT user_set FROM user_sets WHERE deleted_at IS NULL AND name = ?;`, name)
 
 	var data = []byte{}
-	var ID int32
-	err := row.Scan(&data, &ID)
+	err := row.Scan(&data)
 	if err != nil {
 		switch err.Error() {
 		case "sql: no rows in result set":
-			return nil, 0, errors.New("no userSet found")
+			return nil, errors.New("no userSet found")
 		}
-		return nil, 0, err
+		return nil, err
 	}
 
 	var set = &v0.UserSet{}
 	err = proto.Unmarshal(data, set)
 	if err != nil {
-		return nil, 0, err
+		return nil, err
 	}
-	return set, ID, nil
+	return set, nil
 }
 
 func (u *UserSet) All(tx *sql.Tx) ([]*v0.UserSet, error) {

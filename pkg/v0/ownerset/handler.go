@@ -24,12 +24,12 @@ var _ core.APIService = &Handler{}
 
 type Handler struct {
 	authz core.Authorizer
-	store *core.StoreAPI
+	store *core.Store
 
 	mu *sync.RWMutex
 }
 
-func New(authz core.Authorizer, store *core.StoreAPI) *Handler {
+func New(authz core.Authorizer, store *core.Store) *Handler {
 	return &Handler{
 		mu:    &sync.RWMutex{},
 		authz: authz,

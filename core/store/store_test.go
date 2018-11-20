@@ -6,10 +6,11 @@ import (
 	"testing"
 )
 
-func TestNew(t *testing.T) {
+func TestNew_AutoMigrate(t *testing.T) {
 	db, cleanup := test.Sqlite3(t)
 	defer cleanup()
 
-	_, err := New(db)
-	require.NoError(t, err)
+	store := New(db)
+
+	require.NoError(t, store.AutoMigrate())
 }

@@ -13,7 +13,7 @@ var _ core.Authenticator = &Manager{}
 var _ core.Authorizer = &Manager{}
 
 type Manager struct {
-	Store *core.StoreAPI
+	Store *core.Store
 
 	Signer  Signer
 	Decoder KeyMarshaller

@@ -17,21 +17,20 @@ func newManager(t *testing.T, db *sql.DB) *Manager {
 	require.NoError(t, err)
 	defer tx.Commit()
 
-	err = m.AutoMigrate(tx)
+	err = Up0000002(tx)
 	require.NoError(t, err)
 
 	return m
 }
 
-func TestManager_AutoMigrate(t *testing.T) {
+func TestUsersInitialUp(t *testing.T) {
 	db, cleanup := test.Sqlite3(t)
 	defer cleanup()
 
-	manager := &Manager{}
 	tx, err := db.Begin()
 	require.NoError(t, err)
 
-	err = manager.AutoMigrate(tx)
+	err = Up0000002(tx)
 	assert.NoError(t, err)
 }
 
