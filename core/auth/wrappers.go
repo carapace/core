@@ -2,6 +2,7 @@ package auth
 
 import (
 	"context"
+	"database/sql"
 	"fmt"
 	"github.com/carapace/core/api/v0/proto"
 	"github.com/carapace/core/core"
@@ -11,11 +12,11 @@ import (
 
 type wrapped struct {
 	infoService   func() (*v0.Info, error)
-	configService func(ctx context.Context, config *v0.Config) (*v0.Response, error)
+	configService func(ctx context.Context, config *v0.Config, tx *sql.Tx) (*v0.Response, error)
 }
 
-func (s *wrapped) ConfigService(ctx context.Context, config *v0.Config) (*v0.Response, error) {
-	return s.configService(ctx, config)
+func (s *wrapped) ConfigService(ctx context.Context, config *v0.Config, tx *sql.Tx) (*v0.Response, error) {
+	return s.configService(ctx, config, tx)
 }
 
 func (s *wrapped) InfoService() (*v0.Info, error) {
@@ -26,7 +27,7 @@ func (s *wrapped) InfoService() (*v0.Info, error) {
 func (auth *Manager) Signed(service core.APIService) core.APIService {
 	return &wrapped{
 		infoService: service.InfoService,
-		configService: func(ctx context.Context, config *v0.Config) (*v0.Response, error) {
+		configService: func(ctx context.Context, config *v0.Config, tx *sql.Tx) (*v0.Response, error) {
 			ok, wrongSig, err := auth.Check(config)
 			if err != nil {
 				return nil, err
@@ -35,7 +36,7 @@ func (auth *Manager) Signed(service core.APIService) core.APIService {
 			if !ok {
 				return v0_handler.WriteMSG(v0.Code_BadRequest, fmt.Sprintf("incorrect signature for: %s", wrongSig)), nil
 			}
-			return service.ConfigService(ctx, config)
+			return service.ConfigService(ctx, config, tx)
 		},
 	}
 }
@@ -46,7 +47,7 @@ func (auth *Manager) Signed(service core.APIService) core.APIService {
 func (auth *Manager) Root(service core.APIService) core.APIService {
 	return &wrapped{
 		infoService: service.InfoService,
-		configService: func(ctx context.Context, config *v0.Config) (*v0.Response, error) {
+		configService: func(ctx context.Context, config *v0.Config, tx *sql.Tx) (*v0.Response, error) {
 			ok, wrongSig, err := auth.Check(config)
 			if err != nil {
 				return nil, err
@@ -73,7 +74,7 @@ func (auth *Manager) Root(service core.APIService) core.APIService {
 			if !root {
 				return response.MSG(v0.Code_UnAuthorized, fmt.Sprintf("cannot grant root: %s", err.Error())), nil
 			}
-			return service.ConfigService(ctx, config)
+			return service.ConfigService(ctx, config, tx)
 		},
 	}
 }
@@ -84,7 +85,7 @@ func (auth *Manager) Root(service core.APIService) core.APIService {
 func (auth *Manager) RootOrBackupOrNoOwners(service core.APIService) core.APIService {
 	return &wrapped{
 		infoService: service.InfoService,
-		configService: func(ctx context.Context, config *v0.Config) (*v0.Response, error) {
+		configService: func(ctx context.Context, config *v0.Config, tx *sql.Tx) (*v0.Response, error) {
 			ok, wrongSig, err := auth.Check(config)
 			if err != nil {
 				return response.MSG(v0.Code_BadRequest, err.Error()), nil
@@ -100,7 +101,7 @@ func (auth *Manager) RootOrBackupOrNoOwners(service core.APIService) core.APISer
 			}
 
 			if !have {
-				return service.ConfigService(ctx, config)
+				return service.ConfigService(ctx, config, tx)
 			}
 
 			root, err := auth.GrantRoot(config.Witness)
@@ -119,7 +120,7 @@ func (auth *Manager) RootOrBackupOrNoOwners(service core.APIService) core.APISer
 			if !root {
 				return response.MSG(v0.Code_UnAuthorized, fmt.Sprintf("cannot grant root: insufficient quorum")), nil
 			}
-			return service.ConfigService(ctx, config)
+			return service.ConfigService(ctx, config, tx)
 		},
 	}
 }

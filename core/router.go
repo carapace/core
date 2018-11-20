@@ -4,6 +4,7 @@ package core
 
 import (
 	"context"
+	"database/sql"
 
 	"github.com/golang/protobuf/ptypes/empty"
 
@@ -11,12 +12,12 @@ import (
 )
 
 type Router interface {
-	Route(ctx context.Context, config *v0.Config) (*v0.Response, error)
+	Route(ctx context.Context, config *v0.Config, tx *sql.Tx) (*v0.Response, error)
 	Register(handlers ...APIService)
 	InfoService(ctx context.Context, e *empty.Empty) (info *v0.RepeatedInfo, err error)
 }
 
 type APIService interface {
-	ConfigService(context.Context, *v0.Config) (*v0.Response, error)
+	ConfigService(context.Context, *v0.Config, *sql.Tx) (*v0.Response, error)
 	InfoService() (*v0.Info, error)
 }

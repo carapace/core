@@ -15,7 +15,7 @@ func Up0000001(tx *sql.Tx) error {
 			CREATE TABLE IF NOT EXISTS owner_sets
 			(
 				ID INTEGER PRIMARY KEY, 
-				created_at TIMESTAMP, 
+				created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
 				owner_set BLOB, 
 				deleted_at TIMESTAMP NULL DEFAULT NULL 
 			);`)
@@ -27,11 +27,27 @@ func Up0000001(tx *sql.Tx) error {
 		`CREATE TABLE IF NOT EXISTS user_sets
 			(
 				ID INTEGER PRIMARY KEY, 
-				created_at TIMESTAMP, 
+				created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
 				name string,
 				user_set BLOB, 
 				deleted_at TIMESTAMP NULL DEFAULT NULL 
 			);`)
+	if err != nil {
+		return err
+	}
+
+	_, err = tx.Exec(
+		`CREATE TABLE IF NOT EXISTS config_sets
+			(
+				ID INTEGER PRIMARY KEY, 
+				created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
+				incrementID INT,
+				hash BLOB,
+				config_set BLOB
+			);
+			
+			CREATE UNIQUE INDEX IF NOT EXISTS config_sets_unique ON config_sets(hash, incrementID);
+			`)
 	if err != nil {
 		return err
 	}

@@ -1,9 +1,14 @@
 package core
 
+import (
+	"sync"
+)
+
 // App is the godlevel struct, fulfilling the gRPC interfaces defined by the api.
 type App struct {
 	*Config
 	ready bool
+	mu    sync.RWMutex
 }
 
 func (a *App) Start() {

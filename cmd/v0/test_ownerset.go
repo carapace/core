@@ -52,11 +52,13 @@ func (s Suite) TestOwnerSetFirstOwnersSimple() {
 	s.Assert().Equal(v0.Code_OK, res.Code, fmt.Sprintf("MSG: %s, ERR: %s", res.MSG, res.Err))
 
 	// altering the set with an authorized user should correctly alter the ownerSet
+	ownerset.Header.Increment += 1
 	res, err = core.ConfigService(ctx, ownerset)
 	s.Require().NoError(err)
 	s.Assert().Equal(v0.Code_OK, res.Code, fmt.Sprintf("MSG: %s, ERR: %s", res.MSG, res.Err))
 
 	// altering the set with an incorrect sig should error
+	ownerset.Header.Increment += 1
 	ownerset.Witness.Signatures[0].R = []byte("bad signature")
 	res, err = core.ConfigService(ctx, ownerset)
 	s.Require().NoError(err)

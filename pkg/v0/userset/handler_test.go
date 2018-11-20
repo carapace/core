@@ -60,7 +60,10 @@ func TestHandler_ConfigService(t *testing.T) {
 		require.NoError(t, err)
 		tc.config.Spec = any
 
-		res, err := handler.ConfigService(context.Background(), tc.config)
+		tx, err := handler.store.Begin()
+		require.NoError(t, err)
+		res, err := handler.ConfigService(context.Background(), tc.config, tx)
+		tx.Rollback()
 		if tc.err == nil {
 			require.NoError(t, err)
 		} else {

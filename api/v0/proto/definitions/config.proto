@@ -8,10 +8,7 @@ import "google/protobuf/timestamp.proto";
 message Header {
     string ApiVersion = 1;
     string Kind = 2;
-    google.protobuf.Any Meta = 4;
-
-    bool Valid = 5;
-    string Error = 6;
+    int32 Increment = 3;
 }
 
 message Witness {

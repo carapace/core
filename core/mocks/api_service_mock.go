@@ -6,6 +6,7 @@ package mock
 
 import (
 	context "context"
+	sql "database/sql"
 	proto "github.com/carapace/core/api/v0/proto"
 	gomock "github.com/golang/mock/gomock"
 	reflect "reflect"
@@ -35,16 +36,16 @@ func (m *MockAPIService) EXPECT() *MockAPIServiceMockRecorder {
 }
 
 // ConfigService mocks base method
-func (m *MockAPIService) ConfigService(arg0 context.Context, arg1 *proto.Config) (*proto.Response, error) {
-	ret := m.ctrl.Call(m, "ConfigService", arg0, arg1)
+func (m *MockAPIService) ConfigService(arg0 context.Context, arg1 *proto.Config, arg2 *sql.Tx) (*proto.Response, error) {
+	ret := m.ctrl.Call(m, "ConfigService", arg0, arg1, arg2)
 	ret0, _ := ret[0].(*proto.Response)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // ConfigService indicates an expected call of ConfigService
-func (mr *MockAPIServiceMockRecorder) ConfigService(arg0, arg1 interface{}) *gomock.Call {
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ConfigService", reflect.TypeOf((*MockAPIService)(nil).ConfigService), arg0, arg1)
+func (mr *MockAPIServiceMockRecorder) ConfigService(arg0, arg1, arg2 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ConfigService", reflect.TypeOf((*MockAPIService)(nil).ConfigService), arg0, arg1, arg2)
 }
 
 // InfoService mocks base method

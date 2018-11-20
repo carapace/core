@@ -68,7 +68,10 @@ func TestHandler_Handle(t *testing.T) {
 	}
 
 	for _, tc := range tcs {
-		res, err := handler.ConfigService(context.Background(), tc.config)
+		tx, err := handler.store.Begin()
+		require.NoError(t, err)
+		res, err := handler.ConfigService(context.Background(), tc.config, tx)
+		tx.Rollback()
 		if err != nil {
 			assert.EqualError(t, err, tc.err.Error(), tc.desc)
 		} else {
@@ -115,7 +118,10 @@ func TestHandler_processNewOwners(t *testing.T) {
 	}
 
 	for _, tc := range tcs {
-		res, err := handler.processNewOwners(context.Background(), tc.config)
+		tx, err := handler.store.Begin()
+		require.NoError(t, err)
+		res, err := handler.processNewOwners(context.Background(), tc.config, tx)
+		tx.Rollback()
 		if err != nil {
 			assert.EqualError(t, err, tc.err.Error(), tc.desc)
 		} else {
@@ -164,7 +170,10 @@ func TestHandler_createNewOwners(t *testing.T) {
 	}
 
 	for _, tc := range tcs {
-		res, err := handler.createNewOwners(context.Background(), tc.config)
+		tx, err := handler.store.Begin()
+		require.NoError(t, err)
+		res, err := handler.createNewOwners(context.Background(), tc.config, tx)
+		tx.Rollback()
 		if tc.err != nil {
 			assert.EqualError(t, err, tc.err.Error(), tc.desc)
 		} else {

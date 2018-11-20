@@ -5,6 +5,7 @@ package core
 
 import (
 	"database/sql"
+	"fmt"
 	"github.com/carapace/core/api/v0/proto"
 	"github.com/carapace/core/core/store"
 	"github.com/pkg/errors"
@@ -22,18 +23,22 @@ func NewStore(db *sql.DB) (*Store, error) {
 		return nil, err
 	}
 
+	fmt.Println("STORE INIT", manager.Sets.Config)
+
 	return &Store{
 		DB: db,
 		Sets: Sets{
 			OwnerSet: manager.Sets.OwnerSet,
 			UserSet:  manager.Sets.UserSet,
+			Config:   manager.Sets.Config,
 		},
 		Users: manager.Users,
 	}, nil
 }
 
 type Store struct {
-	DB *sql.DB
+	DB    *sql.DB
+	LogDB *sql.DB
 	Sets
 	Users UserStore
 }
@@ -45,6 +50,7 @@ func (s *Store) Begin() (*sql.Tx, error) {
 type Sets struct {
 	OwnerSet OwnerSet
 	UserSet  UserSet
+	Config   ConfigManager
 }
 
 type OwnerSet interface {
@@ -64,4 +70,8 @@ type UserStore interface {
 	Get(tx *sql.Tx, publicKey []byte) (*v0.User, error)
 	Delete(tx *sql.Tx, user v0.User) error
 	BySet(tx *sql.Tx, set string) ([]*v0.User, error)
+}
+
+type ConfigManager interface {
+	Add(tx *sql.Tx, config *v0.Config) error
 }

@@ -10,7 +10,11 @@ import (
 
 // NewManager returns a manager with a migrated DB
 func newManager(t *testing.T, db *sql.DB) *Manager {
-	m := &Manager{}
+	m := &Manager{
+		Config:   &Config{},
+		UserSet:  &UserSet{},
+		OwnerSet: &OwnerSet{},
+	}
 	tx, err := db.Begin()
 	require.NoError(t, err)
 	defer tx.Commit()

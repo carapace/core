@@ -9,6 +9,10 @@ import (
 type Manager struct {
 }
 
+func New() *Manager {
+	return &Manager{}
+}
+
 // Creates a new user.
 //
 // Will return an error if the user already exists

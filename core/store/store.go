@@ -21,8 +21,8 @@ func (m *Manager) Begin() (*sql.Tx, error) {
 func New(db *sql.DB) *Manager {
 	return &Manager{
 		db:    db,
-		Sets:  &sets.Manager{},
-		Users: &user.Manager{},
+		Sets:  sets.New(),
+		Users: user.New(),
 	}
 }
 

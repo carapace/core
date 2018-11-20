@@ -2,6 +2,7 @@ package ownerset
 
 import (
 	"context"
+	"database/sql"
 	"sync"
 
 	"github.com/carapace/core/api/v0/proto"
@@ -37,7 +38,7 @@ func New(authz core.Authorizer, store *core.Store) *Handler {
 	}
 }
 
-func (h *Handler) ConfigService(ctx context.Context, config *v0.Config) (*v0.Response, error) {
+func (h *Handler) ConfigService(ctx context.Context, config *v0.Config, tx *sql.Tx) (*v0.Response, error) {
 
 	// Since owners are a unique set in the node, we don't want to have some race condition
 	// where two different new ownerSets are concurrently processed. This is mainly a
@@ -55,45 +56,33 @@ func (h *Handler) ConfigService(ctx context.Context, config *v0.Config) (*v0.Res
 	}
 
 	if have {
-		return h.processNewOwners(ctx, config)
+		return h.processNewOwners(ctx, config, tx)
 	}
-	return h.createNewOwners(ctx, config)
+	return h.createNewOwners(ctx, config, tx)
 }
 
-func (h *Handler) processNewOwners(ctx context.Context, config *v0.Config) (*v0.Response, error) {
+func (h *Handler) processNewOwners(ctx context.Context, config *v0.Config, tx *sql.Tx) (*v0.Response, error) {
 
 	set := &v0.OwnerSet{}
 	err := ptypes.UnmarshalAny(config.Spec, set)
 	if err != nil {
 		return nil, err
 	}
-
-	tx, err := h.store.Begin()
-	if err != nil {
-		return nil, err
-	}
-	defer tx.Rollback()
 
 	err = h.store.Sets.OwnerSet.Put(tx, set)
 	if err != nil {
 		return nil, err
 	}
 
-	return v0_handler.WriteSuccess("correctly altered ownerSet"), tx.Commit()
+	return v0_handler.WriteSuccess("correctly altered ownerSet"), nil
 }
 
-func (h *Handler) createNewOwners(ctx context.Context, config *v0.Config) (*v0.Response, error) {
+func (h *Handler) createNewOwners(ctx context.Context, config *v0.Config, tx *sql.Tx) (*v0.Response, error) {
 	set := &v0.OwnerSet{}
 	err := ptypes.UnmarshalAny(config.Spec, set)
 	if err != nil {
 		return nil, err
 	}
-
-	tx, err := h.store.Begin()
-	if err != nil {
-		return nil, err
-	}
-	defer tx.Rollback()
 
 	err = h.store.Sets.OwnerSet.Put(tx, set)
 	if err != nil {
@@ -106,5 +95,5 @@ func (h *Handler) createNewOwners(ctx context.Context, config *v0.Config) (*v0.R
 			return nil, err
 		}
 	}
-	return v0_handler.WriteSuccess("correctly created ownerSet"), errors.Wrapf(tx.Commit(), "createNewOwners")
+	return v0_handler.WriteSuccess("correctly created ownerSet"), nil
 }
