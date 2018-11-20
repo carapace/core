@@ -10,6 +10,7 @@ import (
 
 var Logger *zap.Logger
 
+// nolint: errcheck
 func init() {
 	viper.BindEnv("TEST_LOGLEVEL")
 	viper.SetDefault("TEST_LOGLEVEL", "INFO")

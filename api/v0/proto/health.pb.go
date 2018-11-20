@@ -41,7 +41,7 @@ func (x HealthCheckResponse_ServingStatus) String() string {
 	return proto.EnumName(HealthCheckResponse_ServingStatus_name, int32(x))
 }
 func (HealthCheckResponse_ServingStatus) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_health_60b6c2be9906895e, []int{1, 0}
+	return fileDescriptor_health_ec8b97e0b4e40950, []int{1, 0}
 }
 
 type HealthCheckRequest struct {
@@ -55,7 +55,7 @@ func (m *HealthCheckRequest) Reset()         { *m = HealthCheckRequest{} }
 func (m *HealthCheckRequest) String() string { return proto.CompactTextString(m) }
 func (*HealthCheckRequest) ProtoMessage()    {}
 func (*HealthCheckRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_health_60b6c2be9906895e, []int{0}
+	return fileDescriptor_health_ec8b97e0b4e40950, []int{0}
 }
 func (m *HealthCheckRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_HealthCheckRequest.Unmarshal(m, b)
@@ -93,7 +93,7 @@ func (m *HealthCheckResponse) Reset()         { *m = HealthCheckResponse{} }
 func (m *HealthCheckResponse) String() string { return proto.CompactTextString(m) }
 func (*HealthCheckResponse) ProtoMessage()    {}
 func (*HealthCheckResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_health_60b6c2be9906895e, []int{1}
+	return fileDescriptor_health_ec8b97e0b4e40950, []int{1}
 }
 func (m *HealthCheckResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_HealthCheckResponse.Unmarshal(m, b)
@@ -126,9 +126,9 @@ func init() {
 	proto.RegisterEnum("v0.HealthCheckResponse_ServingStatus", HealthCheckResponse_ServingStatus_name, HealthCheckResponse_ServingStatus_value)
 }
 
-func init() { proto.RegisterFile("health.proto", fileDescriptor_health_60b6c2be9906895e) }
+func init() { proto.RegisterFile("health.proto", fileDescriptor_health_ec8b97e0b4e40950) }
 
-var fileDescriptor_health_60b6c2be9906895e = []byte{
+var fileDescriptor_health_ec8b97e0b4e40950 = []byte{
 	// 179 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0xe2, 0xc9, 0x48, 0x4d, 0xcc,
 	0x29, 0xc9, 0xd0, 0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0x62, 0x2a, 0x33, 0x50, 0xd2, 0xe3, 0x12,

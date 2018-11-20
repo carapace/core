@@ -9,7 +9,7 @@ enum Code {
     NotImplemented = 501;
     BadRequest = 400;
     UnAuthorized = 401;
-    Forbidded = 403;
+    Forbidden = 403;
 }
 
 message Response {

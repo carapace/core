@@ -24,7 +24,10 @@ const (
 // small helper function to hash strings to generate unique names
 func hash(s string) uint32 {
 	h := fnv.New32a()
-	h.Write([]byte(s))
+	_, err := h.Write([]byte(s))
+	if err != nil {
+		panic(err)
+	}
 	return h.Sum32()
 }
 
@@ -46,7 +49,7 @@ func newConf(t *testing.T) Config {
 	)
 	require.NoError(t, err)
 	metadb := &cellar.BoltMetaDB{DB: blt}
-	metadb.Init()
+	require.NoError(t, metadb.Init())
 
 	c = Config{
 		Folder:   ".",
@@ -65,7 +68,7 @@ func getDB(t *testing.T) (*DB, func()) {
 	sql, exit := test.Sqlite3(t)
 	db := newDB(getConf(t), t)
 	store := sqlite3.New(sql)
-	store.Migrate()
+	require.NoError(t, store.Migrate())
 	db.config.Store = store
 	return db, func() {
 		exit()

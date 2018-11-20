@@ -1,0 +1,21 @@
+syntax = "proto3";
+package v0;
+option go_package = "v0";
+
+message User {
+    string Name = 1;
+    string Email = 2;
+    bytes PrimaryPublicKey = 3;
+    bytes RecoveryPublicKey = 4;
+    int32 AuthLevel = 5;
+
+    bool SuperUser = 6;
+    int32 Weight = 7;
+
+    string Set = 8;
+}
+
+message UserSet {
+    string Set = 1;
+    repeated User Users = 2;
+}

@@ -2,6 +2,8 @@ syntax = "proto3";
 package v0;
 option go_package = "v0";
 
+import "google/protobuf/any.proto";
+
 enum Mode {
     ModeUnknown = 0;
     Debug = 1;
@@ -14,4 +16,13 @@ message Info {
 
     repeated string Kinds = 4;
     string Description = 5;
+    repeated google.protobuf.Any Sets = 6;
+}
+
+message ServiceInfo {
+    string ApiVersion = 1;
+}
+
+message RepeatedInfo {
+    repeated Info Info = 1;
 }

@@ -7,7 +7,7 @@ import (
 type Config struct {
 	Logger *zap.Logger
 	Router Router
-
+	Store  *StoreAPI
 	HealthManager
 
 	Health Health
@@ -19,6 +19,9 @@ type Health struct {
 }
 
 func (c Config) Build() (*Config, error) {
+	if c.Logger != nil {
+		Logger = c.Logger
+	}
 
 	return &c, nil
 }

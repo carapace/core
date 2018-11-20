@@ -4,6 +4,7 @@ import (
 	"github.com/ory/dockertest"
 	"github.com/spf13/viper"
 	"go.uber.org/zap"
+	"math"
 	"sync"
 	"testing"
 	"time"
@@ -38,6 +39,7 @@ const (
 )
 
 // Setting up viper to parse flags and environment variables
+// nolint: errcheck
 func init() {
 	viper.BindEnv("TEST_LEVEL")
 	viper.SetDefault("TEST_LEVEL", 1)
@@ -58,9 +60,10 @@ type limiter struct {
 	resourceNr int
 }
 
+// nolint: errcheck
 func init() {
 	viper.BindEnv("TEST_RESOURCE_MAX")
-	viper.SetDefault("TEST_RESOURCE_MAX", 1000)
+	viper.SetDefault("TEST_RESOURCE_MAX", math.MaxInt64)
 }
 
 func (l limiter) allow() (clear func()) {

@@ -2,13 +2,13 @@ package ownerset
 
 import (
 	"context"
-	"fmt"
+	"github.com/carapace/core/pkg/suite"
+	"github.com/pkg/errors"
 	"sync"
 	"testing"
 
-	"github.com/pkg/errors"
-
-	"github.com/carapace/core/internal/v0"
+	"github.com/carapace/core/core"
+	"github.com/carapace/core/pkg/v0"
 	"github.com/golang/protobuf/proto"
 
 	"github.com/golang/protobuf/ptypes"
@@ -18,6 +18,8 @@ import (
 
 	"github.com/carapace/core/api/v0/proto"
 	"github.com/golang/mock/gomock"
+
+	coreMock "github.com/carapace/core/core/mocks"
 )
 
 // genAny is used to ignore the error return of marshal.Any when declaring test
@@ -32,11 +34,63 @@ func TestHandler_Handle(t *testing.T) {
 	mockCtrl := gomock.NewController(t)
 	defer mockCtrl.Finish()
 
-	mockObj := mock.NewMockAuthenticator(mockCtrl)
+	db, cleanup := test.Sqlite3(t)
+	defer cleanup()
+
+	s, err := core.NewStore(db)
+	require.NoError(t, err)
+	authz := coreMock.NewMockAuthorizer(mockCtrl)
+	handler := New(authz, s)
+
+	tcs := []struct {
+		config *v0.Config
+		prep   []*gomock.Call
+
+		err      error
+		response *v0.Response
+		desc     string
+	}{
+		{
+			config:   &v0.Config{Header: &v0.Header{Kind: "incorrectSet"}},
+			err:      v0_handler.ErrIncorrectKind,
+			response: nil,
+			desc:     "incorrect kind should return v0_handler.ErrIncorrectKind",
+		},
+		{
+			config: &v0.Config{Header: &v0.Header{Kind: OwnerSet}},
+			err:    errors.New("err"),
+			prep: []*gomock.Call{
+				authz.EXPECT().HaveOwners().Return(false, errors.New("err")).Times(1),
+			},
+			response: nil,
+			desc:     "error returned by auth.HaveOwners should return the error",
+		},
+	}
+
+	for _, tc := range tcs {
+		res, err := handler.ConfigService(context.Background(), tc.config)
+		if err != nil {
+			assert.EqualError(t, err, tc.err.Error(), tc.desc)
+		} else {
+			require.NoError(t, err, tc.desc)
+		}
+		assert.Equal(t, tc.response, res, tc.desc)
+	}
+}
+
+func TestHandler_processNewOwners(t *testing.T) {
+	mockCtrl := gomock.NewController(t)
+	defer mockCtrl.Finish()
+
+	db, cleanup := test.Sqlite3(t)
+	defer cleanup()
+
+	s, err := core.NewStore(db)
+	require.NoError(t, err)
 
 	handler := Handler{
-		auth: mockObj,
-		mu:   &sync.RWMutex{},
+		store: s,
+		mu:    &sync.RWMutex{},
 	}
 
 	tcs := []struct {
@@ -47,141 +101,76 @@ func TestHandler_Handle(t *testing.T) {
 		desc     string
 	}{
 		{
-			config:   &v0.Config{Header: &v0.Header{Kind: "OWNERSET"}},
-			err:      v0_handler.ErrIncorrectKind,
-			response: nil,
-			desc:     "no owners and incorrect kind should return v0_handler.ErrIncorrectKind",
+			config: &v0.Config{
+				Witness: &v0.Witness{Signatures: []*v0.Signature{{Key: &v0.Signature_PrimaryPublicKey{[]byte("correct key")}}}},
+				Spec: genAny(t, &v0.OwnerSet{Owners: []*v0.User{
+					{
+						PrimaryPublicKey:  []byte("correct key"),
+						RecoveryPublicKey: []byte("second correct key"),
+						Name:              "Jaap"}}})},
+			err:      nil,
+			response: &v0.Response{Code: v0.Code_OK, MSG: "Correctly altered ownerSet"},
+			desc:     "marshalable obj should return no err",
 		},
 	}
 
 	for _, tc := range tcs {
-		res, err := handler.Handle(context.Background(), tc.config)
-		assert.Equal(t, tc.response, res)
+		res, err := handler.processNewOwners(context.Background(), tc.config)
 		if err != nil {
 			assert.EqualError(t, err, tc.err.Error(), tc.desc)
+		} else {
+			require.NoError(t, err, tc.desc)
 		}
+		assert.Equal(t, tc.response.Code, res.Code, tc.desc)
+		break
 	}
 }
 
-func TestHandler_newOwnerSet(t *testing.T) {
+func TestHandler_createNewOwners(t *testing.T) {
 	mockCtrl := gomock.NewController(t)
 	defer mockCtrl.Finish()
 
-	mockObj := mock.NewMockAuthenticator(mockCtrl)
+	db, cleanup := test.Sqlite3(t)
+	defer cleanup()
+
+	s, err := core.NewStore(db)
+	require.NoError(t, err)
 
 	handler := Handler{
-		auth: mockObj,
+		store: s,
+		mu:    &sync.RWMutex{},
 	}
 
 	tcs := []struct {
-		config          *v0.Config
-		CheckSignatures *gomock.Call
-		SetOwners       *gomock.Call
+		config *v0.Config
 
 		err      error
 		response *v0.Response
 		desc     string
 	}{
 		{
-			config:          &v0.Config{Witness: &v0.Witness{}, Spec: genAny(t, &v0.OwnerSet{})},
-			CheckSignatures: mockObj.EXPECT().CheckSignatures(&v0.Witness{}).Return(false, "", errors.New("err")),
-
-			err:      errors.New("err"),
-			response: nil,
-			desc:     "checksignatures returning an error should return an error",
-		},
-		{
-			config:          &v0.Config{Witness: &v0.Witness{}, Spec: genAny(t, &v0.OwnerSet{})},
-			CheckSignatures: mockObj.EXPECT().CheckSignatures(&v0.Witness{}).Return(false, "signature", nil),
-
-			err:      nil,
-			response: v0_handler.WriteMSG(v0.Code_BadRequest, fmt.Sprintf("incorrect signature by %s", "signature")),
-			desc:     "checksignatures finding an invalid signature should return Code_Forbidded",
-		},
-		{
 			config: &v0.Config{
-				Witness: &v0.Witness{Signatures: map[string][]byte{"correct key": {}}},
-				Spec:    genAny(t, &v0.OwnerSet{Owners: []*v0.Owner{{PrimaryPublicKey: "incorrect key", Name: "Jaap"}}})},
-			CheckSignatures: mockObj.EXPECT().CheckSignatures(gomock.Any()).Return(true, "", nil),
-
+				Witness: &v0.Witness{Signatures: []*v0.Signature{{Key: &v0.Signature_PrimaryPublicKey{[]byte("correct key")}}}},
+				Spec: genAny(t, &v0.OwnerSet{Owners: []*v0.User{{
+					PrimaryPublicKey:  []byte("correct key"),
+					RecoveryPublicKey: []byte("second correct key"),
+					Name:              "Jaap",
+				},
+				}})},
 			err:      nil,
-			response: v0_handler.WriteMSG(v0.Code_BadRequest, fmt.Sprintf("not all owners signed the set: %s", "Jaap")),
-			desc:     "missing signature returns Code_Forbidded",
-		},
-		{
-			config: &v0.Config{
-				Witness: &v0.Witness{Signatures: map[string][]byte{"correct key": {}}},
-				Spec:    genAny(t, &v0.OwnerSet{Owners: []*v0.Owner{{PrimaryPublicKey: "correct key", Name: "Jaap"}}})},
-			CheckSignatures: mockObj.EXPECT().CheckSignatures(gomock.Any()).Return(true, "", nil),
-			SetOwners:       mockObj.EXPECT().SetOwners(context.Background(), gomock.Any()).Return(nil).Times(1),
-			err:             nil,
-			response:        nil,
-			desc:            "correct signatures returns nil, nil",
+			response: &v0.Response{Code: v0.Code_OK, MSG: "correctly created ownerSet"},
+			desc:     "marshalable obj should return no err",
 		},
 	}
 
 	for _, tc := range tcs {
-		res, err := handler.newOwnerSet(context.Background(), tc.config)
-		if err != nil {
+		res, err := handler.createNewOwners(context.Background(), tc.config)
+		if tc.err != nil {
 			assert.EqualError(t, err, tc.err.Error(), tc.desc)
+		} else {
+			require.NoError(t, err, tc.desc)
 		}
-		assert.Equal(t, tc.response, res, tc.desc)
-	}
-}
-
-func TestHandler_adjustOwnerSet(t *testing.T) {
-	mockCtrl := gomock.NewController(t)
-	defer mockCtrl.Finish()
-
-	mockObj := mock.NewMockAuthenticator(mockCtrl)
-
-	handler := Handler{
-		auth: mockObj,
-	}
-
-	tcs := []struct {
-		config          *v0.Config
-		grantRoot       *gomock.Call
-		grantRootBackup *gomock.Call
-		SetOwners       *gomock.Call
-
-		err      error
-		response *v0.Response
-		desc     string
-	}{
-		{
-			config:    &v0.Config{Witness: &v0.Witness{}, Spec: genAny(t, &v0.OwnerSet{})},
-			grantRoot: mockObj.EXPECT().GrantRoot(&v0.Witness{}).Return(true, nil).Times(1),
-			SetOwners: mockObj.EXPECT().SetOwners(context.Background(), &v0.OwnerSet{}).Return(nil),
-
-			err:      nil,
-			response: nil,
-			desc:     "granting direct root should set owners",
-		},
-		{
-			config:          &v0.Config{Witness: &v0.Witness{}, Spec: genAny(t, &v0.OwnerSet{})},
-			grantRoot:       mockObj.EXPECT().GrantRoot(&v0.Witness{}).Return(false, v0_handler.ErrBackupKeyPresent).Times(1),
-			grantRootBackup: mockObj.EXPECT().GrantBackupRoot(&v0.Witness{}).Return(true, nil).Times(1),
-			SetOwners:       mockObj.EXPECT().SetOwners(context.Background(), &v0.OwnerSet{}).Return(nil),
-
-			err:      nil,
-			response: nil,
-			desc:     "granting backup root should set owners",
-		},
-		{
-			config:          &v0.Config{Witness: &v0.Witness{}, Spec: genAny(t, &v0.OwnerSet{})},
-			grantRoot:       mockObj.EXPECT().GrantRoot(&v0.Witness{}).Return(false, v0_handler.ErrBackupKeyPresent).Times(1),
-			grantRootBackup: mockObj.EXPECT().GrantBackupRoot(&v0.Witness{}).Return(false, nil).Times(1),
-
-			err:      nil,
-			response: v0_handler.WriteMSG(v0.Code_Forbidded, "insufficient quorum for root op"),
-			desc:     "granting no root and no backup root should return code forbidden",
-		},
-	}
-
-	for _, tc := range tcs {
-		res, err := handler.adjustOwnerSet(context.Background(), tc.config)
-		assert.Equal(t, tc.err, err, tc.desc)
-		assert.Equal(t, tc.response, res, tc.desc)
+		assert.Equal(t, tc.response.Code, res.Code, tc.desc)
+		break
 	}
 }

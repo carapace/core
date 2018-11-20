@@ -1,0 +1,206 @@
+# github.com/Azure/go-ansiterm v0.0.0-20170929234023-d6e3b3328b78
+github.com/Azure/go-ansiterm/winterm
+github.com/Azure/go-ansiterm
+# github.com/Microsoft/go-winio v0.4.11
+github.com/Microsoft/go-winio
+# github.com/Nvveen/Gotty v0.0.0-20120604004816-cd527374f1e5
+github.com/Nvveen/Gotty
+# github.com/boltdb/bolt v1.3.1
+github.com/boltdb/bolt
+# github.com/carapace/cellar v0.0.1
+github.com/carapace/cellar
+github.com/carapace/cellar/proto
+# github.com/cenkalti/backoff v2.0.0+incompatible
+github.com/cenkalti/backoff
+# github.com/containerd/continuity v0.0.0-20181027224239-bea7585dbfac
+github.com/containerd/continuity/pathdriver
+# github.com/davecgh/go-spew v1.1.1
+github.com/davecgh/go-spew/spew
+# github.com/docker/go-connections v0.4.0
+github.com/docker/go-connections/nat
+# github.com/docker/go-units v0.3.3
+github.com/docker/go-units
+# github.com/fsnotify/fsnotify v1.4.7
+github.com/fsnotify/fsnotify
+# github.com/go-redis/redis v6.14.2+incompatible
+github.com/go-redis/redis
+github.com/go-redis/redis/internal
+github.com/go-redis/redis/internal/consistenthash
+github.com/go-redis/redis/internal/hashtag
+github.com/go-redis/redis/internal/pool
+github.com/go-redis/redis/internal/proto
+github.com/go-redis/redis/internal/singleflight
+github.com/go-redis/redis/internal/util
+# github.com/gofrs/flock v0.7.0
+github.com/gofrs/flock
+# github.com/golang/mock v1.1.1
+github.com/golang/mock/gomock
+# github.com/golang/protobuf v1.2.0
+github.com/golang/protobuf/proto
+github.com/golang/protobuf/ptypes/any
+github.com/golang/protobuf/ptypes/empty
+github.com/golang/protobuf/ptypes/timestamp
+github.com/golang/protobuf/ptypes
+github.com/golang/protobuf/ptypes/duration
+# github.com/gorilla/context v1.1.1
+github.com/gorilla/context
+# github.com/gorilla/mux v1.6.2
+github.com/gorilla/mux
+# github.com/hashicorp/hcl v1.0.0
+github.com/hashicorp/hcl
+github.com/hashicorp/hcl/hcl/printer
+github.com/hashicorp/hcl/hcl/ast
+github.com/hashicorp/hcl/hcl/parser
+github.com/hashicorp/hcl/hcl/token
+github.com/hashicorp/hcl/json/parser
+github.com/hashicorp/hcl/hcl/scanner
+github.com/hashicorp/hcl/hcl/strconv
+github.com/hashicorp/hcl/json/scanner
+github.com/hashicorp/hcl/json/token
+# github.com/inconshreveable/mousetrap v1.0.0
+github.com/inconshreveable/mousetrap
+# github.com/jinzhu/copier v0.0.0-20180308034124-7e38e58719c3
+github.com/jinzhu/copier
+# github.com/jinzhu/gorm v1.9.1
+github.com/jinzhu/gorm/dialects/sqlite
+# github.com/konsorten/go-windows-terminal-sequences v1.0.1
+github.com/konsorten/go-windows-terminal-sequences
+# github.com/lib/pq v1.0.0
+github.com/lib/pq
+github.com/lib/pq/oid
+# github.com/magiconair/properties v1.8.0
+github.com/magiconair/properties
+github.com/magiconair/properties/assert
+# github.com/mattn/go-sqlite3 v1.10.0
+github.com/mattn/go-sqlite3
+# github.com/mitchellh/go-homedir v1.0.0
+github.com/mitchellh/go-homedir
+# github.com/mitchellh/hashstructure v1.0.0
+github.com/mitchellh/hashstructure
+# github.com/mitchellh/mapstructure v1.0.0
+github.com/mitchellh/mapstructure
+# github.com/opencontainers/go-digest v1.0.0-rc1
+github.com/opencontainers/go-digest
+# github.com/opencontainers/image-spec v1.0.1
+github.com/opencontainers/image-spec/specs-go/v1
+github.com/opencontainers/image-spec/specs-go
+# github.com/opencontainers/runc v0.1.1
+github.com/opencontainers/runc/libcontainer/user
+# github.com/ory/dockertest v3.3.2+incompatible
+github.com/ory/dockertest
+github.com/ory/dockertest/docker
+github.com/ory/dockertest/docker/opts
+github.com/ory/dockertest/docker/pkg/archive
+github.com/ory/dockertest/docker/pkg/fileutils
+github.com/ory/dockertest/docker/pkg/homedir
+github.com/ory/dockertest/docker/pkg/jsonmessage
+github.com/ory/dockertest/docker/pkg/stdcopy
+github.com/ory/dockertest/docker/types/registry
+github.com/ory/dockertest/docker/types
+github.com/ory/dockertest/docker/pkg/idtools
+github.com/ory/dockertest/docker/pkg/ioutils
+github.com/ory/dockertest/docker/pkg/longpath
+github.com/ory/dockertest/docker/pkg/pools
+github.com/ory/dockertest/docker/pkg/system
+github.com/ory/dockertest/docker/pkg/term
+github.com/ory/dockertest/docker/types/container
+github.com/ory/dockertest/docker/types/filters
+github.com/ory/dockertest/docker/types/mount
+github.com/ory/dockertest/docker/types/network
+github.com/ory/dockertest/docker/pkg/mount
+github.com/ory/dockertest/docker/pkg/term/windows
+github.com/ory/dockertest/docker/types/blkiodev
+github.com/ory/dockertest/docker/types/strslice
+github.com/ory/dockertest/docker/types/versions
+# github.com/pelletier/go-toml v1.2.0
+github.com/pelletier/go-toml
+# github.com/pierrec/lz4 v2.0.5+incompatible
+github.com/pierrec/lz4
+github.com/pierrec/lz4/internal/xxh32
+# github.com/pkg/errors v0.8.0
+github.com/pkg/errors
+# github.com/pmezard/go-difflib v1.0.0
+github.com/pmezard/go-difflib/difflib
+# github.com/robfig/cron v0.0.0-20180505203441-b41be1df6967
+github.com/robfig/cron
+# github.com/sirupsen/logrus v1.2.0
+github.com/sirupsen/logrus
+# github.com/spf13/afero v1.1.2
+github.com/spf13/afero
+github.com/spf13/afero/mem
+# github.com/spf13/cast v1.2.0
+github.com/spf13/cast
+# github.com/spf13/cobra v0.0.3
+github.com/spf13/cobra
+# github.com/spf13/jwalterweatherman v1.0.0
+github.com/spf13/jwalterweatherman
+# github.com/spf13/pflag v1.0.2
+github.com/spf13/pflag
+# github.com/spf13/viper v1.2.1
+github.com/spf13/viper
+# github.com/stretchr/testify v1.2.2
+github.com/stretchr/testify/assert
+github.com/stretchr/testify/require
+github.com/stretchr/testify/suite
+# go.etcd.io/bbolt v1.3.0
+go.etcd.io/bbolt
+# go.uber.org/atomic v1.3.2
+go.uber.org/atomic
+# go.uber.org/multierr v1.1.0
+go.uber.org/multierr
+# go.uber.org/zap v1.9.1
+go.uber.org/zap
+go.uber.org/zap/zapcore
+go.uber.org/zap/internal/bufferpool
+go.uber.org/zap/buffer
+go.uber.org/zap/internal/color
+go.uber.org/zap/internal/exit
+# golang.org/x/crypto v0.0.0-20180904163835-0709b304e793
+golang.org/x/crypto/ssh/terminal
+# golang.org/x/net v0.0.0-20181114220301-adae6a3d119a
+golang.org/x/net/context
+golang.org/x/net/trace
+golang.org/x/net/internal/timeseries
+golang.org/x/net/http2
+golang.org/x/net/http2/hpack
+golang.org/x/net/http/httpguts
+golang.org/x/net/idna
+# golang.org/x/sys v0.0.0-20181022134430-8a28ead16f52
+golang.org/x/sys/unix
+golang.org/x/sys/windows
+# golang.org/x/text v0.3.0
+golang.org/x/text/transform
+golang.org/x/text/unicode/norm
+golang.org/x/text/secure/bidirule
+golang.org/x/text/unicode/bidi
+# google.golang.org/genproto v0.0.0-20180817151627-c66870c02cf8
+google.golang.org/genproto/googleapis/rpc/status
+# google.golang.org/grpc v1.16.0
+google.golang.org/grpc
+google.golang.org/grpc/balancer
+google.golang.org/grpc/balancer/roundrobin
+google.golang.org/grpc/codes
+google.golang.org/grpc/connectivity
+google.golang.org/grpc/credentials
+google.golang.org/grpc/encoding
+google.golang.org/grpc/encoding/proto
+google.golang.org/grpc/grpclog
+google.golang.org/grpc/internal
+google.golang.org/grpc/internal/backoff
+google.golang.org/grpc/internal/channelz
+google.golang.org/grpc/internal/envconfig
+google.golang.org/grpc/internal/grpcrand
+google.golang.org/grpc/internal/transport
+google.golang.org/grpc/keepalive
+google.golang.org/grpc/metadata
+google.golang.org/grpc/naming
+google.golang.org/grpc/peer
+google.golang.org/grpc/resolver
+google.golang.org/grpc/resolver/dns
+google.golang.org/grpc/resolver/passthrough
+google.golang.org/grpc/stats
+google.golang.org/grpc/status
+google.golang.org/grpc/tap
+google.golang.org/grpc/balancer/base
+# gopkg.in/yaml.v2 v2.2.1
+gopkg.in/yaml.v2

@@ -1,0 +1,21 @@
+Header:
+  ApiVersion: "v0"
+  Kind: "type.googleapis.com/v0.UserSet"
+Spec:
+  Set: "robot users"
+  Users:
+  - Name: "Roboto"
+    Email: "k.l.kubat@gmail.com"
+    AuthLevel: 2
+    #   seed: "somesecret1somesecret1"
+    PrimaryPublicKey: "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEZvU+SX/DiIDj8n2r32mXTszvRNMFbB2+KgLPAL8YaNsXIZgN9y0xVhmeCZwy8XUqrHKvzGz25bdvRXg/ABCTFw=="
+    #   seed: somesecret1somesecret12
+    RecoveryPublicKey: "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEZaHpG2QWxImUWlMlUV4WMBSYtAyB+gHQlCkCGFCIK7Y0rnvf3eRR0b0E6NJGagmzkqRADwWllWsWZ12hHqR/aQ=="
+
+  - Name: "Eighties Robot"
+    Email: "r.l.kubat@gmail.com"
+    AuthLevel: 1
+    # seed: somesecret1somesecret123
+    PrimaryPublicKey: "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEufQHkVTqmN/wxzLu/7I2N2+EE7J6yllRffoZcIwfbC5kVdU8n1Yukt8fISYcxPQNFPDpNhc3aBBEzliNoZZVCA=="
+    # seed: somesecret1somesecret1234
+    RecoveryPublicKey: "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEHK2ZfMaR4AF0E293h8yCDYbvpHmbTOvQL7nEGr6m/ovS9l1z6ySk5lwABHMYJ9qdR5RQ5zblfxQS/WBUXL9Sfg=="

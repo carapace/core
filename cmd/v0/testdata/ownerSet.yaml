@@ -1,0 +1,9 @@
+Header:
+  ApiVersion: "v0"
+  Kind: "type.googleapis.com/v0.OwnerSet"
+Spec:
+  Owners:
+  - Name: "Karel"
+    Email: "k.l.kubat@gmail.com"
+    Weight: 10
+  Quorum: 9

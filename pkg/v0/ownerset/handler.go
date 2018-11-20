@@ -2,24 +2,43 @@ package ownerset
 
 import (
 	"context"
-	"fmt"
-	"github.com/carapace/core/api/v0/proto"
-	"github.com/carapace/core/pkg/v0"
 	"sync"
+
+	"github.com/carapace/core/api/v0/proto"
+	"github.com/carapace/core/core"
+	"github.com/carapace/core/pkg/v0"
+	"github.com/golang/protobuf/ptypes"
+	"github.com/pkg/errors"
 )
 
 const (
 	// accepted kind header for the ownerSet handler
-	OwnerSet = "ownerSet"
+	OwnerSet = "type.googleapis.com/v0.OwnerSet"
 )
 
+var (
+	ErrMissingPublicKey = errors.New("missing public key")
+)
+
+var _ core.APIService = &Handler{}
+
 type Handler struct {
-	auth v0_handler.Authenticator
+	authz core.Authorizer
+	store *core.StoreAPI
 
 	mu *sync.RWMutex
 }
 
+func New(authz core.Authorizer, store *core.StoreAPI) *Handler {
+	return &Handler{
+		mu:    &sync.RWMutex{},
+		authz: authz,
+		store: store,
+	}
+}
+
 func (h *Handler) ConfigService(ctx context.Context, config *v0.Config) (*v0.Response, error) {
+
 	// Since owners are a unique set in the node, we don't want to have some race condition
 	// where two different new ownerSets are concurrently processed. This is mainly a
 	// sanity check.
@@ -30,63 +49,62 @@ func (h *Handler) ConfigService(ctx context.Context, config *v0.Config) (*v0.Res
 		return nil, v0_handler.ErrIncorrectKind
 	}
 
-	if !h.auth.HaveOwners() {
-		return h.newOwnerSet(ctx, config)
+	have, err := h.authz.HaveOwners()
+	if err != nil {
+		return nil, err
 	}
 
-	return h.adjustOwnerSet(ctx, config)
+	if have {
+		return h.processNewOwners(ctx, config)
+	}
+	return h.createNewOwners(ctx, config)
 }
 
-func (h *Handler) newOwnerSet(ctx context.Context, config *v0.Config) (*v0.Response, error) {
+func (h *Handler) processNewOwners(ctx context.Context, config *v0.Config) (*v0.Response, error) {
 
-	set, err := unmarshalAny(config.Spec)
+	set := &v0.OwnerSet{}
+	err := ptypes.UnmarshalAny(config.Spec, set)
 	if err != nil {
 		return nil, err
 	}
 
-	// first check if all the owners signed the config.
-	ok, incorrect, err := h.auth.CheckSignatures(config.Witness)
+	tx, err := h.store.Begin()
+	if err != nil {
+		return nil, err
+	}
+	defer tx.Rollback()
+
+	err = h.store.Sets.OwnerSet.Put(tx, set)
 	if err != nil {
 		return nil, err
 	}
 
-	if !ok {
-		return v0_handler.WriteMSG(v0.Code_BadRequest, fmt.Sprintf("incorrect signature by %s", incorrect)), nil
-	}
-
-	// check if all the owners also signed the message
-	for _, i := range set.Owners {
-		if _, ok := config.Witness.Signatures[i.PrimaryPublicKey]; !ok {
-			return v0_handler.WriteMSG(v0.Code_BadRequest, fmt.Sprintf("not all owners signed the set: %s", i.Name)), nil
-		}
-	}
-
-	err = h.auth.SetOwners(ctx, set)
-	return nil, err
+	return v0_handler.WriteSuccess("correctly altered ownerSet"), tx.Commit()
 }
 
-func (h *Handler) adjustOwnerSet(ctx context.Context, config *v0.Config) (*v0.Response, error) {
-	set, err := unmarshalAny(config.Spec)
+func (h *Handler) createNewOwners(ctx context.Context, config *v0.Config) (*v0.Response, error) {
+	set := &v0.OwnerSet{}
+	err := ptypes.UnmarshalAny(config.Spec, set)
 	if err != nil {
 		return nil, err
 	}
 
-	root, err := h.auth.GrantRoot(config.Witness)
-
+	tx, err := h.store.Begin()
 	if err != nil {
+		return nil, err
+	}
+	defer tx.Rollback()
 
-		if err == v0_handler.ErrBackupKeyPresent {
-			root, err = h.auth.GrantBackupRoot(config.Witness)
-		}
+	err = h.store.Sets.OwnerSet.Put(tx, set)
+	if err != nil {
+		return nil, err
+	}
 
+	for _, user := range set.Owners {
+		err = h.store.Users.Create(tx, *user)
 		if err != nil {
 			return nil, err
 		}
 	}
-
-	if !root {
-		return v0_handler.WriteMSG(v0.Code_Forbidded, "insufficient quorum for root op"), nil
-	}
-	err = h.auth.SetOwners(ctx, set)
-	return nil, err
+	return v0_handler.WriteSuccess("correctly created ownerSet"), errors.Wrapf(tx.Commit(), "createNewOwners")
 }

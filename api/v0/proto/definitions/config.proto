@@ -9,10 +9,23 @@ message Header {
     string ApiVersion = 1;
     string Kind = 2;
     google.protobuf.Any Meta = 4;
+
+    bool Valid = 5;
+    string Error = 6;
 }
 
 message Witness {
-    map<string, bytes> Signatures = 1;
+    repeated Signature Signatures = 1;
+
+}
+
+message Signature {
+    oneof Key {
+        bytes PrimaryPublicKey = 1;
+        bytes RecoveryPublicKey = 2;
+    }
+    bytes R = 3;
+    bytes S = 4;
 }
 
 message State {

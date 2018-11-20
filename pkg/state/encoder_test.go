@@ -39,7 +39,7 @@ func TestJSONEncoder_Encode_Decode(t *testing.T) {
 	}
 
 	encoder := JSONEncoder{}
-	decoder := JSOnDecoder{}
+	decoder := JSONDecoder{}
 
 	for _, tc := range tcs {
 		have, err := encoder.Encode(tc.input)

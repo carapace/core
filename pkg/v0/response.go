@@ -24,3 +24,7 @@ func WriteErr(err error) *v0.Response {
 func WriteMSG(code v0.Code, msg string) *v0.Response {
 	return writeResponse(code, msg, nil)
 }
+
+func WriteSuccess(msg string) *v0.Response {
+	return writeResponse(v0.Code_OK, msg, nil)
+}

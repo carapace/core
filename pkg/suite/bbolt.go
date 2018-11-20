@@ -11,7 +11,10 @@ import (
 // small helper function to hash strings to generate unique names
 func hash(s string) uint32 {
 	h := fnv.New32a()
-	h.Write([]byte(s))
+	_, err := h.Write([]byte(s))
+	if err != nil {
+		panic(err)
+	}
 	return h.Sum32()
 }
 

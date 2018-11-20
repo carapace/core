@@ -52,7 +52,10 @@ func (c Config) Build() error {
 			return err
 		}
 		c.MetaDB = &cellar.BoltMetaDB{DB: metadb}
-		c.MetaDB.Init()
+		err = c.MetaDB.Init()
+		if err != nil {
+			return err
+		}
 	}
 
 	if c.Hasher == nil {
