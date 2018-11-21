@@ -168,6 +168,9 @@ issues:
   # excluded by default patterns execute `golangci-lint run --help`
   #  exclude:
   #  - abcdef
+  exclude:
+  - tx.Rollback   # often deferred
+  - tx.Commit     # often returned
 
   # Independently from option `exclude` we use default exclude patterns,
   # it can be disabled by this option. To list all
