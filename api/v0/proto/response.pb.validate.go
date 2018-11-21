@@ -40,7 +40,19 @@ func (m *Response) Validate() error {
 		return nil
 	}
 
-	// no validation rules for Code
+	if _, ok := _Response_Code_NotInLookup[m.GetCode()]; ok {
+		return ResponseValidationError{
+			field:  "Code",
+			reason: "value must not be in list [0]",
+		}
+	}
+
+	if _, ok := Code_name[int32(m.GetCode())]; !ok {
+		return ResponseValidationError{
+			field:  "Code",
+			reason: "value must be one of the defined enum values",
+		}
+	}
 
 	// no validation rules for MSG
 
@@ -102,3 +114,7 @@ var _ interface {
 	Cause() error
 	ErrorName() string
 } = ResponseValidationError{}
+
+var _Response_Code_NotInLookup = map[Code]struct{}{
+	0: {},
+}

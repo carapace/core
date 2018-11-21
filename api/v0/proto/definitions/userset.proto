@@ -1,0 +1,16 @@
+syntax = "proto3";
+package v0;
+option go_package = "v0";
+
+import "user.proto";
+import "validate/validate.proto";
+
+/*
+A UserSet is used to create new users grouped under a namespace (Set)
+
+The signee of the UserSet must have a higher AuthLevel than the highest user in the set.
+*/
+message UserSet {
+    string Set = 1 [(validate.rules).string.min_len = 1]; // Set must be given.
+    repeated User Users = 2 [(validate.rules).repeated.min_items = 1]; // at least single user must be in the set
+}

@@ -25,10 +25,10 @@ func Redis() (db *redis.Client, cleanup func()) {
 			DB:       0,  // use default DB
 		})
 
-		pong, err := db.Ping().Result()
-		if err != nil {
+		pong, pongErr := db.Ping().Result()
+		if pongErr != nil {
 			Logger.Debug("retrying redis ping", zap.Error(err))
-			return err
+			return pongErr
 		}
 
 		if pong != "PONG" {

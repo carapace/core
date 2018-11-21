@@ -3,9 +3,18 @@ package v0;
 option go_package = "v0";
 
 import "user.proto";
+import "validate/validate.proto";
 
+/*
+OwnerSets define the root owners of a node. The first config file sent to a fresh node must be the OwnerSet, which is
+used as a fail safe and required for further configurations.
+
+    Quorum defines the minimum amount of weight needed to perform a root operation. (Each user has a weight attribute)
+
+
+*/
 message OwnerSet {
-    int32 Quorum = 1;
-    repeated User Owners = 2;
+    int32 Quorum = 1 [(validate.rules).int32.gt = 0]; // Quorum must be at least 1.
+    repeated User Owners = 2 [(validate.rules).repeated.min_items = 1]; // at least a single owner must exist.
 }
 

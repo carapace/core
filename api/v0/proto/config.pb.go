@@ -20,249 +20,30 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
 
-type Header struct {
-	ApiVersion           string   `protobuf:"bytes,1,opt,name=ApiVersion,proto3" json:"ApiVersion,omitempty"`
-	Kind                 string   `protobuf:"bytes,2,opt,name=Kind,proto3" json:"Kind,omitempty"`
-	Increment            int32    `protobuf:"varint,3,opt,name=Increment,proto3" json:"Increment,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *Header) Reset()         { *m = Header{} }
-func (m *Header) String() string { return proto.CompactTextString(m) }
-func (*Header) ProtoMessage()    {}
-func (*Header) Descriptor() ([]byte, []int) {
-	return fileDescriptor_config_ad52dc8c721b377e, []int{0}
-}
-func (m *Header) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_Header.Unmarshal(m, b)
-}
-func (m *Header) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_Header.Marshal(b, m, deterministic)
-}
-func (dst *Header) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Header.Merge(dst, src)
-}
-func (m *Header) XXX_Size() int {
-	return xxx_messageInfo_Header.Size(m)
-}
-func (m *Header) XXX_DiscardUnknown() {
-	xxx_messageInfo_Header.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_Header proto.InternalMessageInfo
-
-func (m *Header) GetApiVersion() string {
-	if m != nil {
-		return m.ApiVersion
-	}
-	return ""
-}
-
-func (m *Header) GetKind() string {
-	if m != nil {
-		return m.Kind
-	}
-	return ""
-}
-
-func (m *Header) GetIncrement() int32 {
-	if m != nil {
-		return m.Increment
-	}
-	return 0
-}
-
-type Witness struct {
-	Signatures           []*Signature `protobuf:"bytes,1,rep,name=Signatures,proto3" json:"Signatures,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}     `json:"-"`
-	XXX_unrecognized     []byte       `json:"-"`
-	XXX_sizecache        int32        `json:"-"`
-}
-
-func (m *Witness) Reset()         { *m = Witness{} }
-func (m *Witness) String() string { return proto.CompactTextString(m) }
-func (*Witness) ProtoMessage()    {}
-func (*Witness) Descriptor() ([]byte, []int) {
-	return fileDescriptor_config_ad52dc8c721b377e, []int{1}
-}
-func (m *Witness) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_Witness.Unmarshal(m, b)
-}
-func (m *Witness) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_Witness.Marshal(b, m, deterministic)
-}
-func (dst *Witness) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Witness.Merge(dst, src)
-}
-func (m *Witness) XXX_Size() int {
-	return xxx_messageInfo_Witness.Size(m)
-}
-func (m *Witness) XXX_DiscardUnknown() {
-	xxx_messageInfo_Witness.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_Witness proto.InternalMessageInfo
-
-func (m *Witness) GetSignatures() []*Signature {
-	if m != nil {
-		return m.Signatures
-	}
-	return nil
-}
-
-type Signature struct {
-	// Types that are valid to be assigned to Key:
-	//	*Signature_PrimaryPublicKey
-	//	*Signature_RecoveryPublicKey
-	Key                  isSignature_Key `protobuf_oneof:"Key"`
-	R                    []byte          `protobuf:"bytes,3,opt,name=R,proto3" json:"R,omitempty"`
-	S                    []byte          `protobuf:"bytes,4,opt,name=S,proto3" json:"S,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}        `json:"-"`
-	XXX_unrecognized     []byte          `json:"-"`
-	XXX_sizecache        int32           `json:"-"`
-}
-
-func (m *Signature) Reset()         { *m = Signature{} }
-func (m *Signature) String() string { return proto.CompactTextString(m) }
-func (*Signature) ProtoMessage()    {}
-func (*Signature) Descriptor() ([]byte, []int) {
-	return fileDescriptor_config_ad52dc8c721b377e, []int{2}
-}
-func (m *Signature) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_Signature.Unmarshal(m, b)
-}
-func (m *Signature) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_Signature.Marshal(b, m, deterministic)
-}
-func (dst *Signature) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Signature.Merge(dst, src)
-}
-func (m *Signature) XXX_Size() int {
-	return xxx_messageInfo_Signature.Size(m)
-}
-func (m *Signature) XXX_DiscardUnknown() {
-	xxx_messageInfo_Signature.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_Signature proto.InternalMessageInfo
-
-type isSignature_Key interface {
-	isSignature_Key()
-}
-
-type Signature_PrimaryPublicKey struct {
-	PrimaryPublicKey []byte `protobuf:"bytes,1,opt,name=PrimaryPublicKey,proto3,oneof"`
-}
-type Signature_RecoveryPublicKey struct {
-	RecoveryPublicKey []byte `protobuf:"bytes,2,opt,name=RecoveryPublicKey,proto3,oneof"`
-}
-
-func (*Signature_PrimaryPublicKey) isSignature_Key()  {}
-func (*Signature_RecoveryPublicKey) isSignature_Key() {}
-
-func (m *Signature) GetKey() isSignature_Key {
-	if m != nil {
-		return m.Key
-	}
-	return nil
-}
-
-func (m *Signature) GetPrimaryPublicKey() []byte {
-	if x, ok := m.GetKey().(*Signature_PrimaryPublicKey); ok {
-		return x.PrimaryPublicKey
-	}
-	return nil
-}
-
-func (m *Signature) GetRecoveryPublicKey() []byte {
-	if x, ok := m.GetKey().(*Signature_RecoveryPublicKey); ok {
-		return x.RecoveryPublicKey
-	}
-	return nil
-}
-
-func (m *Signature) GetR() []byte {
-	if m != nil {
-		return m.R
-	}
-	return nil
-}
-
-func (m *Signature) GetS() []byte {
-	if m != nil {
-		return m.S
-	}
-	return nil
-}
-
-// XXX_OneofFuncs is for the internal use of the proto package.
-func (*Signature) XXX_OneofFuncs() (func(msg proto.Message, b *proto.Buffer) error, func(msg proto.Message, tag, wire int, b *proto.Buffer) (bool, error), func(msg proto.Message) (n int), []interface{}) {
-	return _Signature_OneofMarshaler, _Signature_OneofUnmarshaler, _Signature_OneofSizer, []interface{}{
-		(*Signature_PrimaryPublicKey)(nil),
-		(*Signature_RecoveryPublicKey)(nil),
-	}
-}
-
-func _Signature_OneofMarshaler(msg proto.Message, b *proto.Buffer) error {
-	m := msg.(*Signature)
-	// Key
-	switch x := m.Key.(type) {
-	case *Signature_PrimaryPublicKey:
-		b.EncodeVarint(1<<3 | proto.WireBytes)
-		b.EncodeRawBytes(x.PrimaryPublicKey)
-	case *Signature_RecoveryPublicKey:
-		b.EncodeVarint(2<<3 | proto.WireBytes)
-		b.EncodeRawBytes(x.RecoveryPublicKey)
-	case nil:
-	default:
-		return fmt.Errorf("Signature.Key has unexpected type %T", x)
-	}
-	return nil
-}
-
-func _Signature_OneofUnmarshaler(msg proto.Message, tag, wire int, b *proto.Buffer) (bool, error) {
-	m := msg.(*Signature)
-	switch tag {
-	case 1: // Key.PrimaryPublicKey
-		if wire != proto.WireBytes {
-			return true, proto.ErrInternalBadWireType
-		}
-		x, err := b.DecodeRawBytes(true)
-		m.Key = &Signature_PrimaryPublicKey{x}
-		return true, err
-	case 2: // Key.RecoveryPublicKey
-		if wire != proto.WireBytes {
-			return true, proto.ErrInternalBadWireType
-		}
-		x, err := b.DecodeRawBytes(true)
-		m.Key = &Signature_RecoveryPublicKey{x}
-		return true, err
-	default:
-		return false, nil
-	}
-}
-
-func _Signature_OneofSizer(msg proto.Message) (n int) {
-	m := msg.(*Signature)
-	// Key
-	switch x := m.Key.(type) {
-	case *Signature_PrimaryPublicKey:
-		n += 1 // tag and wire
-		n += proto.SizeVarint(uint64(len(x.PrimaryPublicKey)))
-		n += len(x.PrimaryPublicKey)
-	case *Signature_RecoveryPublicKey:
-		n += 1 // tag and wire
-		n += proto.SizeVarint(uint64(len(x.RecoveryPublicKey)))
-		n += len(x.RecoveryPublicKey)
-	case nil:
-	default:
-		panic(fmt.Sprintf("proto: unexpected type %T in oneof", x))
-	}
-	return n
-}
-
+//
+// Config objects are user signed configuration files, creating Owners, Users, Wallets and more depending on the injected
+// handlers. Configs are always signed by the users, ordered through the Header.Increment field, and have multiple purposes.
+//
+// example:
+// config: {
+// Header: {
+// ApiVersion: "v0",
+// Kind: "UserSet",
+// Increment: 2,
+// }
+// Spec: {
+// {UserSet}
+// }
+//
+// Witness: {
+// {Witness}
+// }
+// }
+//
+// This config targets v0, provides a UserSet, and is the second configuration sent to the node. (the first one is OwnerSet).
+// If valid, this will create/alter a UserSet, creating/altering/deleting users in the set.
+//
+// Only if the set is valid and properly handled does the Increment increase.
 type Config struct {
 	Header               *Header  `protobuf:"bytes,1,opt,name=Header,proto3" json:"Header,omitempty"`
 	Witness              *Witness `protobuf:"bytes,2,opt,name=Witness,proto3" json:"Witness,omitempty"`
@@ -276,7 +57,7 @@ func (m *Config) Reset()         { *m = Config{} }
 func (m *Config) String() string { return proto.CompactTextString(m) }
 func (*Config) ProtoMessage()    {}
 func (*Config) Descriptor() ([]byte, []int) {
-	return fileDescriptor_config_ad52dc8c721b377e, []int{3}
+	return fileDescriptor_config_434f70d9b0a5004b, []int{0}
 }
 func (m *Config) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Config.Unmarshal(m, b)
@@ -318,36 +99,24 @@ func (m *Config) GetSpec() *any.Any {
 }
 
 func init() {
-	proto.RegisterType((*Header)(nil), "v0.Header")
-	proto.RegisterType((*Witness)(nil), "v0.Witness")
-	proto.RegisterType((*Signature)(nil), "v0.Signature")
 	proto.RegisterType((*Config)(nil), "v0.Config")
 }
 
-func init() { proto.RegisterFile("config.proto", fileDescriptor_config_ad52dc8c721b377e) }
+func init() { proto.RegisterFile("config.proto", fileDescriptor_config_434f70d9b0a5004b) }
 
-var fileDescriptor_config_ad52dc8c721b377e = []byte{
-	// 345 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x64, 0x91, 0xc1, 0x6a, 0xf2, 0x40,
-	0x14, 0x85, 0xff, 0x49, 0xa2, 0x3f, 0xde, 0xa4, 0x60, 0x87, 0x42, 0x53, 0x29, 0x45, 0xb2, 0x72,
-	0xd1, 0x8e, 0x36, 0xed, 0xa2, 0x5b, 0xed, 0xc6, 0xe2, 0x46, 0x26, 0xd0, 0x82, 0xbb, 0x18, 0xaf,
-	0x61, 0x40, 0x27, 0x32, 0x89, 0x81, 0xbc, 0x42, 0xe9, 0x4b, 0xf4, 0x35, 0xba, 0xea, 0xeb, 0xf4,
-	0x2d, 0x8a, 0x13, 0x93, 0x2a, 0xee, 0xe6, 0x7e, 0xe7, 0x5c, 0x38, 0x73, 0x2e, 0x38, 0x51, 0x22,
-	0x97, 0x22, 0x66, 0x1b, 0x95, 0x64, 0x09, 0x35, 0xf2, 0x41, 0xe7, 0x2a, 0x4e, 0x92, 0x78, 0x85,
-	0x7d, 0x4d, 0xe6, 0xdb, 0x65, 0x3f, 0x94, 0x45, 0x29, 0x77, 0x2e, 0xf3, 0x70, 0x25, 0x16, 0x61,
-	0x86, 0xfd, 0xea, 0x51, 0x0a, 0xde, 0x0c, 0x9a, 0x63, 0x0c, 0x17, 0xa8, 0xe8, 0x0d, 0xc0, 0x70,
-	0x23, 0x5e, 0x51, 0xa5, 0x22, 0x91, 0x2e, 0xe9, 0x92, 0x5e, 0x8b, 0x1f, 0x10, 0x4a, 0xc1, 0x9a,
-	0x08, 0xb9, 0x70, 0x0d, 0xad, 0xe8, 0x37, 0xbd, 0x86, 0xd6, 0x8b, 0x8c, 0x14, 0xae, 0x51, 0x66,
-	0xae, 0xd9, 0x25, 0xbd, 0x06, 0xff, 0x03, 0xde, 0x13, 0xfc, 0x7f, 0x13, 0x99, 0xc4, 0x34, 0xa5,
-	0x77, 0x00, 0x81, 0x88, 0x65, 0x98, 0x6d, 0x15, 0xa6, 0x2e, 0xe9, 0x9a, 0x3d, 0xdb, 0x3f, 0x63,
-	0xf9, 0x80, 0xd5, 0x94, 0x1f, 0x18, 0xbc, 0x0f, 0x02, 0xad, 0x7a, 0xa4, 0xb7, 0xd0, 0x9e, 0x2a,
-	0xb1, 0x0e, 0x55, 0x31, 0xdd, 0xce, 0x57, 0x22, 0x9a, 0x60, 0xa1, 0xf3, 0x39, 0xe3, 0x7f, 0xfc,
-	0x44, 0xa1, 0x0c, 0xce, 0x39, 0x46, 0x49, 0x8e, 0x87, 0x76, 0x63, 0x6f, 0x3f, 0x95, 0xa8, 0x03,
-	0x84, 0xeb, 0xec, 0x0e, 0x27, 0x7c, 0x37, 0x05, 0xae, 0x55, 0x4e, 0xc1, 0xa8, 0x01, 0xe6, 0x04,
-	0x0b, 0xef, 0x93, 0x40, 0xf3, 0x59, 0xb7, 0x4d, 0x59, 0xd5, 0x97, 0x4e, 0x60, 0xfb, 0xb0, 0xfb,
-	0x44, 0x49, 0x46, 0xf0, 0xf5, 0xf3, 0x6d, 0x36, 0xde, 0x89, 0xd1, 0x26, 0xbc, 0x6a, 0xf5, 0xbe,
-	0xee, 0x40, 0x67, 0xb0, 0x7d, 0x7b, 0xb7, 0xb0, 0x47, 0x47, 0x1b, 0x75, 0x57, 0x8f, 0x60, 0x05,
-	0x1b, 0x8c, 0x74, 0x0a, 0xdb, 0xbf, 0x60, 0xe5, 0x55, 0x59, 0x75, 0x55, 0x36, 0x94, 0xc5, 0xd1,
-	0xa2, 0x76, 0x8f, 0xac, 0x99, 0x91, 0x0f, 0xe6, 0x4d, 0xed, 0x7a, 0xf8, 0x0d, 0x00, 0x00, 0xff,
-	0xff, 0x76, 0x9a, 0x2d, 0x46, 0x1d, 0x02, 0x00, 0x00,
+var fileDescriptor_config_434f70d9b0a5004b = []byte{
+	// 205 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0xe2, 0x49, 0xce, 0xcf, 0x4b,
+	0xcb, 0x4c, 0xd7, 0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0x62, 0x2a, 0x33, 0x90, 0x92, 0x4c, 0xcf,
+	0xcf, 0x4f, 0xcf, 0x49, 0xd5, 0x07, 0x8b, 0x24, 0x95, 0xa6, 0xe9, 0x27, 0xe6, 0x55, 0x42, 0xa4,
+	0xa5, 0xc4, 0xcb, 0x12, 0x73, 0x32, 0x53, 0x12, 0x4b, 0x52, 0xf5, 0x61, 0x0c, 0xa8, 0x04, 0x4f,
+	0x46, 0x6a, 0x62, 0x4a, 0x6a, 0x11, 0x94, 0x27, 0x50, 0x9c, 0x99, 0x9e, 0x97, 0x58, 0x52, 0x5a,
+	0x94, 0x5a, 0x0c, 0x11, 0x51, 0x5a, 0xc8, 0xc8, 0xc5, 0xe6, 0x0c, 0xb6, 0x48, 0x48, 0x8f, 0x8b,
+	0xcd, 0x03, 0xac, 0x58, 0x82, 0x51, 0x81, 0x51, 0x83, 0xdb, 0x88, 0x4b, 0xaf, 0xcc, 0x40, 0x0f,
+	0x22, 0xe2, 0xc4, 0xb5, 0xeb, 0xe5, 0x01, 0x66, 0xd6, 0x2e, 0x46, 0x26, 0x01, 0xc6, 0x20, 0xa8,
+	0x2a, 0x21, 0x43, 0x2e, 0xf6, 0xf0, 0xcc, 0x92, 0xbc, 0xd4, 0xe2, 0x62, 0x09, 0x26, 0xb0, 0x06,
+	0x6e, 0x90, 0x06, 0xa8, 0x10, 0x8a, 0x0e, 0x98, 0x3a, 0x21, 0x13, 0x2e, 0x96, 0xe0, 0x82, 0xd4,
+	0x64, 0x09, 0x16, 0xb0, 0x7a, 0x11, 0x3d, 0x88, 0x87, 0xf4, 0x60, 0x1e, 0xd2, 0x73, 0xcc, 0xab,
+	0x44, 0xd1, 0x08, 0x56, 0xed, 0xc4, 0x12, 0xc5, 0x54, 0x66, 0x90, 0xc4, 0x06, 0x56, 0x65, 0x0c,
+	0x08, 0x00, 0x00, 0xff, 0xff, 0xaf, 0x69, 0x17, 0x3e, 0x18, 0x01, 0x00, 0x00,
 }

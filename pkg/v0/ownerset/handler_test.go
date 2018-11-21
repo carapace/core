@@ -9,10 +9,6 @@ import (
 
 	"github.com/carapace/core/core"
 	"github.com/carapace/core/pkg/v0"
-	"github.com/golang/protobuf/proto"
-
-	"github.com/golang/protobuf/ptypes"
-	"github.com/golang/protobuf/ptypes/any"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
@@ -21,14 +17,6 @@ import (
 
 	coreMock "github.com/carapace/core/core/mocks"
 )
-
-// genAny is used to ignore the error return of marshal.Any when declaring test
-// cases
-func genAny(t *testing.T, spec proto.Message) *any.Any {
-	a, err := ptypes.MarshalAny(spec)
-	require.NoError(t, err)
-	return a
-}
 
 func TestHandler_Handle(t *testing.T) {
 	mockCtrl := gomock.NewController(t)
@@ -96,20 +84,21 @@ func TestHandler_processNewOwners(t *testing.T) {
 	}
 
 	tcs := []struct {
-		config *v0.Config
+		config *v0.OwnerSet
 
 		err      error
 		response *v0.Response
 		desc     string
 	}{
 		{
-			config: &v0.Config{
-				Witness: &v0.Witness{Signatures: []*v0.Signature{{Key: &v0.Signature_PrimaryPublicKey{[]byte("correct key")}}}},
-				Spec: genAny(t, &v0.OwnerSet{Owners: []*v0.User{
+			config: &v0.OwnerSet{
+				Owners: []*v0.User{
 					{
 						PrimaryPublicKey:  []byte("correct key"),
 						RecoveryPublicKey: []byte("second correct key"),
-						Name:              "Jaap"}}})},
+						Name:              "Jaap"},
+				},
+			},
 			err:      nil,
 			response: &v0.Response{Code: v0.Code_OK, MSG: "Correctly altered ownerSet"},
 			desc:     "marshalable obj should return no err",
@@ -119,8 +108,8 @@ func TestHandler_processNewOwners(t *testing.T) {
 	for _, tc := range tcs {
 		tx, err := handler.store.Begin()
 		require.NoError(t, err)
-		res, err := handler.processNewOwners(context.Background(), tc.config, tx)
-		if err != nil {
+		res, err := handler.alterExisting(context.Background(), tc.config, tx)
+		if tc.err != nil {
 			assert.EqualError(t, err, tc.err.Error(), tc.desc)
 		} else {
 			require.NoError(t, err, tc.desc)
@@ -146,21 +135,21 @@ func TestHandler_createNewOwners(t *testing.T) {
 	}
 
 	tcs := []struct {
-		config *v0.Config
+		config *v0.OwnerSet
 
 		err      error
 		response *v0.Response
 		desc     string
 	}{
 		{
-			config: &v0.Config{
-				Witness: &v0.Witness{Signatures: []*v0.Signature{{Key: &v0.Signature_PrimaryPublicKey{[]byte("correct key")}}}},
-				Spec: genAny(t, &v0.OwnerSet{Owners: []*v0.User{{
+			config: &v0.OwnerSet{
+				Owners: []*v0.User{{
 					PrimaryPublicKey:  []byte("correct key"),
 					RecoveryPublicKey: []byte("second correct key"),
 					Name:              "Jaap",
 				},
-				}})},
+				},
+			},
 			err:      nil,
 			response: &v0.Response{Code: v0.Code_OK, MSG: "correctly created ownerSet"},
 			desc:     "marshalable obj should return no err",

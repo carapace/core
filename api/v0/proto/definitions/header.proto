@@ -1,0 +1,29 @@
+syntax = "proto3";
+package v0;
+option go_package = "v0";
+
+import "validate/validate.proto";
+
+/*
+A Header contains routing and state data on a configuration file.
+
+Both ApiVersion and Kind are used by the router to find the correct handler. Increment
+is used as a protection against replay attacks. This means that for all configuration files, each has
+an increment exactly 1 greater than the last.
+
+example:
+
+ header: {
+    ApiVersion: "v0Alpha",  // a versioned API
+    Kind: "WalletSet",      // WalletSets might be found in multiple ApiVersions as well
+    Increment: 14,          // in total 13 other configuration files have been processed before this one.
+    }
+*/
+message Header {
+    string ApiVersion = 1 [(validate.rules).string = {
+                                min_len: 2, // ApiVersion must contain two characters, e.g. v0.
+                          pattern: "^v", // ApiVersions must start with character v
+                          }];
+    string Kind = 2 [(validate.rules).string.min_len = 1]; // Kind must be set, which means a min_len of 1.
+    int32 Increment = 3 [(validate.rules).int32.gt = 0];
+}

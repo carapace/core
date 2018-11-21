@@ -2,6 +2,8 @@ syntax = "proto3";
 package v0;
 option go_package = "v0";
 
+import "validate/validate.proto";
+
 enum Code {
     CodeUnknown = 0;
     OK = 200;
@@ -13,7 +15,12 @@ enum Code {
 }
 
 message Response {
-    Code Code = 1;
-    string MSG = 2;
-    string Err = 3;
+    Code Code = 1  [(validate.rules).enum = {
+                        defined_only: true,     // of course we only accept defined enums.
+                        not_in: [0], // CodeUnknown is saved for overflows.
+}
+]
+;
+stringMSG=2;
+stringErr=3;
 }

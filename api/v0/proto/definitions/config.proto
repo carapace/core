@@ -4,28 +4,34 @@ option go_package = "v0";
 
 import "google/protobuf/any.proto";
 import "validate/validate.proto";
+import "header.proto";
+import "signatures.proto";
 
+/*
+Config objects are user signed configuration files, creating Owners, Users, Wallets and more depending on the injected
+handlers. Configs are always signed by the users, ordered through the Header.Increment field, and have multiple purposes.
 
-message Header {
-    string ApiVersion = 1;
-    string Kind = 2;
-    int32 Increment = 3;
-}
+    example:
+        config: {
+            Header: {
+                    ApiVersion: "v0",
+                    Kind: "UserSet",
+                    Increment: 2,
+                }
+            Spec: {
+                {UserSet}
+                }
 
-message Witness {
-    repeated Signature Signatures = 1;
+            Witness: {
+                {Witness}
+                }
+            }
 
-}
+    This config targets v0, provides a UserSet, and is the second configuration sent to the node. (the first one is OwnerSet).
+    If valid, this will create/alter a UserSet, creating/altering/deleting users in the set.
 
-message Signature {
-    oneof Key {
-        bytes PrimaryPublicKey = 1;
-        bytes RecoveryPublicKey = 2;
-    }
-    bytes R = 3;
-    bytes S = 4;
-}
-
+    Only if the set is valid and properly handled does the Increment increase.
+*/
 message Config {
     Header Header = 1 [(validate.rules).message.required = true];
     Witness Witness = 2 [(validate.rules).message.required = true];

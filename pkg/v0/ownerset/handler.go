@@ -70,12 +70,12 @@ func (h *Handler) ConfigService(ctx context.Context, config *v0.Config, tx *sql.
 	}
 
 	if have {
-		return h.processNewOwners(ctx, set, tx)
+		return h.alterExisting(ctx, set, tx)
 	}
 	return h.createNewOwners(ctx, set, tx)
 }
 
-func (h *Handler) processNewOwners(ctx context.Context, set *v0.OwnerSet, tx *sql.Tx) (*v0.Response, error) {
+func (h *Handler) alterExisting(ctx context.Context, set *v0.OwnerSet, tx *sql.Tx) (*v0.Response, error) {
 	currentSet, err := h.store.Sets.OwnerSet.Get(tx)
 	if err != nil {
 		return nil, err
@@ -102,5 +102,5 @@ func (h *Handler) createNewOwners(ctx context.Context, set *v0.OwnerSet, tx *sql
 			return nil, err
 		}
 	}
-	return v0_handler.WriteSuccess("correctly created ownerSet"), errors.Wrapf(tx.Commit(), "OwnerSet handler.createNewOwners")
+	return response.OK("correctly created ownerSet"), errors.Wrapf(tx.Commit(), "OwnerSet handler.createNewOwners")
 }

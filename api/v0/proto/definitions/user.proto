@@ -2,20 +2,20 @@ syntax = "proto3";
 package v0;
 option go_package = "v0";
 
+import "validate/validate.proto";
+
+/*
+The base user model
+*/
 message User {
-    string Name = 1;
-    string Email = 2;
-    bytes PrimaryPublicKey = 3;
-    bytes RecoveryPublicKey = 4;
+    string Name = 1 [(validate.rules).string.min_len = 1]; // A user must have a name
+    string Email = 2 [(validate.rules).string.email = true];
+    bytes PrimaryPublicKey = 3 [(validate.rules).bytes.min_len = 1]; // A user must have a PrimaryPublicKey.
+    bytes RecoveryPublicKey = 4 [(validate.rules).bytes.min_len = 1]; // A user must have a RecoveryPublicKey.
     int32 AuthLevel = 5;
+    int32 Weight = 7 [(validate.rules).int32.gt = 0]; // A SuperUser must be able to contribute in in root operations
 
-    bool SuperUser = 6;
-    int32 Weight = 7;
-
-    string Set = 8;
+    bool SuperUser = 6 [(validate.rules).bool.const = false]; // SuperUser status is granted if the user is created through an OwnerSet
+    string Set = 8 [(validate.rules).string.max_len = 0]; // Set is obtained from the UserSet/OwnerSet object
 }
 
-message UserSet {
-    string Set = 1;
-    repeated User Users = 2;
-}

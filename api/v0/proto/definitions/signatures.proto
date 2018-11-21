@@ -1,0 +1,40 @@
+syntax = "proto3";
+package v0;
+option go_package = "v0";
+
+import "validate/validate.proto";
+
+/*
+    Witness contains the signatures by approving users. ECDSA is used to sign the entire message; excluding the signature
+    field, which should be set to its null value.
+
+    The signing protocol goes as follows:
+
+        1. A keypair is generated from a user provided seed.
+        2. The config's witness field is set to it's nill state (using the Reset() method of Witness)
+        3. The config is serialized to a byte array using the protobuf generated serialization.
+        4. ECDSA is used to sign the message.
+        5. The public key, signature.R and signature.S are appended to the witness field (possibly with previous signatures)
+
+    A RecoveryPublicKey may be used by certain sets, mainly for account resetting purposes.
+*/
+message Witness {
+    repeated Signature Signatures = 1 [(validate.rules).repeated.min_items = 1];
+}
+
+/*
+A signature consists of:
+        1. either the PrimaryPublicKey (used for regular operations)
+            or RecoveryPublicKey (used for account recovery)
+        2. The R and S of the ECDSA signature as byte arrays.
+*/
+message Signature {
+    oneof Key {
+        option (validate.required) = true; // one of the keys is required
+
+        bytes PrimaryPublicKey = 1;
+        bytes RecoveryPublicKey = 2;
+    }
+    bytes R = 3 [(validate.rules).bytes.min_len = 1]; // R must be set.
+    bytes S = 4 [(validate.rules).bytes.min_len = 1]; // S must be set.
+}
