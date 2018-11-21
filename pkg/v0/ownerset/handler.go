@@ -3,6 +3,7 @@ package ownerset
 import (
 	"context"
 	"database/sql"
+	"github.com/carapace/core/pkg/responses"
 	"sync"
 
 	"github.com/carapace/core/api/v0/proto"
@@ -39,15 +40,28 @@ func New(authz core.Authorizer, store *core.Store) *Handler {
 }
 
 func (h *Handler) ConfigService(ctx context.Context, config *v0.Config, tx *sql.Tx) (*v0.Response, error) {
-
 	// Since owners are a unique set in the node, we don't want to have some race condition
 	// where two different new ownerSets are concurrently processed. This is mainly a
 	// sanity check.
 	h.mu.Lock()
 	defer h.mu.Unlock()
 
+	// handling functions should commit the TX; so the error of this defer is ignored.
+	defer tx.Rollback()
+
 	if config.Header.Kind != OwnerSet {
 		return nil, v0_handler.ErrIncorrectKind
+	}
+
+	set := &v0.OwnerSet{}
+	err := ptypes.UnmarshalAny(config.Spec, set)
+	if err != nil {
+		return nil, err
+	}
+
+	err = set.Validate()
+	if err != nil {
+		return response.ValidationErr(err), nil
 	}
 
 	have, err := h.authz.HaveOwners()
@@ -56,35 +70,28 @@ func (h *Handler) ConfigService(ctx context.Context, config *v0.Config, tx *sql.
 	}
 
 	if have {
-		return h.processNewOwners(ctx, config, tx)
+		return h.processNewOwners(ctx, set, tx)
 	}
-	return h.createNewOwners(ctx, config, tx)
+	return h.createNewOwners(ctx, set, tx)
 }
 
-func (h *Handler) processNewOwners(ctx context.Context, config *v0.Config, tx *sql.Tx) (*v0.Response, error) {
-
-	set := &v0.OwnerSet{}
-	err := ptypes.UnmarshalAny(config.Spec, set)
+func (h *Handler) processNewOwners(ctx context.Context, set *v0.OwnerSet, tx *sql.Tx) (*v0.Response, error) {
+	currentSet, err := h.store.Sets.OwnerSet.Get(tx)
 	if err != nil {
 		return nil, err
 	}
 
-	err = h.store.Sets.OwnerSet.Put(tx, set)
-	if err != nil {
-		return nil, err
+	for _, owner := range currentSet.Owners {
+		err = h.store.Users.Delete(tx, *owner)
+		if err != nil {
+			return nil, err
+		}
 	}
-
-	return v0_handler.WriteSuccess("correctly altered ownerSet"), errors.Wrapf(tx.Commit(), "OwnerSet handler.processNewOwners")
+	return h.createNewOwners(ctx, set, tx)
 }
 
-func (h *Handler) createNewOwners(ctx context.Context, config *v0.Config, tx *sql.Tx) (*v0.Response, error) {
-	set := &v0.OwnerSet{}
-	err := ptypes.UnmarshalAny(config.Spec, set)
-	if err != nil {
-		return nil, err
-	}
-
-	err = h.store.Sets.OwnerSet.Put(tx, set)
+func (h *Handler) createNewOwners(ctx context.Context, set *v0.OwnerSet, tx *sql.Tx) (*v0.Response, error) {
+	err := h.store.Sets.OwnerSet.Put(tx, set)
 	if err != nil {
 		return nil, err
 	}

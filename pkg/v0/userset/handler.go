@@ -32,6 +32,11 @@ func (h *Handler) ConfigService(ctx context.Context, config *v0.Config, tx *sql.
 		return nil, err
 	}
 
+	err = set.Validate()
+	if err != nil {
+		return response.ValidationErr(err), nil
+	}
+
 	err = h.store.Sets.UserSet.Put(tx, &set)
 	if err != nil {
 		return nil, err

@@ -24,6 +24,7 @@ require (
 	github.com/jinzhu/copier v0.0.0-20180308034124-7e38e58719c3
 	github.com/jinzhu/gorm v1.9.1
 	github.com/lib/pq v1.0.0
+	github.com/lyft/protoc-gen-validate v0.0.11
 	github.com/magiconair/properties v1.8.0
 	github.com/mattn/go-sqlite3 v1.10.0
 	github.com/mitchellh/hashstructure v1.0.0
