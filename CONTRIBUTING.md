@@ -7,7 +7,7 @@ sign the license. Use a key which is registered with your github account to sign
 Pull requests are only evaluated if automated checks pass, this means that your code should be:
 
     1. Properly formatted using goimports
-    2. Pass the linter suite (we use golangcii)
+    2. Pass the linter suite (we use golangci-lint)
     3. Pass automated tests
 
 Your addition will be evaluated on style, overall quality and extension of the testsuite.
