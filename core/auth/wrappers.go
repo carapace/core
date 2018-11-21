@@ -136,7 +136,7 @@ func (auth *Manager) RootOrBackupOrNoOwners(service core.APIService) core.APISer
 //  7. the sum of the signees AuthLevel > minLevel
 //
 // This function will panic during startup if it is not properly configured.
-func (auth *Manager) RegularAuth(minLevel int32, minSignees uint8, maxSignees uint8, service core.APIService) func() core.APIService {
+func (auth *Manager) RegularAuth(minLevel int32, minSignees uint8, maxSignees uint8, service core.APIService) core.APIService {
 
 	// this code is evaluated on startup, not during authentication
 	if minLevel < 0 {
@@ -151,57 +151,56 @@ func (auth *Manager) RegularAuth(minLevel int32, minSignees uint8, maxSignees ui
 		panic("auth.Wrapper: RegularAuth: maxSignees must be gte 0")
 	}
 
-	return func() core.APIService {
-		return &wrapped{
-			infoService: service.InfoService,
-			configService: func(ctx context.Context, config *v0.Config, tx *sql.Tx) (*v0.Response, error) {
+	return &wrapped{
+		infoService: service.InfoService,
+		configService: func(ctx context.Context, config *v0.Config, tx *sql.Tx) (*v0.Response, error) {
 
-				if uint8(len(config.Witness.Signatures)) < minSignees {
-					return response.MSG(
-						v0.Code_BadRequest,
-						fmt.Sprintf("at least %v signees are needed for this operation", minSignees)), nil
-				}
+			if uint8(len(config.Witness.Signatures)) < minSignees {
+				return response.MSG(
+					v0.Code_BadRequest,
+					fmt.Sprintf("at least %v signees are needed for this operation", minSignees)), nil
+			}
 
-				if uint8(len(config.Witness.Signatures)) > maxSignees {
-					return response.MSG(
-						v0.Code_BadRequest,
-						fmt.Sprintf("no more than %v signees may be used for this operation", minSignees)), nil
-				}
+			if uint8(len(config.Witness.Signatures)) > maxSignees {
+				return response.MSG(
+					v0.Code_BadRequest,
+					fmt.Sprintf("no more than %v signees may be used for this operation", minSignees)), nil
+			}
 
-				ok, wrongSig, err := auth.Check(config)
+			ok, wrongSig, err := auth.Check(config)
+			if err != nil {
+				return response.MSG(v0.Code_BadRequest, err.Error()), nil
+			}
+
+			if !ok {
+				return response.MSG(v0.Code_BadRequest, fmt.Sprintf("incorrect signature for: %s", wrongSig)), nil
+			}
+
+			have, err := auth.HaveOwners()
+			if err != nil {
+				return nil, err
+			}
+
+			if !have {
+				return response.MSG(v0.Code_NotImplemented, "An OwnerSet must first be provided"), nil
+			}
+
+			// compute the total auth level
+			var totalAuthLevel int32
+			for _, user := range config.Witness.Signatures {
+				user, err := auth.Store.Users.Get(tx, user.GetPrimaryPublicKey())
 				if err != nil {
-					return response.MSG(v0.Code_BadRequest, err.Error()), nil
+					return response.Err(err), nil
 				}
-
-				if !ok {
-					return response.MSG(v0.Code_BadRequest, fmt.Sprintf("incorrect signature for: %s", wrongSig)), nil
-				}
-
-				have, err := auth.HaveOwners()
-				if err != nil {
-					return nil, err
-				}
-
-				if !have {
-					return response.MSG(v0.Code_NotImplemented, "An OwnerSet must first be provided"), nil
-				}
-
-				// compute the total auth level
-				var totalAuthLevel int32
-				for _, user := range config.Witness.Signatures {
-					user, err := auth.Store.Users.Get(tx, user.GetPrimaryPublicKey())
-					if err != nil {
-						return response.Err(err), nil
-					}
-					totalAuthLevel += user.AuthLevel
-				}
-				if totalAuthLevel < minLevel {
-					return response.MSG(
-						v0.Code_BadRequest,
-						fmt.Sprintf("the minimum combined AuthLevel required for this operation is %v", minLevel)), nil
-				}
-				return service.ConfigService(ctx, config, tx)
-			},
-		}
+				totalAuthLevel += user.AuthLevel
+			}
+			if totalAuthLevel < minLevel {
+				return response.MSG(
+					v0.Code_BadRequest,
+					fmt.Sprintf("the minimum combined AuthLevel required for this operation is %v", minLevel)), nil
+			}
+			return service.ConfigService(ctx, config, tx)
+		},
 	}
+
 }

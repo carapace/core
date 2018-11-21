@@ -43,7 +43,7 @@ func (s *Suite) NewCore(t *testing.T, rootDir string) (*core.App, func()) {
 
 	app.Router.Register(
 		authManager.RootOrBackupOrNoOwners(ownerset.New(authManager, store)),
-		authManager.RegularAuth(1, 1, 1, userset.New(store))(),
+		authManager.RegularAuth(1, 1, 1, userset.New(store)),
 	)
 
 	return app, func() {
