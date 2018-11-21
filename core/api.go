@@ -37,7 +37,7 @@ func (a *App) ConfigService(ctx context.Context, config *v0.Config) (res *v0.Res
 	if err != nil {
 		panic(err)
 	}
-	defer tx.Rollback()
+	defer tx.Rollback() // rollback silently fails, unless a handler forgets to rollback or commit.
 
 	err = a.Store.Sets.Config.Add(tx, config)
 	if err != nil {
