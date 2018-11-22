@@ -3,6 +3,8 @@ package ownerset
 import (
 	"context"
 	"github.com/carapace/core/pkg/suite"
+	"github.com/golang/protobuf/ptypes"
+	"github.com/golang/protobuf/ptypes/any"
 	"github.com/pkg/errors"
 	"sync"
 	"testing"
@@ -39,14 +41,48 @@ func TestHandler_Handle(t *testing.T) {
 		desc     string
 	}{
 		{
-			config:   &v0.Config{Header: &v0.Header{Kind: "incorrectSet"}},
+			config: &v0.Config{
+				Header: &v0.Header{
+					Kind: "incorrectSet"},
+				Spec: func() *any.Any {
+					set := &v0.OwnerSet{
+						Quorum: 1,
+						Owners: []*v0.User{{
+							Name:              "Karel",
+							Email:             "k.l.kubat@gmail.com",
+							PrimaryPublicKey:  []byte("123"),
+							RecoveryPublicKey: []byte("321")},
+						},
+					}
+					a, err := ptypes.MarshalAny(set)
+					require.NoError(t, err)
+					return a
+				}(),
+			},
 			err:      v0_handler.ErrIncorrectKind,
 			response: nil,
 			desc:     "incorrect kind should return v0_handler.ErrIncorrectKind",
 		},
 		{
-			config: &v0.Config{Header: &v0.Header{Kind: OwnerSet}},
-			err:    errors.New("err"),
+			config: &v0.Config{
+				Header: &v0.Header{
+					Kind: OwnerSet},
+				Spec: func() *any.Any {
+					set := &v0.OwnerSet{
+						Quorum: 1,
+						Owners: []*v0.User{{
+							Name:              "Karel",
+							Email:             "k.l.kubat@gmail.com",
+							PrimaryPublicKey:  []byte("123"),
+							RecoveryPublicKey: []byte("321")},
+						},
+					}
+					a, err := ptypes.MarshalAny(set)
+					require.NoError(t, err)
+					return a
+				}(),
+			},
+			err: errors.New("err"),
 			prep: []*gomock.Call{
 				authz.EXPECT().HaveOwners().Return(false, errors.New("err")).Times(1),
 			},

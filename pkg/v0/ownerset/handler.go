@@ -97,6 +97,7 @@ func (h *Handler) createNewOwners(ctx context.Context, set *v0.OwnerSet, tx *sql
 	}
 
 	for _, user := range set.Owners {
+		user.SuperUser = true
 		err = h.store.Users.Create(tx, *user)
 		if err != nil {
 			return nil, err
