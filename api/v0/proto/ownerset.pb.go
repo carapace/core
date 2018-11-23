@@ -20,6 +20,11 @@ var _ = math.Inf
 const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
 
 //
+// OwnerSets define the root owners of a node. The first config file sent to a fresh node must be the OwnerSet, which is
+// used as a fail safe and required for further configurations.
+//
+// Quorum defines the minimum amount of weight needed to perform a root operation. (Each user has a weight attribute)
+//
 //
 type OwnerSet struct {
 	Quorum               int32    `protobuf:"varint,1,opt,name=Quorum,proto3" json:"Quorum,omitempty"`
@@ -33,7 +38,7 @@ func (m *OwnerSet) Reset()         { *m = OwnerSet{} }
 func (m *OwnerSet) String() string { return proto.CompactTextString(m) }
 func (*OwnerSet) ProtoMessage()    {}
 func (*OwnerSet) Descriptor() ([]byte, []int) {
-	return fileDescriptor_ownerset_386ef11390ed770e, []int{0}
+	return fileDescriptor_ownerset_7bd3dbaa81aef882, []int{0}
 }
 func (m *OwnerSet) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_OwnerSet.Unmarshal(m, b)
@@ -71,9 +76,9 @@ func init() {
 	proto.RegisterType((*OwnerSet)(nil), "v0.OwnerSet")
 }
 
-func init() { proto.RegisterFile("ownerset.proto", fileDescriptor_ownerset_386ef11390ed770e) }
+func init() { proto.RegisterFile("ownerset.proto", fileDescriptor_ownerset_7bd3dbaa81aef882) }
 
-var fileDescriptor_ownerset_386ef11390ed770e = []byte{
+var fileDescriptor_ownerset_7bd3dbaa81aef882 = []byte{
 	// 154 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0xe2, 0xcb, 0x2f, 0xcf, 0x4b,
 	0x2d, 0x2a, 0x4e, 0x2d, 0xd1, 0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0x62, 0x2a, 0x33, 0x90, 0xe2,

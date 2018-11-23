@@ -46,16 +46,17 @@ func (mr *MockUserStoreMockRecorder) Alter(arg0, arg1 interface{}) *gomock.Call 
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Alter", reflect.TypeOf((*MockUserStore)(nil).Alter), arg0, arg1)
 }
 
-// AlterOrCreate mocks base method
-func (m *MockUserStore) AlterOrCreate(arg0, arg1 proto.User) error {
-	ret := m.ctrl.Call(m, "AlterOrCreate", arg0, arg1)
-	ret0, _ := ret[0].(error)
-	return ret0
+// BySet mocks base method
+func (m *MockUserStore) BySet(arg0 *sql.Tx, arg1 string) ([]*proto.User, error) {
+	ret := m.ctrl.Call(m, "BySet", arg0, arg1)
+	ret0, _ := ret[0].([]*proto.User)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
-// AlterOrCreate indicates an expected call of AlterOrCreate
-func (mr *MockUserStoreMockRecorder) AlterOrCreate(arg0, arg1 interface{}) *gomock.Call {
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AlterOrCreate", reflect.TypeOf((*MockUserStore)(nil).AlterOrCreate), arg0, arg1)
+// BySet indicates an expected call of BySet
+func (mr *MockUserStoreMockRecorder) BySet(arg0, arg1 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "BySet", reflect.TypeOf((*MockUserStore)(nil).BySet), arg0, arg1)
 }
 
 // Create mocks base method
@@ -71,7 +72,7 @@ func (mr *MockUserStoreMockRecorder) Create(arg0, arg1 interface{}) *gomock.Call
 }
 
 // Delete mocks base method
-func (m *MockUserStore) Delete(arg0 *sql.Tx, arg1 string) error {
+func (m *MockUserStore) Delete(arg0 *sql.Tx, arg1 proto.User) error {
 	ret := m.ctrl.Call(m, "Delete", arg0, arg1)
 	ret0, _ := ret[0].(error)
 	return ret0
@@ -83,7 +84,7 @@ func (mr *MockUserStoreMockRecorder) Delete(arg0, arg1 interface{}) *gomock.Call
 }
 
 // Get mocks base method
-func (m *MockUserStore) Get(arg0 *sql.Tx, arg1 string) (*proto.User, error) {
+func (m *MockUserStore) Get(arg0 *sql.Tx, arg1 []byte) (*proto.User, error) {
 	ret := m.ctrl.Call(m, "Get", arg0, arg1)
 	ret0, _ := ret[0].(*proto.User)
 	ret1, _ := ret[1].(error)

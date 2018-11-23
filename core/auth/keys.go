@@ -1,4 +1,4 @@
-//go:generate mockgen -destination=mocks/keymarshaller_mock.go -package=mock github.com/carapace/core/pkg/v0/auth KeyMarshaller
+//go:generate mockgen -destination=mocks/keymarshaller_mock.go -package=mock github.com/carapace/core/core/auth KeyMarshaller
 
 package auth
 

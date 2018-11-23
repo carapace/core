@@ -43,5 +43,6 @@ require (
 	go.uber.org/zap v1.9.1
 	golang.org/x/net v0.0.0-20181114220301-adae6a3d119a
 	google.golang.org/grpc v1.16.0
+	gopkg.in/DATA-DOG/go-sqlmock.v1 v1.3.0
 	gotest.tools v2.2.0+incompatible // indirect
 )

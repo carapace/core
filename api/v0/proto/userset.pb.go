@@ -19,6 +19,10 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
 
+//
+// A UserSet is used to create new users grouped under a namespace (Set)
+//
+// The signee of the UserSet must have a higher AuthLevel than the highest user in the set.
 type UserSet struct {
 	Set                  string   `protobuf:"bytes,1,opt,name=Set,proto3" json:"Set,omitempty"`
 	Users                []*User  `protobuf:"bytes,2,rep,name=Users,proto3" json:"Users,omitempty"`
@@ -31,7 +35,7 @@ func (m *UserSet) Reset()         { *m = UserSet{} }
 func (m *UserSet) String() string { return proto.CompactTextString(m) }
 func (*UserSet) ProtoMessage()    {}
 func (*UserSet) Descriptor() ([]byte, []int) {
-	return fileDescriptor_userset_f0ad0d76898e8a9b, []int{0}
+	return fileDescriptor_userset_32223eede0af4391, []int{0}
 }
 func (m *UserSet) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_UserSet.Unmarshal(m, b)
@@ -69,9 +73,9 @@ func init() {
 	proto.RegisterType((*UserSet)(nil), "v0.UserSet")
 }
 
-func init() { proto.RegisterFile("userset.proto", fileDescriptor_userset_f0ad0d76898e8a9b) }
+func init() { proto.RegisterFile("userset.proto", fileDescriptor_userset_32223eede0af4391) }
 
-var fileDescriptor_userset_f0ad0d76898e8a9b = []byte{
+var fileDescriptor_userset_32223eede0af4391 = []byte{
 	// 147 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0xe2, 0x2d, 0x2d, 0x4e, 0x2d,
 	0x2a, 0x4e, 0x2d, 0xd1, 0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0x62, 0x2a, 0x33, 0x90, 0xe2, 0x02,

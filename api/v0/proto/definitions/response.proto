@@ -21,6 +21,14 @@ message Response {
 }
 ]
 ;
-stringMSG=2;
-stringErr=3;
+string
+MSG
+=
+2
+;
+string
+Err
+=
+3
+;
 }

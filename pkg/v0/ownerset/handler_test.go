@@ -17,30 +17,30 @@ import (
 	"github.com/carapace/core/api/v0/proto"
 	"github.com/golang/mock/gomock"
 
-	coreMock "github.com/carapace/core/core/mocks"
+	"github.com/carapace/core/core/mocks"
 )
 
 func TestHandler_Handle(t *testing.T) {
-	mockCtrl := gomock.NewController(t)
-	defer mockCtrl.Finish()
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
 
-	db, cleanup := test.Sqlite3(t)
+	store, sCtrl, cleanup := mock.NewStoreMock(t, ctrl)
 	defer cleanup()
 
-	s, err := core.NewStore(db)
-	require.NoError(t, err)
-	authz := coreMock.NewMockAuthorizer(mockCtrl)
-	handler := New(authz, s)
+	authz := mock.NewMockAuthorizer(ctrl)
+	handler := New(authz, store)
 
 	tcs := []struct {
-		config *v0.Config
-		prep   []*gomock.Call
-
+		config   *v0.Config
+		prep     []*gomock.Call
 		err      error
 		response *v0.Response
 		desc     string
 	}{
 		{
+			prep: []*gomock.Call{
+				// no prep, should fail during one of the first few lines
+			},
 			config: &v0.Config{
 				Header: &v0.Header{
 					Kind: "incorrectSet"},
@@ -92,8 +92,10 @@ func TestHandler_Handle(t *testing.T) {
 	}
 
 	for _, tc := range tcs {
-		tx, err := handler.store.Begin()
+		sCtrl.DB.ExpectBegin()
+		tx, err := store.Begin()
 		require.NoError(t, err)
+
 		res, err := handler.ConfigService(context.Background(), tc.config, tx)
 		if err != nil {
 			assert.EqualError(t, err, tc.err.Error(), tc.desc)
@@ -105,21 +107,19 @@ func TestHandler_Handle(t *testing.T) {
 }
 
 func TestHandler_processNewOwners(t *testing.T) {
-	mockCtrl := gomock.NewController(t)
-	defer mockCtrl.Finish()
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
 
-	db, cleanup := test.Sqlite3(t)
+	store, sCtrl, cleanup := mock.NewStoreMock(t, ctrl)
 	defer cleanup()
 
-	s, err := core.NewStore(db)
-	require.NoError(t, err)
-
 	handler := Handler{
-		store: s,
+		store: store,
 		mu:    &sync.RWMutex{},
 	}
 
 	tcs := []struct {
+		prep   []*gomock.Call
 		config *v0.OwnerSet
 
 		err      error
@@ -127,6 +127,22 @@ func TestHandler_processNewOwners(t *testing.T) {
 		desc     string
 	}{
 		{
+			prep: []*gomock.Call{
+				sCtrl.Sets.OwnerSet.EXPECT().Get(gomock.Any()).Return(&v0.OwnerSet{
+					Owners: []*v0.User{
+						{PrimaryPublicKey: []byte("key")},
+					},
+				}, nil),
+				sCtrl.Users.EXPECT().Delete(gomock.Any(), v0.User{
+					PrimaryPublicKey: []byte("key"),
+				}).Return(nil),
+				sCtrl.Sets.OwnerSet.EXPECT().Put(gomock.Any(), gomock.Any()).Return(nil),
+				sCtrl.Users.EXPECT().Create(gomock.Any(), v0.User{
+					PrimaryPublicKey:  []byte("correct key"),
+					RecoveryPublicKey: []byte("second correct key"),
+					Name:              "Jaap",
+					SuperUser:         true}).Return(nil),
+			},
 			config: &v0.OwnerSet{
 				Owners: []*v0.User{
 					{
@@ -142,6 +158,12 @@ func TestHandler_processNewOwners(t *testing.T) {
 	}
 
 	for _, tc := range tcs {
+		sCtrl.DB.ExpectBegin()
+
+		if tc.err == nil {
+			sCtrl.DB.ExpectCommit()
+		}
+
 		tx, err := handler.store.Begin()
 		require.NoError(t, err)
 		res, err := handler.alterExisting(context.Background(), tc.config, tx)
@@ -202,6 +224,5 @@ func TestHandler_createNewOwners(t *testing.T) {
 			require.NoError(t, err, tc.desc)
 		}
 		assert.Equal(t, tc.response.Code, res.Code, tc.desc)
-		break
 	}
 }

@@ -7,4 +7,5 @@ Spec:
   - Name: "Karel"
     Email: "k.l.kubat@gmail.com"
     Weight: 10
+    AuthLevel: 10
   Quorum: 9

@@ -1,5 +1,7 @@
-//go:generate mockgen -destination=mocks/appendstore_mock.go -package=mock github.com/carapace/core/core SetStore
 //go:generate mockgen -destination=mocks/userstore_mock.go -package=mock github.com/carapace/core/core UserStore
+//go:generate mockgen -destination=mocks/ownerset_mock.go -package=mock github.com/carapace/core/core OwnerSet
+//go:generate mockgen -destination=mocks/userset_mock.go -package=mock github.com/carapace/core/core UserSet
+//go:generate mockgen -destination=mocks/configmanager_mock.go -package=mock github.com/carapace/core/core ConfigManager
 
 package core
 
@@ -27,7 +29,7 @@ func NewStore(db *sql.DB) (*Store, error) {
 
 	return &Store{
 		DB: db,
-		Sets: Sets{
+		Sets: &Sets{
 			OwnerSet: manager.Sets.OwnerSet,
 			UserSet:  manager.Sets.UserSet,
 			Config:   manager.Sets.Config,
@@ -38,8 +40,7 @@ func NewStore(db *sql.DB) (*Store, error) {
 
 type Store struct {
 	DB    *sql.DB
-	LogDB *sql.DB
-	Sets
+	Sets  *Sets
 	Users UserStore
 }
 

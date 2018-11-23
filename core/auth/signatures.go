@@ -1,4 +1,4 @@
-//go:generate mockgen -destination=mocks/signer_mock.go -package=mock github.com/carapace/core/pkg/v0/auth Signer
+//go:generate mockgen -destination=mocks/signer_mock.go -package=mock github.com/carapace/core/core/auth Signer
 
 package auth
 

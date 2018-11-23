@@ -43,7 +43,7 @@ func (m *Witness) Reset()         { *m = Witness{} }
 func (m *Witness) String() string { return proto.CompactTextString(m) }
 func (*Witness) ProtoMessage()    {}
 func (*Witness) Descriptor() ([]byte, []int) {
-	return fileDescriptor_signatures_4ab464274f9c3597, []int{0}
+	return fileDescriptor_signatures_86747bd8a04eaa8f, []int{0}
 }
 func (m *Witness) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Witness.Unmarshal(m, b)
@@ -91,7 +91,7 @@ func (m *Signature) Reset()         { *m = Signature{} }
 func (m *Signature) String() string { return proto.CompactTextString(m) }
 func (*Signature) ProtoMessage()    {}
 func (*Signature) Descriptor() ([]byte, []int) {
-	return fileDescriptor_signatures_4ab464274f9c3597, []int{1}
+	return fileDescriptor_signatures_86747bd8a04eaa8f, []int{1}
 }
 func (m *Signature) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Signature.Unmarshal(m, b)
@@ -231,9 +231,9 @@ func init() {
 	proto.RegisterType((*Signature)(nil), "v0.Signature")
 }
 
-func init() { proto.RegisterFile("signatures.proto", fileDescriptor_signatures_4ab464274f9c3597) }
+func init() { proto.RegisterFile("signatures.proto", fileDescriptor_signatures_86747bd8a04eaa8f) }
 
-var fileDescriptor_signatures_4ab464274f9c3597 = []byte{
+var fileDescriptor_signatures_86747bd8a04eaa8f = []byte{
 	// 216 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x12, 0x28, 0xce, 0x4c, 0xcf,
 	0x4b, 0x2c, 0x29, 0x2d, 0x4a, 0x2d, 0xd6, 0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0x62, 0x2a, 0x33,

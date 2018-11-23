@@ -69,12 +69,17 @@ func (m *User) Validate() error {
 		}
 	}
 
-	// no validation rules for AuthLevel
+	if m.GetAuthLevel() < 0 {
+		return UserValidationError{
+			field:  "AuthLevel",
+			reason: "value must be greater than or equal to 0",
+		}
+	}
 
-	if m.GetWeight() <= 0 {
+	if m.GetWeight() < 0 {
 		return UserValidationError{
 			field:  "Weight",
-			reason: "value must be greater than 0",
+			reason: "value must be greater than or equal to 0",
 		}
 	}
 
