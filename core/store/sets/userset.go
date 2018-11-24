@@ -1,6 +1,7 @@
 package sets
 
 import (
+	"context"
 	"database/sql"
 	"github.com/carapace/core/api/v0/proto"
 	"github.com/golang/protobuf/proto"
@@ -10,22 +11,22 @@ import (
 
 type UserSet struct{}
 
-func (u *UserSet) Put(tx *sql.Tx, set *v0.UserSet) error {
+func (u *UserSet) Put(ctx context.Context, tx *sql.Tx, set *v0.UserSet) error {
 	serialized, err := proto.Marshal(set)
 	if err != nil {
 		return err
 	}
 
-	_, err = tx.Exec(`UPDATE user_sets SET deleted_at = ? WHERE deleted_at = NULL AND name = ?;`, time.Now(), set.Set)
+	_, err = tx.ExecContext(ctx, `UPDATE user_sets SET deleted_at = ? WHERE deleted_at = NULL AND name = ?;`, time.Now(), set.Set)
 	if err != nil {
 		return err
 	}
-	_, err = tx.Exec(`INSERT INTO user_sets (created_at, user_set, deleted_at, name) VALUES (?, ?, ?, ?)`, time.Now(), serialized, nil, set.Set)
+	_, err = tx.ExecContext(ctx, `INSERT INTO user_sets (created_at, user_set, deleted_at, name) VALUES (?, ?, ?, ?)`, time.Now(), serialized, nil, set.Set)
 	return err
 }
 
-func (u *UserSet) Get(tx *sql.Tx, name string) (*v0.UserSet, error) {
-	row := tx.QueryRow(`SELECT user_set FROM user_sets WHERE deleted_at IS NULL AND name = ?;`, name)
+func (u *UserSet) Get(ctx context.Context, tx *sql.Tx, name string) (*v0.UserSet, error) {
+	row := tx.QueryRowContext(ctx, `SELECT user_set FROM user_sets WHERE deleted_at IS NULL AND name = ?;`, name)
 
 	var data = []byte{}
 	err := row.Scan(&data)
@@ -45,8 +46,8 @@ func (u *UserSet) Get(tx *sql.Tx, name string) (*v0.UserSet, error) {
 	return set, nil
 }
 
-func (u *UserSet) All(tx *sql.Tx) ([]*v0.UserSet, error) {
-	rows, err := tx.Query(`SELECT user_set FROM user_sets WHERE deleted_at IS NULL;`)
+func (u *UserSet) All(ctx context.Context, tx *sql.Tx) ([]*v0.UserSet, error) {
+	rows, err := tx.QueryContext(ctx, `SELECT user_set FROM user_sets WHERE deleted_at IS NULL;`)
 	if err != nil {
 		return nil, err
 	}

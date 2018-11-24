@@ -5,6 +5,7 @@
 package mock
 
 import (
+	context "context"
 	sql "database/sql"
 	proto "github.com/carapace/core/api/v0/proto"
 	gomock "github.com/golang/mock/gomock"
@@ -35,63 +36,63 @@ func (m *MockUserStore) EXPECT() *MockUserStoreMockRecorder {
 }
 
 // Alter mocks base method
-func (m *MockUserStore) Alter(arg0 *sql.Tx, arg1 proto.User) error {
-	ret := m.ctrl.Call(m, "Alter", arg0, arg1)
+func (m *MockUserStore) Alter(arg0 context.Context, arg1 *sql.Tx, arg2 proto.User) error {
+	ret := m.ctrl.Call(m, "Alter", arg0, arg1, arg2)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // Alter indicates an expected call of Alter
-func (mr *MockUserStoreMockRecorder) Alter(arg0, arg1 interface{}) *gomock.Call {
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Alter", reflect.TypeOf((*MockUserStore)(nil).Alter), arg0, arg1)
+func (mr *MockUserStoreMockRecorder) Alter(arg0, arg1, arg2 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Alter", reflect.TypeOf((*MockUserStore)(nil).Alter), arg0, arg1, arg2)
 }
 
 // BySet mocks base method
-func (m *MockUserStore) BySet(arg0 *sql.Tx, arg1 string) ([]*proto.User, error) {
-	ret := m.ctrl.Call(m, "BySet", arg0, arg1)
+func (m *MockUserStore) BySet(arg0 context.Context, arg1 *sql.Tx, arg2 string) ([]*proto.User, error) {
+	ret := m.ctrl.Call(m, "BySet", arg0, arg1, arg2)
 	ret0, _ := ret[0].([]*proto.User)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // BySet indicates an expected call of BySet
-func (mr *MockUserStoreMockRecorder) BySet(arg0, arg1 interface{}) *gomock.Call {
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "BySet", reflect.TypeOf((*MockUserStore)(nil).BySet), arg0, arg1)
+func (mr *MockUserStoreMockRecorder) BySet(arg0, arg1, arg2 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "BySet", reflect.TypeOf((*MockUserStore)(nil).BySet), arg0, arg1, arg2)
 }
 
 // Create mocks base method
-func (m *MockUserStore) Create(arg0 *sql.Tx, arg1 proto.User) error {
-	ret := m.ctrl.Call(m, "Create", arg0, arg1)
+func (m *MockUserStore) Create(arg0 context.Context, arg1 *sql.Tx, arg2 proto.User) error {
+	ret := m.ctrl.Call(m, "Create", arg0, arg1, arg2)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // Create indicates an expected call of Create
-func (mr *MockUserStoreMockRecorder) Create(arg0, arg1 interface{}) *gomock.Call {
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockUserStore)(nil).Create), arg0, arg1)
+func (mr *MockUserStoreMockRecorder) Create(arg0, arg1, arg2 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockUserStore)(nil).Create), arg0, arg1, arg2)
 }
 
 // Delete mocks base method
-func (m *MockUserStore) Delete(arg0 *sql.Tx, arg1 proto.User) error {
-	ret := m.ctrl.Call(m, "Delete", arg0, arg1)
+func (m *MockUserStore) Delete(arg0 context.Context, arg1 *sql.Tx, arg2 proto.User) error {
+	ret := m.ctrl.Call(m, "Delete", arg0, arg1, arg2)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // Delete indicates an expected call of Delete
-func (mr *MockUserStoreMockRecorder) Delete(arg0, arg1 interface{}) *gomock.Call {
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Delete", reflect.TypeOf((*MockUserStore)(nil).Delete), arg0, arg1)
+func (mr *MockUserStoreMockRecorder) Delete(arg0, arg1, arg2 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Delete", reflect.TypeOf((*MockUserStore)(nil).Delete), arg0, arg1, arg2)
 }
 
 // Get mocks base method
-func (m *MockUserStore) Get(arg0 *sql.Tx, arg1 []byte) (*proto.User, error) {
-	ret := m.ctrl.Call(m, "Get", arg0, arg1)
+func (m *MockUserStore) Get(arg0 context.Context, arg1 *sql.Tx, arg2 []byte) (*proto.User, error) {
+	ret := m.ctrl.Call(m, "Get", arg0, arg1, arg2)
 	ret0, _ := ret[0].(*proto.User)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // Get indicates an expected call of Get
-func (mr *MockUserStoreMockRecorder) Get(arg0, arg1 interface{}) *gomock.Call {
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockUserStore)(nil).Get), arg0, arg1)
+func (mr *MockUserStoreMockRecorder) Get(arg0, arg1, arg2 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockUserStore)(nil).Get), arg0, arg1, arg2)
 }

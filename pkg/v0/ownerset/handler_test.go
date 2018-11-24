@@ -83,7 +83,7 @@ func TestHandler_Handle(t *testing.T) {
 			},
 			err: errors.New("err"),
 			prep: []*gomock.Call{
-				authz.EXPECT().HaveOwners().Return(false, errors.New("err")).Times(1),
+				authz.EXPECT().HaveOwners(gomock.Any()).Return(false, errors.New("err")).Times(1),
 			},
 			response: nil,
 			desc:     "error returned by auth.HaveOwners should return the error",
@@ -127,16 +127,16 @@ func TestHandler_processNewOwners(t *testing.T) {
 	}{
 		{
 			prep: []*gomock.Call{
-				sCtrl.Sets.OwnerSet.EXPECT().Get(gomock.Any()).Return(&v0.OwnerSet{
+				sCtrl.Sets.OwnerSet.EXPECT().Get(gomock.Any(), gomock.Any()).Return(&v0.OwnerSet{
 					Owners: []*v0.User{
 						{PrimaryPublicKey: []byte("key")},
 					},
 				}, nil),
-				sCtrl.Users.EXPECT().Delete(gomock.Any(), v0.User{
+				sCtrl.Users.EXPECT().Delete(gomock.Any(), gomock.Any(), v0.User{
 					PrimaryPublicKey: []byte("key"),
 				}).Return(nil),
-				sCtrl.Sets.OwnerSet.EXPECT().Put(gomock.Any(), gomock.Any()).Return(nil),
-				sCtrl.Users.EXPECT().Create(gomock.Any(), v0.User{
+				sCtrl.Sets.OwnerSet.EXPECT().Put(gomock.Any(), gomock.Any(), gomock.Any()).Return(nil),
+				sCtrl.Users.EXPECT().Create(gomock.Any(), gomock.Any(), v0.User{
 					PrimaryPublicKey:  []byte("correct key"),
 					RecoveryPublicKey: []byte("second correct key"),
 					Name:              "Jaap",

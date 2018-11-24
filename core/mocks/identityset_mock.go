@@ -5,6 +5,7 @@
 package mock
 
 import (
+	context "context"
 	sql "database/sql"
 	proto "github.com/carapace/core/api/v0/proto"
 	gomock "github.com/golang/mock/gomock"
@@ -35,39 +36,39 @@ func (m *MockIdentitySet) EXPECT() *MockIdentitySetMockRecorder {
 }
 
 // All mocks base method
-func (m *MockIdentitySet) All(arg0 *sql.Tx) ([]*proto.Identity, error) {
-	ret := m.ctrl.Call(m, "All", arg0)
+func (m *MockIdentitySet) All(arg0 context.Context, arg1 *sql.Tx) ([]*proto.Identity, error) {
+	ret := m.ctrl.Call(m, "All", arg0, arg1)
 	ret0, _ := ret[0].([]*proto.Identity)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // All indicates an expected call of All
-func (mr *MockIdentitySetMockRecorder) All(arg0 interface{}) *gomock.Call {
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "All", reflect.TypeOf((*MockIdentitySet)(nil).All), arg0)
+func (mr *MockIdentitySetMockRecorder) All(arg0, arg1 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "All", reflect.TypeOf((*MockIdentitySet)(nil).All), arg0, arg1)
 }
 
 // Get mocks base method
-func (m *MockIdentitySet) Get(arg0 *sql.Tx, arg1 string) (*proto.Identity, error) {
-	ret := m.ctrl.Call(m, "Get", arg0, arg1)
+func (m *MockIdentitySet) Get(arg0 context.Context, arg1 *sql.Tx, arg2 string) (*proto.Identity, error) {
+	ret := m.ctrl.Call(m, "Get", arg0, arg1, arg2)
 	ret0, _ := ret[0].(*proto.Identity)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // Get indicates an expected call of Get
-func (mr *MockIdentitySetMockRecorder) Get(arg0, arg1 interface{}) *gomock.Call {
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockIdentitySet)(nil).Get), arg0, arg1)
+func (mr *MockIdentitySetMockRecorder) Get(arg0, arg1, arg2 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockIdentitySet)(nil).Get), arg0, arg1, arg2)
 }
 
 // Put mocks base method
-func (m *MockIdentitySet) Put(arg0 *sql.Tx, arg1 *proto.Identity) error {
-	ret := m.ctrl.Call(m, "Put", arg0, arg1)
+func (m *MockIdentitySet) Put(arg0 context.Context, arg1 *sql.Tx, arg2 *proto.Identity) error {
+	ret := m.ctrl.Call(m, "Put", arg0, arg1, arg2)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // Put indicates an expected call of Put
-func (mr *MockIdentitySetMockRecorder) Put(arg0, arg1 interface{}) *gomock.Call {
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Put", reflect.TypeOf((*MockIdentitySet)(nil).Put), arg0, arg1)
+func (mr *MockIdentitySetMockRecorder) Put(arg0, arg1, arg2 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Put", reflect.TypeOf((*MockIdentitySet)(nil).Put), arg0, arg1, arg2)
 }

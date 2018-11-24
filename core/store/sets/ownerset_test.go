@@ -1,6 +1,7 @@
 package sets
 
 import (
+	"context"
 	"fmt"
 	"github.com/carapace/core/api/v0/proto"
 	"github.com/carapace/core/pkg/suite"
@@ -31,14 +32,14 @@ func TestManager_PutOwnerSet_GetOwnerSet(t *testing.T) {
 	for _, tc := range tcs {
 		tx, err := db.Begin()
 		require.NoError(t, err)
-		err = m.OwnerSet.Put(tx, tc.set)
+		err = m.OwnerSet.Put(context.Background(), tx, tc.set)
 		if tc.err != nil {
 			fmt.Println(err)
 			require.EqualError(t, err, tc.err.Error())
 			tx.Rollback()
 			continue
 		}
-		set, err := m.OwnerSet.Get(tx)
+		set, err := m.OwnerSet.Get(context.Background(), tx)
 		require.NoError(t, err, tc.desc)
 		assert.Equal(t, tc.set, set, tc.desc)
 	}

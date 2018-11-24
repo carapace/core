@@ -1,13 +1,14 @@
 package ownerset
 
 import (
+	"context"
 	"github.com/carapace/core/api/v0/proto"
 	"github.com/carapace/core/core/store/sets"
 	"github.com/golang/protobuf/ptypes"
 	"github.com/golang/protobuf/ptypes/any"
 )
 
-func (h *Handler) InfoService() (*v0.Info, error) {
+func (h *Handler) InfoService(ctx context.Context) (*v0.Info, error) {
 	tx, err := h.store.Begin()
 	if err != nil {
 		return nil, err
@@ -15,7 +16,7 @@ func (h *Handler) InfoService() (*v0.Info, error) {
 	defer tx.Rollback()
 
 	var setAny *any.Any
-	set, err := h.store.Sets.OwnerSet.Get(tx)
+	set, err := h.store.Sets.OwnerSet.Get(ctx, tx)
 	if err != nil {
 		if err == sets.ErrNotExist {
 			setAny = nil

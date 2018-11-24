@@ -5,6 +5,7 @@
 package mock
 
 import (
+	context "context"
 	sql "database/sql"
 	proto "github.com/carapace/core/api/v0/proto"
 	gomock "github.com/golang/mock/gomock"
@@ -35,13 +36,13 @@ func (m *MockConfigManager) EXPECT() *MockConfigManagerMockRecorder {
 }
 
 // Add mocks base method
-func (m *MockConfigManager) Add(arg0 *sql.Tx, arg1 *proto.Config) error {
-	ret := m.ctrl.Call(m, "Add", arg0, arg1)
+func (m *MockConfigManager) Add(arg0 context.Context, arg1 *sql.Tx, arg2 *proto.Config) error {
+	ret := m.ctrl.Call(m, "Add", arg0, arg1, arg2)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // Add indicates an expected call of Add
-func (mr *MockConfigManagerMockRecorder) Add(arg0, arg1 interface{}) *gomock.Call {
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Add", reflect.TypeOf((*MockConfigManager)(nil).Add), arg0, arg1)
+func (mr *MockConfigManagerMockRecorder) Add(arg0, arg1, arg2 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Add", reflect.TypeOf((*MockConfigManager)(nil).Add), arg0, arg1, arg2)
 }

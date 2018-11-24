@@ -7,6 +7,7 @@
 package core
 
 import (
+	"context"
 	"database/sql"
 	"fmt"
 	"github.com/carapace/core/api/v0/proto"
@@ -58,30 +59,30 @@ type Sets struct {
 }
 
 type OwnerSet interface {
-	Get(*sql.Tx) (*v0.OwnerSet, error)
-	Put(tx *sql.Tx, set *v0.OwnerSet) error
+	Get(context.Context, *sql.Tx) (*v0.OwnerSet, error)
+	Put(context.Context, *sql.Tx, *v0.OwnerSet) error
 }
 
 type UserSet interface {
-	Get(*sql.Tx, string) (*v0.UserSet, error)
-	Put(tx *sql.Tx, set *v0.UserSet) error
-	All(*sql.Tx) ([]*v0.UserSet, error)
+	Get(context.Context, *sql.Tx, string) (*v0.UserSet, error)
+	Put(context.Context, *sql.Tx, *v0.UserSet) error
+	All(context.Context, *sql.Tx) ([]*v0.UserSet, error)
 }
 
 type UserStore interface {
-	Create(tx *sql.Tx, user v0.User) error
-	Alter(tx *sql.Tx, user v0.User) error
-	Get(tx *sql.Tx, publicKey []byte) (*v0.User, error)
-	Delete(tx *sql.Tx, user v0.User) error
-	BySet(tx *sql.Tx, set string) ([]*v0.User, error)
+	Create(context.Context, *sql.Tx, v0.User) error
+	Alter(context.Context, *sql.Tx, v0.User) error
+	Get(ctx context.Context, tx *sql.Tx, publicKey []byte) (*v0.User, error)
+	Delete(context.Context, *sql.Tx, v0.User) error
+	BySet(context.Context, *sql.Tx, string) ([]*v0.User, error)
 }
 
 type ConfigManager interface {
-	Add(tx *sql.Tx, config *v0.Config) error
+	Add(context.Context, *sql.Tx, *v0.Config) error
 }
 
 type IdentitySet interface {
-	Get(*sql.Tx, string) (*v0.Identity, error)
-	Put(tx *sql.Tx, set *v0.Identity) error
-	All(*sql.Tx) ([]*v0.Identity, error)
+	Get(context.Context, *sql.Tx, string) (*v0.Identity, error)
+	Put(context.Context, *sql.Tx, *v0.Identity) error
+	All(context.Context, *sql.Tx) ([]*v0.Identity, error)
 }

@@ -12,7 +12,7 @@ func (s Suite) TestUserSetRobotSet() {
 	defer cleanup()
 
 	ctx, cf := context.WithTimeout(context.Background(), 50*time.Millisecond)
-	cf()
+	defer cf()
 
 	client := s.NewClient()
 	err := client.GenPrivKey()

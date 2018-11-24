@@ -5,6 +5,7 @@
 package mock
 
 import (
+	context "context"
 	sql "database/sql"
 	proto "github.com/carapace/core/api/v0/proto"
 	gomock "github.com/golang/mock/gomock"
@@ -35,26 +36,26 @@ func (m *MockOwnerSet) EXPECT() *MockOwnerSetMockRecorder {
 }
 
 // Get mocks base method
-func (m *MockOwnerSet) Get(arg0 *sql.Tx) (*proto.OwnerSet, error) {
-	ret := m.ctrl.Call(m, "Get", arg0)
+func (m *MockOwnerSet) Get(arg0 context.Context, arg1 *sql.Tx) (*proto.OwnerSet, error) {
+	ret := m.ctrl.Call(m, "Get", arg0, arg1)
 	ret0, _ := ret[0].(*proto.OwnerSet)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // Get indicates an expected call of Get
-func (mr *MockOwnerSetMockRecorder) Get(arg0 interface{}) *gomock.Call {
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockOwnerSet)(nil).Get), arg0)
+func (mr *MockOwnerSetMockRecorder) Get(arg0, arg1 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockOwnerSet)(nil).Get), arg0, arg1)
 }
 
 // Put mocks base method
-func (m *MockOwnerSet) Put(arg0 *sql.Tx, arg1 *proto.OwnerSet) error {
-	ret := m.ctrl.Call(m, "Put", arg0, arg1)
+func (m *MockOwnerSet) Put(arg0 context.Context, arg1 *sql.Tx, arg2 *proto.OwnerSet) error {
+	ret := m.ctrl.Call(m, "Put", arg0, arg1, arg2)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // Put indicates an expected call of Put
-func (mr *MockOwnerSetMockRecorder) Put(arg0, arg1 interface{}) *gomock.Call {
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Put", reflect.TypeOf((*MockOwnerSet)(nil).Put), arg0, arg1)
+func (mr *MockOwnerSetMockRecorder) Put(arg0, arg1, arg2 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Put", reflect.TypeOf((*MockOwnerSet)(nil).Put), arg0, arg1, arg2)
 }

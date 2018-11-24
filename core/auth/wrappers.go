@@ -9,7 +9,7 @@ import (
 )
 
 type wrapped struct {
-	infoService   func() (*v0.Info, error)
+	infoService   func(ctx context.Context) (*v0.Info, error)
 	configService func(ctx context.Context, config *v0.Config) (*v0.Response, error)
 }
 
@@ -17,8 +17,8 @@ func (s *wrapped) ConfigService(ctx context.Context, config *v0.Config) (*v0.Res
 	return s.configService(ctx, config)
 }
 
-func (s *wrapped) InfoService() (*v0.Info, error) {
-	return s.infoService()
+func (s *wrapped) InfoService(ctx context.Context) (*v0.Info, error) {
+	return s.infoService(ctx)
 }
 
 // Signed only verifies that the config object's signatures are all correctly signed
@@ -55,7 +55,7 @@ func (auth *Manager) Root(service core.APIService) core.APIService {
 				return response.MSG(v0.Code_BadRequest, fmt.Sprintf("incorrect signature for: %s", wrongSig)), nil
 			}
 
-			have, err := auth.HaveOwners()
+			have, err := auth.HaveOwners(ctx)
 			if err != nil {
 				return nil, err
 			}
@@ -64,7 +64,7 @@ func (auth *Manager) Root(service core.APIService) core.APIService {
 				return response.MSG(v0.Code_UnAuthorized, fmt.Sprintf("node does not have owners yet")), nil
 			}
 
-			root, err := auth.GrantRoot(config.Witness)
+			root, err := auth.GrantRoot(ctx, config.Witness)
 			if err != nil {
 				return response.Err(err), nil
 			}
@@ -93,7 +93,7 @@ func (auth *Manager) RootOrBackupOrNoOwners(service core.APIService) core.APISer
 				return response.MSG(v0.Code_BadRequest, fmt.Sprintf("incorrect signature for: %s", wrongSig)), nil
 			}
 
-			have, err := auth.HaveOwners()
+			have, err := auth.HaveOwners(ctx)
 			if err != nil {
 				return nil, err
 			}
@@ -102,13 +102,13 @@ func (auth *Manager) RootOrBackupOrNoOwners(service core.APIService) core.APISer
 				return service.ConfigService(ctx, config)
 			}
 
-			root, err := auth.GrantRoot(config.Witness)
+			root, err := auth.GrantRoot(ctx, config.Witness)
 			if err != nil {
 				return response.Err(err), nil
 			}
 
 			if !root {
-				root, err = auth.GrantBackupRoot(config.Witness)
+				root, err = auth.GrantBackupRoot(ctx, config.Witness)
 			}
 
 			if err != nil {
@@ -167,7 +167,7 @@ func (auth *Manager) RegularAuth(minLevel int32, minSignees uint8, maxSignees ui
 				return response.MSG(v0.Code_BadRequest, fmt.Sprintf("incorrect signature for: %s", wrongSig)), nil
 			}
 
-			have, err := auth.HaveOwners()
+			have, err := auth.HaveOwners(ctx)
 			if err != nil {
 				return nil, err
 			}
@@ -181,7 +181,7 @@ func (auth *Manager) RegularAuth(minLevel int32, minSignees uint8, maxSignees ui
 			// compute the total auth level
 			var totalAuthLevel int32
 			for _, user := range config.Witness.Signatures {
-				user, err := auth.Store.Users.Get(tx, user.GetPrimaryPublicKey())
+				user, err := auth.Store.Users.Get(ctx, tx, user.GetPrimaryPublicKey())
 				if err != nil {
 					return response.Err(err), nil
 				}

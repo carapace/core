@@ -49,7 +49,7 @@ func (h *Handler) ConfigService(ctx context.Context, config *v0.Config) (*v0.Res
 		return response.ValidationErr(err), nil
 	}
 
-	have, err := h.authz.HaveOwners()
+	have, err := h.authz.HaveOwners(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -62,13 +62,13 @@ func (h *Handler) ConfigService(ctx context.Context, config *v0.Config) (*v0.Res
 
 func (h *Handler) alterExisting(ctx context.Context, set *v0.OwnerSet) (*v0.Response, error) {
 	tx := core.TXFromContext(ctx)
-	currentSet, err := h.store.Sets.OwnerSet.Get(tx)
+	currentSet, err := h.store.Sets.OwnerSet.Get(ctx, tx)
 	if err != nil {
 		return nil, err
 	}
 
 	for _, owner := range currentSet.Owners {
-		err = h.store.Users.Delete(tx, *owner)
+		err = h.store.Users.Delete(ctx, tx, *owner)
 		if err != nil {
 			return nil, err
 		}
@@ -79,14 +79,14 @@ func (h *Handler) alterExisting(ctx context.Context, set *v0.OwnerSet) (*v0.Resp
 func (h *Handler) createNewOwners(ctx context.Context, set *v0.OwnerSet) (*v0.Response, error) {
 	tx := core.TXFromContext(ctx)
 
-	err := h.store.Sets.OwnerSet.Put(tx, set)
+	err := h.store.Sets.OwnerSet.Put(ctx, tx, set)
 	if err != nil {
 		return nil, err
 	}
 
 	for _, user := range set.Owners {
 		user.SuperUser = true
-		err = h.store.Users.Create(tx, *user)
+		err = h.store.Users.Create(ctx, tx, *user)
 		if err != nil {
 			return nil, err
 		}

@@ -19,13 +19,13 @@ func TestRouter_Register(t *testing.T) {
 	service := mock.NewMockAPIService(ctrl)
 
 	rt := New()
-	service.EXPECT().InfoService().Return(&v0.Info{ApiVersion: "v0", Kinds: []string{"ownerSet"}}, nil).Times(1)
+	service.EXPECT().InfoService(gomock.Any()).Return(&v0.Info{ApiVersion: "v0", Kinds: []string{"ownerSet"}}, nil).Times(1)
 	assert.NotPanics(t, func() {
 		rt.Register(service)
 	})
 
 	// verify that a double registration fails
-	service.EXPECT().InfoService().Return(&v0.Info{ApiVersion: "v0", Kinds: []string{"ownerSet"}}, nil).Times(1)
+	service.EXPECT().InfoService(gomock.Any()).Return(&v0.Info{ApiVersion: "v0", Kinds: []string{"ownerSet"}}, nil).Times(1)
 	assert.Panics(t, func() {
 		rt.Register(service)
 	})
@@ -37,7 +37,7 @@ func TestV0_Route(t *testing.T) {
 	service := mock.NewMockAPIService(ctrl)
 
 	rt := New()
-	service.EXPECT().InfoService().Return(&v0.Info{ApiVersion: "v0", Kinds: []string{"walletSet"}}, nil).Times(1)
+	service.EXPECT().InfoService(gomock.Any()).Return(&v0.Info{ApiVersion: "v0", Kinds: []string{"walletSet"}}, nil).Times(1)
 	rt.Register(service)
 
 	tcs := []struct {

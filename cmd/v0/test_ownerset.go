@@ -18,7 +18,7 @@ func (s Suite) TestInfoService() {
 	defer cleanup()
 
 	ctx, cf := context.WithTimeout(context.Background(), 50*time.Millisecond)
-	cf()
+	defer cf()
 	info, err := core.InfoService(ctx, &empty.Empty{})
 	require.NoError(s.T(), err)
 	assert.NotNil(s.T(), info)
@@ -30,7 +30,7 @@ func (s Suite) TestOwnerSetFirstOwnersSimple() {
 	defer cleanup()
 
 	ctx, cf := context.WithTimeout(context.Background(), 50*time.Millisecond)
-	cf()
+	defer cf()
 
 	client := s.NewClient()
 	err := client.GenPrivKey()

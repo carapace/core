@@ -71,7 +71,7 @@ func TestHandler_ConfigService(t *testing.T) {
 			},
 			err: errors.New("identityHandler unable to obtain existing identity: oops"),
 			prep: []*gomock.Call{
-				sCtrl.Sets.Identity.EXPECT().Get(gomock.Any(), "MySet").Return(nil, errors.New("oops")),
+				sCtrl.Sets.Identity.EXPECT().Get(gomock.Any(), gomock.Any(), "MySet").Return(nil, errors.New("oops")),
 			},
 		},
 		{
@@ -93,8 +93,8 @@ func TestHandler_ConfigService(t *testing.T) {
 				Witness: &v0.Witness{Signatures: []*v0.Signature{{Key: &v0.Signature_PrimaryPublicKey{PrimaryPublicKey: []byte("key")}}}},
 			},
 			prep: []*gomock.Call{
-				sCtrl.Sets.Identity.EXPECT().Get(gomock.Any(), "MySet").Return(nil, nil),
-				sCtrl.Users.EXPECT().Get(gomock.Any(), []byte("key")).Return(nil, errors.New("oops")),
+				sCtrl.Sets.Identity.EXPECT().Get(gomock.Any(), gomock.Any(), "MySet").Return(nil, nil),
+				sCtrl.Users.EXPECT().Get(gomock.Any(), gomock.Any(), []byte("key")).Return(nil, errors.New("oops")),
 			},
 			err: errors.New("identityHandler unable to obtain signing user: oops"),
 		},
@@ -117,10 +117,10 @@ func TestHandler_ConfigService(t *testing.T) {
 				Witness: &v0.Witness{Signatures: []*v0.Signature{{Key: &v0.Signature_PrimaryPublicKey{PrimaryPublicKey: []byte("key")}}}},
 			},
 			prep: []*gomock.Call{
-				sCtrl.Sets.Identity.EXPECT().Get(gomock.Any(), "MySet").Return(&v0.Identity{
+				sCtrl.Sets.Identity.EXPECT().Get(gomock.Any(), gomock.Any(), "MySet").Return(&v0.Identity{
 					Access: []*v0.AccessProtocol{{Method: &v0.AccessProtocol_AuthLevel{AuthLevel: 10}}},
 				}, nil),
-				sCtrl.Users.EXPECT().Get(gomock.Any(), []byte("key")).Return(&v0.User{Name: "Karel", AuthLevel: 9}, nil),
+				sCtrl.Users.EXPECT().Get(gomock.Any(), gomock.Any(), []byte("key")).Return(&v0.User{Name: "Karel", AuthLevel: 9}, nil),
 			},
 			res: &v0.Response{Code: v0.Code_Forbidden},
 		},
@@ -143,8 +143,8 @@ func TestHandler_ConfigService(t *testing.T) {
 				Witness: &v0.Witness{Signatures: []*v0.Signature{{Key: &v0.Signature_PrimaryPublicKey{PrimaryPublicKey: []byte("key")}}}},
 			},
 			prep: []*gomock.Call{
-				sCtrl.Sets.Identity.EXPECT().Get(gomock.Any(), "MySet").Return(nil, sets.ErrNotExist),
-				sCtrl.Sets.Identity.EXPECT().Put(gomock.Any(), gomock.Any()),
+				sCtrl.Sets.Identity.EXPECT().Get(gomock.Any(), gomock.Any(), "MySet").Return(nil, sets.ErrNotExist),
+				sCtrl.Sets.Identity.EXPECT().Put(gomock.Any(), gomock.Any(), gomock.Any()),
 			},
 			misc: []func(){
 				func() {
@@ -172,13 +172,13 @@ func TestHandler_ConfigService(t *testing.T) {
 				Witness: &v0.Witness{Signatures: []*v0.Signature{{Key: &v0.Signature_PrimaryPublicKey{PrimaryPublicKey: []byte("key")}}}},
 			},
 			prep: []*gomock.Call{
-				sCtrl.Sets.Identity.EXPECT().Get(gomock.Any(), "MySet").Return(
+				sCtrl.Sets.Identity.EXPECT().Get(gomock.Any(), gomock.Any(), "MySet").Return(
 					&v0.Identity{
 						Asset:  v0.Asset_BTC,
 						Access: []*v0.AccessProtocol{{Method: &v0.AccessProtocol_AuthLevel{AuthLevel: 10}}},
 					}, nil),
-				sCtrl.Users.EXPECT().Get(gomock.Any(), []byte("key")).Return(&v0.User{Name: "Karel", AuthLevel: 11}, nil),
-				sCtrl.Sets.Identity.EXPECT().Put(gomock.Any(), gomock.Any()).Return(nil),
+				sCtrl.Users.EXPECT().Get(gomock.Any(), gomock.Any(), []byte("key")).Return(&v0.User{Name: "Karel", AuthLevel: 11}, nil),
+				sCtrl.Sets.Identity.EXPECT().Put(gomock.Any(), gomock.Any(), gomock.Any()).Return(nil),
 			},
 			misc: []func(){
 				func() {
@@ -208,12 +208,12 @@ func TestHandler_ConfigService(t *testing.T) {
 				Witness: &v0.Witness{Signatures: []*v0.Signature{{Key: &v0.Signature_PrimaryPublicKey{PrimaryPublicKey: []byte("key")}}}},
 			},
 			prep: []*gomock.Call{
-				sCtrl.Sets.Identity.EXPECT().Get(gomock.Any(), "MySet").Return(
+				sCtrl.Sets.Identity.EXPECT().Get(gomock.Any(), gomock.Any(), "MySet").Return(
 					&v0.Identity{
 						Asset:  v0.Asset_BTC,
 						Access: []*v0.AccessProtocol{{Method: &v0.AccessProtocol_AuthLevel{AuthLevel: 10}}},
 					}, nil),
-				sCtrl.Users.EXPECT().Get(gomock.Any(), []byte("key")).Return(&v0.User{Name: "Karel", AuthLevel: 11, Set: "klimmers"}, nil),
+				sCtrl.Users.EXPECT().Get(gomock.Any(), gomock.Any(), []byte("key")).Return(&v0.User{Name: "Karel", AuthLevel: 11, Set: "klimmers"}, nil),
 			},
 			res: &v0.Response{Code: v0.Code_BadRequest},
 		},

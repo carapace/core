@@ -1,6 +1,7 @@
 package sets
 
 import (
+	"context"
 	"github.com/carapace/core/api/v0/proto"
 	"github.com/carapace/core/pkg/suite"
 	"github.com/stretchr/testify/require"
@@ -19,15 +20,15 @@ func TestConfig_Add(t *testing.T) {
 	config := &v0.Config{Header: &v0.Header{Increment: 1}}
 
 	// first time adding config should not error
-	err = m.Config.Add(tx, config)
+	err = m.Config.Add(context.Background(), tx, config)
 	require.NoError(t, err)
 
 	// second time should, since the increment is the same
-	err = m.Config.Add(tx, config)
+	err = m.Config.Add(context.Background(), tx, config)
 	require.Error(t, err)
 
 	// increasing the increment should work again
 	config.Header.Increment = 2
-	err = m.Config.Add(tx, config)
+	err = m.Config.Add(context.Background(), tx, config)
 	require.NoError(t, err)
 }

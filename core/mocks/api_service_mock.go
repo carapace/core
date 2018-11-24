@@ -48,14 +48,14 @@ func (mr *MockAPIServiceMockRecorder) ConfigService(arg0, arg1 interface{}) *gom
 }
 
 // InfoService mocks base method
-func (m *MockAPIService) InfoService() (*proto.Info, error) {
-	ret := m.ctrl.Call(m, "InfoService")
+func (m *MockAPIService) InfoService(arg0 context.Context) (*proto.Info, error) {
+	ret := m.ctrl.Call(m, "InfoService", arg0)
 	ret0, _ := ret[0].(*proto.Info)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // InfoService indicates an expected call of InfoService
-func (mr *MockAPIServiceMockRecorder) InfoService() *gomock.Call {
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "InfoService", reflect.TypeOf((*MockAPIService)(nil).InfoService))
+func (mr *MockAPIServiceMockRecorder) InfoService(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "InfoService", reflect.TypeOf((*MockAPIService)(nil).InfoService), arg0)
 }

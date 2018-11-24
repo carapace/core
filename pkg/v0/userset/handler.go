@@ -38,7 +38,7 @@ func (h *Handler) ConfigService(ctx context.Context, config *v0.Config) (*v0.Res
 
 	tx := core.TXFromContext(ctx)
 
-	err = h.store.Sets.UserSet.Put(tx, &set)
+	err = h.store.Sets.UserSet.Put(ctx, tx, &set)
 	if err != nil {
 		return nil, err
 	}
@@ -52,10 +52,10 @@ func (h *Handler) ConfigService(ctx context.Context, config *v0.Config) (*v0.Res
 		}
 
 		// first we check if the user already exists
-		usr, err := h.store.Users.Get(tx, user.PrimaryPublicKey)
+		usr, err := h.store.Users.Get(ctx, tx, user.PrimaryPublicKey)
 		if err != nil {
 			if err == userstore.ErrUserDoesNotExists {
-				err = h.store.Users.Create(tx, *user)
+				err = h.store.Users.Create(ctx, tx, *user)
 				if err != nil {
 					return nil, err
 				}
@@ -69,7 +69,7 @@ func (h *Handler) ConfigService(ctx context.Context, config *v0.Config) (*v0.Res
 			return nil, errors.New("creation of superusers through userSets is not allowed")
 		}
 
-		err = h.store.Users.Alter(tx, *user)
+		err = h.store.Users.Alter(ctx, tx, *user)
 		if err != nil {
 			return nil, err
 		}
@@ -77,14 +77,14 @@ func (h *Handler) ConfigService(ctx context.Context, config *v0.Config) (*v0.Res
 	return response.OK("correctly created new users"), errors.Wrapf(tx.Commit(), "UserSet handler commit")
 }
 
-func (h *Handler) InfoService() (*v0.Info, error) {
+func (h *Handler) InfoService(ctx context.Context) (*v0.Info, error) {
 	tx, err := h.store.Begin()
 	if err != nil {
 		return nil, err
 	}
 	defer tx.Rollback()
 
-	st, err := h.store.Sets.UserSet.All(tx)
+	st, err := h.store.Sets.UserSet.All(ctx, tx)
 	if err != nil {
 		if err != sets.ErrNotExist {
 			return nil, err

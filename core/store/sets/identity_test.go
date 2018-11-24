@@ -1,6 +1,7 @@
 package sets
 
 import (
+	"context"
 	"github.com/carapace/core/api/v0/proto"
 	"github.com/carapace/core/pkg/suite"
 	"github.com/stretchr/testify/assert"
@@ -30,7 +31,7 @@ func TestManager_PutIdentity_GetIdentity(t *testing.T) {
 	for _, tc := range tcs {
 		tx, err := db.Begin()
 		require.NoError(t, err)
-		err = m.Identity.Put(tx, tc.set)
+		err = m.Identity.Put(context.Background(), tx, tc.set)
 		if tc.err != nil {
 			require.EqualError(t, err, tc.err.Error())
 			tx.Rollback()
@@ -38,7 +39,7 @@ func TestManager_PutIdentity_GetIdentity(t *testing.T) {
 		}
 		require.NoError(t, err)
 
-		set, err := m.Identity.Get(tx, "myWallet")
+		set, err := m.Identity.Get(context.Background(), tx, "myWallet")
 		require.NoError(t, err, tc.desc)
 		assert.EqualValues(t, tc.set.Name, set.Name, tc.desc)
 	}

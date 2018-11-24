@@ -50,7 +50,7 @@ func (r *Router) register(handler core.APIService) {
 	r.mu.Lock()
 	defer r.mu.Unlock()
 
-	info, err := handler.InfoService()
+	info, err := handler.InfoService(context.Background())
 	if err != nil {
 		panic("router.init: " + err.Error())
 	}
@@ -74,7 +74,7 @@ func (r *Router) InfoService(ctx context.Context, e *empty.Empty) (info *v0.Repe
 	info.Reset()
 	for _, services := range r.V0 {
 		for _, service := range services {
-			inf, err := service.InfoService()
+			inf, err := service.InfoService(ctx)
 			if err != nil {
 				return nil, err
 			}

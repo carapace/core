@@ -30,7 +30,7 @@ func (h *Handler) ConfigService(ctx context.Context, config *v0.Config) (*v0.Res
 
 	tx := core.TXFromContext(ctx)
 
-	existing, err := h.store.Sets.Identity.Get(tx, set.Name)
+	existing, err := h.store.Sets.Identity.Get(ctx, tx, set.Name)
 	if err != nil {
 		if err == sets.ErrNotExist {
 			return h.newIdentityObj(ctx, set)
@@ -38,7 +38,7 @@ func (h *Handler) ConfigService(ctx context.Context, config *v0.Config) (*v0.Res
 		return nil, errors.Wrap(err, "identityHandler unable to obtain existing identity")
 	}
 
-	signingUser, err := h.store.Users.Get(tx, config.Witness.Signatures[0].GetPrimaryPublicKey())
+	signingUser, err := h.store.Users.Get(ctx, tx, config.Witness.Signatures[0].GetPrimaryPublicKey())
 	if err != nil {
 		return nil, errors.Wrap(err, "identityHandler unable to obtain signing user")
 	}
@@ -69,7 +69,7 @@ func (h *Handler) ConfigService(ctx context.Context, config *v0.Config) (*v0.Res
 func (h *Handler) newIdentityObj(ctx context.Context, id *v0.Identity) (*v0.Response, error) {
 	tx := core.TXFromContext(ctx)
 
-	err := h.store.Sets.Identity.Put(tx, id)
+	err := h.store.Sets.Identity.Put(ctx, tx, id)
 	if err != nil {
 		return nil, errors.Wrap(err, "identityHandler unable to store Identity")
 	}

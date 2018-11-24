@@ -7,6 +7,7 @@ import (
 	_ "github.com/jinzhu/gorm/dialects/sqlite"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"golang.org/x/net/context"
 	"testing"
 )
 
@@ -42,7 +43,7 @@ func TestManager_Create(t *testing.T) {
 
 	tx, err := db.Begin()
 	require.NoError(t, err)
-	err = manager.Create(tx, v0.User{
+	err = manager.Create(context.Background(), tx, v0.User{
 		PrimaryPublicKey:  []byte("dfghjkjhgrtyuiuytrfvbhy"),
 		RecoveryPublicKey: []byte("fghjkjhgfdfghjhgffghjkjhg"),
 	})
@@ -57,13 +58,13 @@ func TestManager_Create_twice_fails(t *testing.T) {
 
 	tx, err := db.Begin()
 	require.NoError(t, err)
-	err = manager.Create(tx, v0.User{
+	err = manager.Create(context.Background(), tx, v0.User{
 		PrimaryPublicKey:  []byte("dfghjkjhgrtyuiuytrfvbhy"),
 		RecoveryPublicKey: []byte("fghjkjhgfdfghjhgffghjkjhg"),
 	})
 	assert.NoError(t, err)
 
-	err = manager.Create(tx, v0.User{
+	err = manager.Create(context.Background(), tx, v0.User{
 		PrimaryPublicKey:  []byte("dfghjkjhgrtyuiuytrfvbhy"),
 		RecoveryPublicKey: []byte("fghjkjhgfdfghjhgffghjkjhg"),
 	})
@@ -78,13 +79,13 @@ func TestManager_Alter(t *testing.T) {
 
 	tx, err := db.Begin()
 	require.NoError(t, err)
-	err = manager.Create(tx, v0.User{
+	err = manager.Create(context.Background(), tx, v0.User{
 		PrimaryPublicKey:  []byte("dfghjkjhgrtyuiuytrfvbhy"),
 		RecoveryPublicKey: []byte("fghjkjhgfdfghjhgffghjkjhg"),
 		Name:              "Laurens"})
 	assert.NoError(t, err)
 
-	err = manager.Alter(tx, v0.User{
+	err = manager.Alter(context.Background(), tx, v0.User{
 		PrimaryPublicKey:  []byte("dfghjkjhgrtyuiuytrfvbhy"),
 		RecoveryPublicKey: []byte("fghjkjhgfdfghjhgffghjkjhg"),
 		Name:              "Karel"})
@@ -99,14 +100,14 @@ func TestManager_Get(t *testing.T) {
 
 	tx, err := db.Begin()
 	require.NoError(t, err)
-	err = manager.Create(tx, v0.User{
+	err = manager.Create(context.Background(), tx, v0.User{
 		PrimaryPublicKey:  []byte("dfghjkjhgrtyuiuytrfvbhy"),
 		RecoveryPublicKey: []byte("fghjkjhgfdfghjhgffghjkjhg"),
 		Name:              "Laurens",
 	})
 	assert.NoError(t, err)
 
-	user, err := manager.Get(tx, []byte("dfghjkjhgrtyuiuytrfvbhy"))
+	user, err := manager.Get(context.Background(), tx, []byte("dfghjkjhgrtyuiuytrfvbhy"))
 	require.NoError(t, err)
 
 	assert.Equal(t, "Laurens", user.Name)

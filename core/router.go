@@ -17,5 +17,5 @@ type Router interface {
 
 type APIService interface {
 	ConfigService(context.Context, *v0.Config) (*v0.Response, error)
-	InfoService() (*v0.Info, error)
+	InfoService(context.Context) (*v0.Info, error)
 }

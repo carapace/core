@@ -39,7 +39,7 @@ func (a *App) ConfigService(ctx context.Context, config *v0.Config) (res *v0.Res
 	}
 	defer tx.Rollback() // rollback silently fails, unless a handler forgets to rollback or commit.
 
-	err = a.Store.Sets.Config.Add(tx, config)
+	err = a.Store.Sets.Config.Add(ctx, tx, config)
 	if err != nil {
 		panic(err) // TODO create proper response specifying why the config is incorrect (has to do with incrementID)
 	}
