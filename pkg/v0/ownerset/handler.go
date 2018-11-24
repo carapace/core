@@ -2,7 +2,6 @@ package ownerset
 
 import (
 	"context"
-	"database/sql"
 	"github.com/carapace/core/api/v0/proto"
 	"github.com/carapace/core/core"
 	"github.com/carapace/core/pkg/responses"
@@ -34,11 +33,7 @@ func New(authz core.Authorizer, store *core.Store) *Handler {
 	}
 }
 
-func (h *Handler) ConfigService(ctx context.Context, config *v0.Config, tx *sql.Tx) (*v0.Response, error) {
-
-	// handling functions should commit the TX; so the error of this defer is ignored.
-	defer tx.Rollback()
-
+func (h *Handler) ConfigService(ctx context.Context, config *v0.Config) (*v0.Response, error) {
 	if config.Header.Kind != OwnerSet {
 		return nil, v0_handler.ErrIncorrectKind
 	}
@@ -60,12 +55,13 @@ func (h *Handler) ConfigService(ctx context.Context, config *v0.Config, tx *sql.
 	}
 
 	if have {
-		return h.alterExisting(ctx, set, tx)
+		return h.alterExisting(ctx, set)
 	}
-	return h.createNewOwners(ctx, set, tx)
+	return h.createNewOwners(ctx, set)
 }
 
-func (h *Handler) alterExisting(ctx context.Context, set *v0.OwnerSet, tx *sql.Tx) (*v0.Response, error) {
+func (h *Handler) alterExisting(ctx context.Context, set *v0.OwnerSet) (*v0.Response, error) {
+	tx := core.TXFromContext(ctx)
 	currentSet, err := h.store.Sets.OwnerSet.Get(tx)
 	if err != nil {
 		return nil, err
@@ -77,10 +73,12 @@ func (h *Handler) alterExisting(ctx context.Context, set *v0.OwnerSet, tx *sql.T
 			return nil, err
 		}
 	}
-	return h.createNewOwners(ctx, set, tx)
+	return h.createNewOwners(ctx, set)
 }
 
-func (h *Handler) createNewOwners(ctx context.Context, set *v0.OwnerSet, tx *sql.Tx) (*v0.Response, error) {
+func (h *Handler) createNewOwners(ctx context.Context, set *v0.OwnerSet) (*v0.Response, error) {
+	tx := core.TXFromContext(ctx)
+
 	err := h.store.Sets.OwnerSet.Put(tx, set)
 	if err != nil {
 		return nil, err

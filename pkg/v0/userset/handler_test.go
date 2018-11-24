@@ -62,7 +62,10 @@ func TestHandler_ConfigService(t *testing.T) {
 
 		tx, err := handler.store.Begin()
 		require.NoError(t, err)
-		res, err := handler.ConfigService(context.Background(), tc.config, tx)
+
+		ctx := core.ContextWithTransaction(context.Background(), tx)
+
+		res, err := handler.ConfigService(ctx, tc.config)
 		if tc.err == nil {
 			require.NoError(t, err)
 		} else {

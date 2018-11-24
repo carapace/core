@@ -2,7 +2,6 @@ package router
 
 import (
 	"context"
-	"database/sql"
 	"github.com/carapace/core/core/mocks"
 	"github.com/golang/mock/gomock"
 	"testing"
@@ -51,7 +50,7 @@ func TestV0_Route(t *testing.T) {
 		desc string
 	}{
 		{
-			prep:       service.EXPECT().ConfigService(gomock.Any(), gomock.Any(), gomock.Any()).Return(nil, nil),
+			prep:       service.EXPECT().ConfigService(gomock.Any(), gomock.Any()).Return(nil, nil),
 			apiVersion: "v0",
 			kind:       "walletSet",
 
@@ -86,7 +85,7 @@ func TestV0_Route(t *testing.T) {
 	}
 
 	for _, tc := range tcs {
-		res, err := rt.Route(context.Background(), &v0.Config{Header: &v0.Header{ApiVersion: tc.apiVersion, Kind: tc.kind}}, &sql.Tx{})
+		res, err := rt.Route(context.Background(), &v0.Config{Header: &v0.Header{ApiVersion: tc.apiVersion, Kind: tc.kind}})
 
 		if tc.err == nil {
 			require.NoError(t, err, tc.desc)

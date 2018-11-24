@@ -3,6 +3,7 @@ package identity
 import (
 	"context"
 	"github.com/carapace/core/api/v0/proto"
+	"github.com/carapace/core/core"
 	"github.com/carapace/core/core/mocks"
 	"github.com/carapace/core/core/store/sets"
 	"github.com/carapace/core/pkg/v0"
@@ -221,13 +222,14 @@ func TestHandler_ConfigService(t *testing.T) {
 	for _, tc := range tcs {
 		sCtrl.DB.ExpectBegin()
 		tx, err := store.DB.Begin()
+		ctx := core.ContextWithTransaction(context.Background(), tx)
 		require.NoError(t, err)
 
 		for _, miscFunc := range tc.misc {
 			miscFunc()
 		}
 
-		res, err := handler.ConfigService(context.Background(), tc.config, tx)
+		res, err := handler.ConfigService(ctx, tc.config)
 		if tc.err != nil {
 			assert.EqualError(t, err, tc.err.Error())
 			assert.Nil(t, res)

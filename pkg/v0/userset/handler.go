@@ -2,7 +2,6 @@ package userset
 
 import (
 	"context"
-	"database/sql"
 	"github.com/carapace/core/api/v0/proto"
 	"github.com/carapace/core/core"
 	"github.com/carapace/core/core/store/sets"
@@ -25,7 +24,7 @@ func New(store *core.Store) *Handler {
 	return &Handler{store: store}
 }
 
-func (h *Handler) ConfigService(ctx context.Context, config *v0.Config, tx *sql.Tx) (*v0.Response, error) {
+func (h *Handler) ConfigService(ctx context.Context, config *v0.Config) (*v0.Response, error) {
 	set := v0.UserSet{}
 	err := ptypes.UnmarshalAny(config.Spec, &set)
 	if err != nil {
@@ -36,6 +35,8 @@ func (h *Handler) ConfigService(ctx context.Context, config *v0.Config, tx *sql.
 	if err != nil {
 		return response.ValidationErr(err), nil
 	}
+
+	tx := core.TXFromContext(ctx)
 
 	err = h.store.Sets.UserSet.Put(tx, &set)
 	if err != nil {

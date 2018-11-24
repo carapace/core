@@ -2,7 +2,6 @@ package router
 
 import (
 	"context"
-	"database/sql"
 	"github.com/carapace/core/api/v0/proto"
 	"github.com/carapace/core/core"
 	"github.com/golang/protobuf/ptypes/empty"
@@ -27,7 +26,7 @@ func New() *Router {
 type V0 map[string]map[string]core.APIService
 
 // Route matches a config by Header.ApiVersion and Header.Kind to a CoreServiceServer (a handler)
-func (v V0) Route(ctx context.Context, config *v0.Config, tx *sql.Tx) (*v0.Response, error) {
+func (v V0) Route(ctx context.Context, config *v0.Config) (*v0.Response, error) {
 	var ok bool
 
 	if _, ok = v[config.Header.ApiVersion]; !ok {
@@ -37,7 +36,7 @@ func (v V0) Route(ctx context.Context, config *v0.Config, tx *sql.Tx) (*v0.Respo
 	if !ok {
 		return nil, errors.New("unregistered kind")
 	}
-	return handler.ConfigService(ctx, config, tx)
+	return handler.ConfigService(ctx, config)
 }
 
 // Register allows configuration handlers to self register. It will panic if a handler is registered twice.

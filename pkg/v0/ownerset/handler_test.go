@@ -94,8 +94,9 @@ func TestHandler_Handle(t *testing.T) {
 		sCtrl.DB.ExpectBegin()
 		tx, err := store.Begin()
 		require.NoError(t, err)
+		ctx := core.ContextWithTransaction(context.Background(), tx)
 
-		res, err := handler.ConfigService(context.Background(), tc.config, tx)
+		res, err := handler.ConfigService(ctx, tc.config)
 		if err != nil {
 			assert.EqualError(t, err, tc.err.Error(), tc.desc)
 		} else {
@@ -164,7 +165,9 @@ func TestHandler_processNewOwners(t *testing.T) {
 
 		tx, err := handler.store.Begin()
 		require.NoError(t, err)
-		res, err := handler.alterExisting(context.Background(), tc.config, tx)
+		ctx := core.ContextWithTransaction(context.Background(), tx)
+
+		res, err := handler.alterExisting(ctx, tc.config)
 		if tc.err != nil {
 			assert.EqualError(t, err, tc.err.Error(), tc.desc)
 		} else {
@@ -213,7 +216,9 @@ func TestHandler_createNewOwners(t *testing.T) {
 	for _, tc := range tcs {
 		tx, err := handler.store.Begin()
 		require.NoError(t, err)
-		res, err := handler.createNewOwners(context.Background(), tc.config, tx)
+		ctx := core.ContextWithTransaction(context.Background(), tx)
+
+		res, err := handler.createNewOwners(ctx, tc.config)
 		if tc.err != nil {
 			assert.EqualError(t, err, tc.err.Error(), tc.desc)
 		} else {

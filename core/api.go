@@ -44,8 +44,11 @@ func (a *App) ConfigService(ctx context.Context, config *v0.Config) (res *v0.Res
 		panic(err) // TODO create proper response specifying why the config is incorrect (has to do with incrementID)
 	}
 
+	// add the TX to the running context
+	ctx = ContextWithTransaction(ctx, tx)
+
 	// the handler is responsible for closing committing the transaction
-	res, err = a.Router.Route(ctx, config, tx)
+	res, err = a.Router.Route(ctx, config)
 	if err != nil {
 		res = &v0.Response{
 			MSG:  "internal error: " + err.Error(),
