@@ -7,7 +7,7 @@ jobs:
 
     steps:
 
-      - setup_remote_docker
+    - setup_remote_docker
     - checkout
 
     - restore_cache:
