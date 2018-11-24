@@ -6,8 +6,7 @@ jobs:
     - image: carapaceio/go:1.11
 
     steps:
-    - checkout
-
+      - setup_remote_docker
     - checkout
 
     - restore_cache:
