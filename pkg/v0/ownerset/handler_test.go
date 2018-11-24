@@ -83,7 +83,7 @@ func TestHandler_Handle(t *testing.T) {
 			},
 			err: errors.New("err"),
 			prep: []*gomock.Call{
-				authz.EXPECT().HaveOwners(gomock.Any()).Return(false, errors.New("err")).Times(1),
+				authz.EXPECT().HaveOwners(gomock.Any(), gomock.Any()).Return(false, errors.New("err")).Times(1),
 			},
 			response: nil,
 			desc:     "error returned by auth.HaveOwners should return the error",
@@ -92,7 +92,7 @@ func TestHandler_Handle(t *testing.T) {
 
 	for _, tc := range tcs {
 		sCtrl.DB.ExpectBegin()
-		tx, err := store.Begin()
+		tx, err := store.Begin(context.Background(), nil)
 		require.NoError(t, err)
 		ctx := core.ContextWithTransaction(context.Background(), tx)
 
@@ -163,7 +163,7 @@ func TestHandler_processNewOwners(t *testing.T) {
 			sCtrl.DB.ExpectCommit()
 		}
 
-		tx, err := handler.store.Begin()
+		tx, err := handler.store.Begin(context.Background(), nil)
 		require.NoError(t, err)
 		ctx := core.ContextWithTransaction(context.Background(), tx)
 
@@ -214,7 +214,7 @@ func TestHandler_createNewOwners(t *testing.T) {
 	}
 
 	for _, tc := range tcs {
-		tx, err := handler.store.Begin()
+		tx, err := handler.store.Begin(context.Background(), nil)
 		require.NoError(t, err)
 		ctx := core.ContextWithTransaction(context.Background(), tx)
 

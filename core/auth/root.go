@@ -2,21 +2,15 @@ package auth
 
 import (
 	"context"
+	"database/sql"
 	"github.com/carapace/core/api/v0/proto"
 	"github.com/carapace/core/core"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
 )
 
-func (m *Manager) GrantRoot(ctx context.Context, witness *v0.Witness) (bool, error) {
-
-	tx, err := m.Store.Begin()
-	if err != nil {
-		return false, err
-	}
-	defer tx.Rollback()
-
-	weight, err := m.Quorum(ctx)
+func (m *Manager) GrantRoot(ctx context.Context, tx *sql.Tx, witness *v0.Witness) (bool, error) {
+	weight, err := m.Quorum(ctx, tx)
 	if err != nil {
 		return false, err
 	}
@@ -40,14 +34,8 @@ func (m *Manager) GrantRoot(ctx context.Context, witness *v0.Witness) (bool, err
 	return totalWeight >= weight, nil
 }
 
-func (m *Manager) GrantBackupRoot(ctx context.Context, witness *v0.Witness) (bool, error) {
-	tx, err := m.Store.Begin()
-	if err != nil {
-		return false, err
-	}
-	defer tx.Rollback()
-
-	weight, err := m.Quorum(ctx)
+func (m *Manager) GrantBackupRoot(ctx context.Context, tx *sql.Tx, witness *v0.Witness) (bool, error) {
+	weight, err := m.Quorum(ctx, core.TXFromContext(ctx))
 	if err != nil {
 		return false, err
 	}
@@ -77,14 +65,8 @@ func (m *Manager) GrantBackupRoot(ctx context.Context, witness *v0.Witness) (boo
 	return totalWeight >= weight, nil
 }
 
-func (m *Manager) SetOwners(ctx context.Context, set *v0.OwnerSet) error {
-	tx, err := m.Store.Begin()
-	if err != nil {
-		return err
-	}
-	defer tx.Rollback()
-
-	err = m.Store.Sets.OwnerSet.Put(ctx, tx, set)
+func (m *Manager) SetOwners(ctx context.Context, tx *sql.Tx, set *v0.OwnerSet) error {
+	err := m.Store.Sets.OwnerSet.Put(ctx, tx, set)
 	if err != nil {
 		return err
 	}

@@ -55,7 +55,7 @@ func (auth *Manager) Root(service core.APIService) core.APIService {
 				return response.MSG(v0.Code_BadRequest, fmt.Sprintf("incorrect signature for: %s", wrongSig)), nil
 			}
 
-			have, err := auth.HaveOwners(ctx)
+			have, err := auth.HaveOwners(ctx, core.TXFromContext(ctx))
 			if err != nil {
 				return nil, err
 			}
@@ -64,7 +64,7 @@ func (auth *Manager) Root(service core.APIService) core.APIService {
 				return response.MSG(v0.Code_UnAuthorized, fmt.Sprintf("node does not have owners yet")), nil
 			}
 
-			root, err := auth.GrantRoot(ctx, config.Witness)
+			root, err := auth.GrantRoot(ctx, core.TXFromContext(ctx), config.Witness)
 			if err != nil {
 				return response.Err(err), nil
 			}
@@ -93,7 +93,7 @@ func (auth *Manager) RootOrBackupOrNoOwners(service core.APIService) core.APISer
 				return response.MSG(v0.Code_BadRequest, fmt.Sprintf("incorrect signature for: %s", wrongSig)), nil
 			}
 
-			have, err := auth.HaveOwners(ctx)
+			have, err := auth.HaveOwners(ctx, core.TXFromContext(ctx))
 			if err != nil {
 				return nil, err
 			}
@@ -102,13 +102,13 @@ func (auth *Manager) RootOrBackupOrNoOwners(service core.APIService) core.APISer
 				return service.ConfigService(ctx, config)
 			}
 
-			root, err := auth.GrantRoot(ctx, config.Witness)
+			root, err := auth.GrantRoot(ctx, core.TXFromContext(ctx), config.Witness)
 			if err != nil {
 				return response.Err(err), nil
 			}
 
 			if !root {
-				root, err = auth.GrantBackupRoot(ctx, config.Witness)
+				root, err = auth.GrantBackupRoot(ctx, core.TXFromContext(ctx), config.Witness)
 			}
 
 			if err != nil {
@@ -167,7 +167,7 @@ func (auth *Manager) RegularAuth(minLevel int32, minSignees uint8, maxSignees ui
 				return response.MSG(v0.Code_BadRequest, fmt.Sprintf("incorrect signature for: %s", wrongSig)), nil
 			}
 
-			have, err := auth.HaveOwners(ctx)
+			have, err := auth.HaveOwners(ctx, core.TXFromContext(ctx))
 			if err != nil {
 				return nil, err
 			}

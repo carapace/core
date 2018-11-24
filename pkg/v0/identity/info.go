@@ -9,7 +9,7 @@ import (
 )
 
 func (h *Handler) InfoService(ctx context.Context) (*v0.Info, error) {
-	tx, err := h.store.Begin()
+	tx, err := h.store.Begin(ctx, nil)
 	if err != nil {
 		return nil, err
 	}

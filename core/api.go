@@ -33,7 +33,7 @@ func (a *App) ConfigService(ctx context.Context, config *v0.Config) (res *v0.Res
 		zap.String("config", config.String()),
 	)
 
-	tx, err := a.Store.Begin()
+	tx, err := a.Store.Begin(ctx, nil)
 	if err != nil {
 		panic(err)
 	}

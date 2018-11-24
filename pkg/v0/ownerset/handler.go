@@ -49,7 +49,7 @@ func (h *Handler) ConfigService(ctx context.Context, config *v0.Config) (*v0.Res
 		return response.ValidationErr(err), nil
 	}
 
-	have, err := h.authz.HaveOwners(ctx)
+	have, err := h.authz.HaveOwners(ctx, core.TXFromContext(ctx))
 	if err != nil {
 		return nil, err
 	}

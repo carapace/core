@@ -47,8 +47,8 @@ type Store struct {
 	Users UserStore
 }
 
-func (s *Store) Begin() (*sql.Tx, error) {
-	return s.DB.Begin()
+func (s *Store) Begin(ctx context.Context, options *sql.TxOptions) (*sql.Tx, error) {
+	return s.DB.BeginTx(ctx, options)
 }
 
 type Sets struct {

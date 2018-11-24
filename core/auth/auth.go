@@ -2,6 +2,7 @@ package auth
 
 import (
 	"context"
+	"database/sql"
 	"github.com/carapace/core/core/store/sets"
 	"math"
 
@@ -20,17 +21,12 @@ type Manager struct {
 	Decoder KeyMarshaller
 }
 
-func (m *Manager) GetOwners(ctx context.Context) (*v0.OwnerSet, error) {
-	tx, err := m.Store.Begin()
-	if err != nil {
-		return nil, err
-	}
-	defer tx.Rollback()
+func (m *Manager) GetOwners(ctx context.Context, tx *sql.Tx) (*v0.OwnerSet, error) {
 	return m.Store.Sets.OwnerSet.Get(ctx, tx)
 }
 
-func (m *Manager) Quorum(ctx context.Context) (int32, error) {
-	set, err := m.GetOwners(ctx)
+func (m *Manager) Quorum(ctx context.Context, tx *sql.Tx) (int32, error) {
+	set, err := m.GetOwners(ctx, tx)
 	if err != nil {
 		// just to be sure, let's not return zero, since forgetting
 		// to check an error will else always result in root access
@@ -82,8 +78,8 @@ func (m *Manager) Check(message *v0.Config) (correct bool, pubkey string, err er
 	return true, "", nil
 }
 
-func (m *Manager) HaveOwners(ctx context.Context) (bool, error) {
-	set, err := m.GetOwners(ctx)
+func (m *Manager) HaveOwners(ctx context.Context, tx *sql.Tx) (bool, error) {
+	set, err := m.GetOwners(ctx, tx)
 	if err != nil {
 		if err == sets.ErrNotExist {
 			return false, nil
