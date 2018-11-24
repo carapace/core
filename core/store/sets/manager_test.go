@@ -3,6 +3,7 @@ package sets
 import (
 	"database/sql"
 	"github.com/carapace/core/pkg/suite"
+	"github.com/pressly/goose"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"testing"
@@ -19,8 +20,8 @@ func newManager(t *testing.T, db *sql.DB) *Manager {
 	require.NoError(t, err)
 	defer tx.Commit()
 
-	err = Up0000001(tx)
-	require.NoError(t, err)
+	require.NoError(t, goose.SetDialect("sqlite3"))
+	require.NoError(t, goose.Up(db, "."))
 
 	return m
 }

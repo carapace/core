@@ -14,6 +14,7 @@ type StoreController struct {
 		OwnerSet *MockOwnerSet
 		UserSet  *MockUserSet
 		Config   *MockConfigManager
+		Identity *MockIdentitySet
 	}
 	Users *MockUserStore
 }
@@ -28,7 +29,13 @@ func NewStoreMock(t *testing.T, controller *gomock.Controller) (*core.Store, *St
 			OwnerSet *MockOwnerSet
 			UserSet  *MockUserSet
 			Config   *MockConfigManager
-		}{OwnerSet: NewMockOwnerSet(controller), UserSet: NewMockUserSet(controller), Config: NewMockConfigManager(controller)},
+			Identity *MockIdentitySet
+		}{
+			OwnerSet: NewMockOwnerSet(controller),
+			UserSet:  NewMockUserSet(controller),
+			Config:   NewMockConfigManager(controller),
+			Identity: NewMockIdentitySet(controller),
+		},
 		Users: NewMockUserStore(controller),
 	}
 
@@ -38,6 +45,7 @@ func NewStoreMock(t *testing.T, controller *gomock.Controller) (*core.Store, *St
 				OwnerSet: ctrl.Sets.OwnerSet,
 				UserSet:  ctrl.Sets.UserSet,
 				Config:   ctrl.Sets.Config,
+				Identity: ctrl.Sets.Identity,
 			},
 			Users: ctrl.Users,
 		}, ctrl, func() {

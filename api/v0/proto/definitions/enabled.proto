@@ -1,0 +1,12 @@
+syntax = "proto3";
+package v0;
+option go_package = "v0";
+
+import "google/protobuf/timestamp.proto";
+import "validate/validate.proto";
+
+// Unset-able fields (used in reporting and internal state management.
+message Enabled {
+    google.protobuf.Timestamp From = 1 [(validate.rules).timestamp.const = { seconds: 0, nanos:   0
+                                       }]; // Must be unset
+}

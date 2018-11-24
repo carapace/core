@@ -33,7 +33,10 @@ func Up0000002(tx *sql.Tx) error {
     			weight INT DEFAULT 0
     			);
     	  
-				CREATE UNIQUE INDEX IF NOT EXISTS unique_user ON users(primary_public_key, deleted, recovery_public_key, name, email);
+				CREATE UNIQUE INDEX IF NOT EXISTS unique_user ON users(deleted, primary_public_key);
+				CREATE UNIQUE INDEX IF NOT EXISTS unique_user ON users(deleted, recovery_public_key);
+				CREATE UNIQUE INDEX IF NOT EXISTS unique_user ON users(deleted, name);
+				CREATE UNIQUE INDEX IF NOT EXISTS unique_user ON users(deleted, email);
     	  `)
 	if err != nil {
 		return err

@@ -1,0 +1,54 @@
+syntax = "proto3";
+package v0;
+option go_package = "v0";
+
+import "access.proto";
+import "assets.proto";
+import "disabled.proto";
+import "enabled.proto";
+import "validate/validate.proto";
+
+
+message Identity {
+
+    string Name = 1 [(validate.rules).string.min_len = 1]; // A wallet must have an identifier
+    Asset Asset = 2 [(validate.rules).enum = {
+                        defined_only: true,     // of course we only accept defined enums.
+                        not_in: [0], // AssetUnknown is saved for overflows.
+}
+]
+;
+repeated
+AccessProtocol
+Access
+=
+3
+[
+(
+validate
+.
+rules
+)
+.
+repeated
+.
+min_items
+=
+1
+]
+; // at least a single access protocol must be set
+oneof
+State
+{
+Enabled
+Enabled
+=
+4
+;
+Disabled
+Disabled
+=
+5
+;
+}
+}

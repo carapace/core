@@ -143,14 +143,6 @@ func (auth *Manager) RegularAuth(minLevel int32, minSignees uint8, maxSignees ui
 		panic("auth.Wrapper: RegularAuth: minLevel must be gte 0")
 	}
 
-	if minSignees < 0 {
-		panic("auth.Wrapper: RegularAuth: minSignees must be gte 0")
-	}
-
-	if maxSignees < 0 {
-		panic("auth.Wrapper: RegularAuth: maxSignees must be gte 0")
-	}
-
 	return &wrapped{
 		infoService: service.InfoService,
 		configService: func(ctx context.Context, config *v0.Config, tx *sql.Tx) (*v0.Response, error) {

@@ -23,5 +23,4 @@ func (a *App) readyHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.WriteHeader(http.StatusOK)
-	return
 }

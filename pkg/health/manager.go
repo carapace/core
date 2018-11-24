@@ -49,7 +49,6 @@ func (m *Manager) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.WriteHeader(http.StatusOK)
-	return
 }
 
 func (m *Manager) GRPC(context.Context, *v0.HealthCheckRequest) (*v0.HealthCheckResponse, error) {

@@ -1,0 +1,8 @@
+syntax = "proto3";
+package v0;
+option go_package = "v0";
+
+enum Asset {
+    AssetUnknown = 0;
+    BTC = 1;
+}

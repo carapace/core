@@ -8,20 +8,20 @@ import (
 	"testing"
 )
 
-func TestManager_PutUserSet_GetUserSet(t *testing.T) {
+func TestManager_PutIdentity_GetIdentity(t *testing.T) {
 	db, cleanup := test.Sqlite3(t)
 	defer cleanup()
 
 	m := newManager(t, db)
 
 	tcs := []struct {
-		set *v0.UserSet
+		set *v0.Identity
 		err error
 
 		desc string
 	}{
 		{
-			set:  &v0.UserSet{Set: "testset1"},
+			set:  &v0.Identity{Name: "myWallet"},
 			err:  nil,
 			desc: "marshallable set should not return an error",
 		},
@@ -30,7 +30,7 @@ func TestManager_PutUserSet_GetUserSet(t *testing.T) {
 	for _, tc := range tcs {
 		tx, err := db.Begin()
 		require.NoError(t, err)
-		err = m.UserSet.Put(tx, tc.set)
+		err = m.Identity.Put(tx, tc.set)
 		if tc.err != nil {
 			require.EqualError(t, err, tc.err.Error())
 			tx.Rollback()
@@ -38,9 +38,8 @@ func TestManager_PutUserSet_GetUserSet(t *testing.T) {
 		}
 		require.NoError(t, err)
 
-		set, err := m.UserSet.Get(tx, "testset1")
+		set, err := m.Identity.Get(tx, "myWallet")
 		require.NoError(t, err, tc.desc)
-		assert.EqualValues(t, tc.set.Set, set.Set, tc.desc)
-		assert.EqualValues(t, tc.set.Users, set.Users, tc.desc)
+		assert.EqualValues(t, tc.set.Name, set.Name, tc.desc)
 	}
 }

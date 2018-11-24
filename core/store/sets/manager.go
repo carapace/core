@@ -8,6 +8,7 @@ type Manager struct {
 	OwnerSet *OwnerSet
 	UserSet  *UserSet
 	Config   *Config
+	Identity *Identity
 }
 
 func New() *Manager {
@@ -15,6 +16,7 @@ func New() *Manager {
 		OwnerSet: &OwnerSet{},
 		UserSet:  &UserSet{},
 		Config:   &Config{},
+		Identity: &Identity{},
 	}
 }
 

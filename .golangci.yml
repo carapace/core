@@ -137,9 +137,26 @@ linters-settings:
     # all checks list: https://github.com/go-critic/checkers
     enabled-checks:
     - rangeValCopy
-    # which checks should be disabled; can't be combined with 'enabled-checks'; default is empty
-    disabled-checks:
+    - assignOp
+    - caseOrder
+    - dupArg
+    - dupBranchBody
+    - dupCase
+    - flagDeref
+    - ifElseChain
     - regexpMust
+    - singleCaseSwitch
+    - sloppyLen
+    - switchTrue
+    - typeSwitchVar
+    - underef
+    - unlambda
+    - unslice
+    - defaultCaseOrder
+    - captLocal
+    # which checks should be disabled; can't be combined with 'enabled-checks'; default is empty
+    #    disabled-checks:
+    #    - regexpMust
     settings: # settings passed to gocritic
       captLocal: # must be valid enabled check name
         checkLocals: true

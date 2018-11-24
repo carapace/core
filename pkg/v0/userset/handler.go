@@ -85,10 +85,10 @@ func (h *Handler) InfoService() (*v0.Info, error) {
 
 	st, err := h.store.Sets.UserSet.All(tx)
 	if err != nil {
-		if err == sets.ErrNotExist {
-			st = []*v0.UserSet{}
+		if err != sets.ErrNotExist {
+			return nil, err
 		}
-		return nil, err
+		st = []*v0.UserSet{}
 	}
 
 	res := []*any.Any{}

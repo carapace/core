@@ -6,7 +6,6 @@ import (
 	"github.com/golang/protobuf/ptypes"
 	"github.com/golang/protobuf/ptypes/any"
 	"github.com/pkg/errors"
-	"sync"
 	"testing"
 
 	"github.com/carapace/core/core"
@@ -115,7 +114,6 @@ func TestHandler_processNewOwners(t *testing.T) {
 
 	handler := Handler{
 		store: store,
-		mu:    &sync.RWMutex{},
 	}
 
 	tcs := []struct {
@@ -173,7 +171,6 @@ func TestHandler_processNewOwners(t *testing.T) {
 			require.NoError(t, err, tc.desc)
 		}
 		assert.Equal(t, tc.response.Code, res.Code, tc.desc)
-		break
 	}
 }
 
@@ -189,7 +186,6 @@ func TestHandler_createNewOwners(t *testing.T) {
 
 	handler := Handler{
 		store: s,
-		mu:    &sync.RWMutex{},
 	}
 
 	tcs := []struct {

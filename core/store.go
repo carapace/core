@@ -2,6 +2,7 @@
 //go:generate mockgen -destination=mocks/ownerset_mock.go -package=mock github.com/carapace/core/core OwnerSet
 //go:generate mockgen -destination=mocks/userset_mock.go -package=mock github.com/carapace/core/core UserSet
 //go:generate mockgen -destination=mocks/configmanager_mock.go -package=mock github.com/carapace/core/core ConfigManager
+//go:generate mockgen -destination=mocks/identityset_mock.go -package=mock github.com/carapace/core/core IdentitySet
 
 package core
 
@@ -33,6 +34,7 @@ func NewStore(db *sql.DB) (*Store, error) {
 			OwnerSet: manager.Sets.OwnerSet,
 			UserSet:  manager.Sets.UserSet,
 			Config:   manager.Sets.Config,
+			Identity: manager.Sets.Identity,
 		},
 		Users: manager.Users,
 	}, nil
@@ -52,6 +54,7 @@ type Sets struct {
 	OwnerSet OwnerSet
 	UserSet  UserSet
 	Config   ConfigManager
+	Identity IdentitySet
 }
 
 type OwnerSet interface {
@@ -75,4 +78,10 @@ type UserStore interface {
 
 type ConfigManager interface {
 	Add(tx *sql.Tx, config *v0.Config) error
+}
+
+type IdentitySet interface {
+	Get(*sql.Tx, string) (*v0.Identity, error)
+	Put(tx *sql.Tx, set *v0.Identity) error
+	All(*sql.Tx) ([]*v0.Identity, error)
 }

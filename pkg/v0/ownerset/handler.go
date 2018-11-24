@@ -3,11 +3,9 @@ package ownerset
 import (
 	"context"
 	"database/sql"
-	"github.com/carapace/core/pkg/responses"
-	"sync"
-
 	"github.com/carapace/core/api/v0/proto"
 	"github.com/carapace/core/core"
+	"github.com/carapace/core/pkg/responses"
 	"github.com/carapace/core/pkg/v0"
 	"github.com/golang/protobuf/ptypes"
 	"github.com/pkg/errors"
@@ -27,24 +25,16 @@ var _ core.APIService = &Handler{}
 type Handler struct {
 	authz core.Authorizer
 	store *core.Store
-
-	mu *sync.RWMutex
 }
 
 func New(authz core.Authorizer, store *core.Store) *Handler {
 	return &Handler{
-		mu:    &sync.RWMutex{},
 		authz: authz,
 		store: store,
 	}
 }
 
 func (h *Handler) ConfigService(ctx context.Context, config *v0.Config, tx *sql.Tx) (*v0.Response, error) {
-	// Since owners are a unique set in the node, we don't want to have some race condition
-	// where two different new ownerSets are concurrently processed. This is mainly a
-	// sanity check.
-	h.mu.Lock()
-	defer h.mu.Unlock()
 
 	// handling functions should commit the TX; so the error of this defer is ignored.
 	defer tx.Rollback()
