@@ -8,15 +8,15 @@ import (
 type ContextKey int
 
 const (
-	TXKEY ContextKey = 1
+	txkey ContextKey = 1
 )
 
 func ContextWithTransaction(ctx context.Context, tx *sql.Tx) context.Context {
-	return context.WithValue(ctx, TXKEY, tx)
+	return context.WithValue(ctx, txkey, tx)
 }
 
 func TXFromContext(ctx context.Context) *sql.Tx {
-	tx, ok := ctx.Value(TXKEY).(*sql.Tx)
+	tx, ok := ctx.Value(txkey).(*sql.Tx)
 	if !ok {
 		panic("context values corrupted; TX key does not contain *sql.Tx")
 	}
