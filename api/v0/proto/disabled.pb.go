@@ -32,7 +32,7 @@ func (m *Disabled) Reset()         { *m = Disabled{} }
 func (m *Disabled) String() string { return proto.CompactTextString(m) }
 func (*Disabled) ProtoMessage()    {}
 func (*Disabled) Descriptor() ([]byte, []int) {
-	return fileDescriptor_disabled_fe167cf0e7d7576e, []int{0}
+	return fileDescriptor_disabled_084d0237ebf67c2b, []int{0}
 }
 func (m *Disabled) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Disabled.Unmarshal(m, b)
@@ -70,9 +70,9 @@ func init() {
 	proto.RegisterType((*Disabled)(nil), "v0.Disabled")
 }
 
-func init() { proto.RegisterFile("disabled.proto", fileDescriptor_disabled_fe167cf0e7d7576e) }
+func init() { proto.RegisterFile("disabled.proto", fileDescriptor_disabled_084d0237ebf67c2b) }
 
-var fileDescriptor_disabled_fe167cf0e7d7576e = []byte{
+var fileDescriptor_disabled_084d0237ebf67c2b = []byte{
 	// 172 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0xe2, 0x4b, 0xc9, 0x2c, 0x4e,
 	0x4c, 0xca, 0x49, 0x4d, 0xd1, 0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0x62, 0x2a, 0x33, 0x90, 0x92,

@@ -1,0 +1,31 @@
+syntax = "proto3";
+package v0;
+option go_package = "v0";
+
+
+import "google/protobuf/timestamp.proto";
+import "assets.proto";
+import "signatures.proto";
+import "response.proto";
+
+import "validate/validate.proto";
+
+message Transaction {
+    Asset Asset = 1             [(validate.rules).enum = {
+                                    defined_only: true,     // of course we only accept defined enums.
+                                    not_in: [0], // AssetUnknown is saved for overflows.
+                                }];
+    double Amount = 2           [(validate.rules).double.gt = 0];
+    string Identity = 3         [(validate.rules).string.min_len = 1];
+    string RecipientID = 4      [(validate.rules).string.min_len = 1];
+    Witness Witness = 5         [(validate.rules).message.required = true];
+    message Meta {
+        google.protobuf.Timestamp Created = 1;
+        google.protobuf.Timestamp RecvWindow = 2;
+    }
+
+    // return values
+    bytes  Payload = 6 [(validate.rules).bytes.max_len = 0]; // do not set this yourself
+    Response Response  = 7 [(validate.rules).message.required = false]; // do not set this either
+    google.protobuf.Timestamp ReturnedAt = 8;
+}

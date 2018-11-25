@@ -1,0 +1,7 @@
+syntax = "proto3";
+package v0;
+option go_package = "v0";
+
+message AuthLevelGreaterArg {
+    int32 Level = 1;
+}

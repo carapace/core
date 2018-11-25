@@ -61,7 +61,7 @@ func (a *App) ConfigService(ctx context.Context, config *v0.Config) (res *v0.Res
 func (a *App) InfoService(ctx context.Context, in *empty.Empty) (info *v0.RepeatedInfo, err error) {
 	defer func() {
 		if r := recover(); r != nil {
-			err = r.(error)
+			err = errors.New("internal server error")
 		}
 	}()
 	a.mu.RLock()
@@ -80,4 +80,32 @@ func (a *App) Check(ctx context.Context, req *v0.HealthCheckRequest) (res *v0.He
 
 	Logger.Debug("Received request health check")
 	return a.HealthManager.GRPC(ctx, req)
+}
+
+func (a *App) TransactionService(ctx context.Context, trs *v0.Transaction) (res *v0.Transaction, err error) {
+	defer func() {
+		if r := recover(); r != nil {
+			res.Response = &v0.Response{Code: v0.Code_Internal, MSG: "", Err: fmt.Sprintf("%v", r)}
+			err = nil
+		}
+	}()
+	a.mu.RLock()
+	defer a.mu.RUnlock()
+
+	err = trs.Validate()
+	if err != nil {
+		res.Response = response.ValidationErr(err)
+		return res, nil
+	}
+
+	tx, err := a.Store.Begin(ctx, nil)
+	if err != nil {
+		panic(err)
+	}
+	defer tx.Rollback() // rollback silently fails, unless a handler forgets to rollback or commit.
+
+	// add the TX to the running context
+	ctx = ContextWithTransaction(ctx, tx)
+
+	return a.TXService.TransactionService(ctx, trs)
 }

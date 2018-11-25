@@ -6,11 +6,13 @@ import "info.proto";
 import "response.proto";
 import "config.proto";
 import "health.proto";
-import "google/protobuf/empty.proto";
+import "transaction.proto";
 
+import "google/protobuf/empty.proto";
 
 service CoreService {
     rpc ConfigService (Config) returns (Response);
     rpc InfoService (google.protobuf.Empty) returns (RepeatedInfo);
     rpc Check (HealthCheckRequest) returns (HealthCheckResponse);
+    rpc TransactionService(Transaction) returns (Transaction);
 }

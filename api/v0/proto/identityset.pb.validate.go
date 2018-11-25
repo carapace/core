@@ -61,20 +61,20 @@ func (m *Identity) Validate() error {
 		}
 	}
 
-	if len(m.GetAccess()) < 1 {
+	if len(m.GetPermissions()) < 1 {
 		return IdentityValidationError{
-			field:  "Access",
+			field:  "Permissions",
 			reason: "value must contain at least 1 item(s)",
 		}
 	}
 
-	for idx, item := range m.GetAccess() {
+	for idx, item := range m.GetPermissions() {
 		_, _ = idx, item
 
 		if v, ok := interface{}(item).(interface{ Validate() error }); ok {
 			if err := v.Validate(); err != nil {
 				return IdentityValidationError{
-					field:  fmt.Sprintf("Access[%v]", idx),
+					field:  fmt.Sprintf("Permissions[%v]", idx),
 					reason: "embedded message failed validation",
 					cause:  err,
 				}
