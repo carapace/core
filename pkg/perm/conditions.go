@@ -1,4 +1,4 @@
-package permissions
+package perm
 
 import (
 	"github.com/carapace/core/api/v0/proto"

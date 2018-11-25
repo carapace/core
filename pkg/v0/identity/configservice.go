@@ -5,7 +5,7 @@ import (
 	"github.com/carapace/core/api/v0/proto"
 	"github.com/carapace/core/core"
 	"github.com/carapace/core/core/store/sets"
-	"github.com/carapace/core/pkg/permissions"
+	"github.com/carapace/core/pkg/perm"
 	"github.com/carapace/core/pkg/responses"
 	"github.com/carapace/core/pkg/v0"
 	"github.com/golang/protobuf/ptypes"
@@ -45,7 +45,7 @@ func (h *Handler) ConfigService(ctx context.Context, config *v0.Config) (*v0.Res
 	}
 
 	// check if we pass existing conditions
-	conditions, err := permissions.PoliciesFromProto(existing.Permissions, []string{existing.Name})
+	conditions, err := perm.PoliciesFromProto(existing.Permissions, []string{existing.Name})
 	if err != nil {
 		return response.Err(err), nil
 	}
@@ -69,7 +69,7 @@ func (h *Handler) newIdentityObj(ctx context.Context, id *v0.Identity, user *v0.
 	tx := core.TXFromContext(ctx)
 
 	// check if the conditions created by the current configuration do not lock out the user
-	conditions, err := permissions.PoliciesFromProto(id.Permissions, []string{id.Name})
+	conditions, err := perm.PoliciesFromProto(id.Permissions, []string{id.Name})
 	if err != nil {
 		return response.Err(err), nil
 	}
