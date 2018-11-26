@@ -2,9 +2,10 @@ package core
 
 import (
 	"fmt"
+	"strings"
+
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
-	"strings"
 )
 
 // Logger implements a global logger which may be imported by packages implementing components for the core suite.

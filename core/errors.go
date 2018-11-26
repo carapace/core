@@ -6,4 +6,6 @@ import (
 
 var (
 	ErrUnAuthorized = errors.New("unauthorized action")
+	ErrNotExists    = errors.New("not found")
+	ErrNoOwners     = errors.New("no ownerSet found")
 )

@@ -9,14 +9,9 @@ package core
 import (
 	"context"
 	"database/sql"
-	"fmt"
+
 	"github.com/carapace/core/api/v0/proto"
 	"github.com/carapace/core/core/store"
-	"github.com/pkg/errors"
-)
-
-var (
-	ErrNoOwners = errors.New("no ownerSet found")
 )
 
 func NewStore(db *sql.DB) (*Store, error) {
@@ -27,8 +22,6 @@ func NewStore(db *sql.DB) (*Store, error) {
 		return nil, err
 	}
 
-	fmt.Println("STORE INIT", manager.Sets.Config)
-
 	return &Store{
 		DB: db,
 		Sets: &Sets{
@@ -37,14 +30,16 @@ func NewStore(db *sql.DB) (*Store, error) {
 			Config:   manager.Sets.Config,
 			Identity: manager.Sets.Identity,
 		},
-		Users: manager.Users,
+		Users:    manager.Users,
+		Policies: manager.Policies,
 	}, nil
 }
 
 type Store struct {
-	DB    *sql.DB
-	Sets  *Sets
-	Users UserStore
+	DB       *sql.DB
+	Sets     *Sets
+	Users    UserStore
+	Policies PolicyManager
 }
 
 func (s *Store) Begin(ctx context.Context, options *sql.TxOptions) (*sql.Tx, error) {

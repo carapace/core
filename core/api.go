@@ -3,6 +3,7 @@ package core
 import (
 	"context"
 	"fmt"
+
 	"github.com/carapace/core/api/v0/proto"
 	"github.com/carapace/core/pkg/responses"
 	"github.com/golang/protobuf/ptypes/empty"

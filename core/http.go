@@ -2,8 +2,9 @@ package core
 
 import (
 	"fmt"
-	"github.com/gorilla/mux"
 	"net/http"
+
+	"github.com/gorilla/mux"
 )
 
 // Start the HTTP server, serving health and readiness probes.

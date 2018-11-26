@@ -2,6 +2,7 @@ package core
 
 import (
 	"context"
+
 	"github.com/carapace/core/api/v0/proto"
 )
 
