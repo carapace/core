@@ -10,22 +10,26 @@ import (
 
 type OwnerSet struct{}
 
+const (
+	OwnerSetURL = "type.googleapis.com/v0.OwnerSet"
+)
+
 func (o *OwnerSet) Put(ctx context.Context, tx *sql.Tx, set *v0.OwnerSet) error {
 	serialized, err := proto.Marshal(set)
 	if err != nil {
 		return err
 	}
 
-	_, err = tx.ExecContext(ctx, `UPDATE owner_sets SET deleted_at = ? WHERE deleted_at = NULL`, time.Now())
+	_, err = tx.ExecContext(ctx, `UPDATE resources SET deleted_at = ? WHERE deleted_at = NULL AND proto_url = ?`, time.Now(), OwnerSetURL)
 	if err != nil {
 		return err
 	}
-	_, err = tx.ExecContext(ctx, `INSERT INTO owner_sets (created_at, owner_set, deleted_at) VALUES (?, ?, ?)`, time.Now(), serialized, nil)
+	_, err = tx.ExecContext(ctx, `INSERT INTO resources (created_at, resource, deleted_at, proto_url) VALUES (?, ?, ?, ?)`, time.Now(), serialized, nil, OwnerSetURL)
 	return err
 }
 
 func (o *OwnerSet) Get(ctx context.Context, tx *sql.Tx) (*v0.OwnerSet, error) {
-	row := tx.QueryRowContext(ctx, `SELECT owner_set FROM owner_sets WHERE deleted_at IS NULL;`)
+	row := tx.QueryRowContext(ctx, `SELECT resource FROM resources WHERE deleted_at IS NULL AND proto_url = ?;`, OwnerSetURL)
 
 	var data = []byte{}
 	err := row.Scan(&data)

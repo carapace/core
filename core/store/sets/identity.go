@@ -11,22 +11,40 @@ import (
 
 type Identity struct{}
 
+const (
+	IdentityURL = "type.googleapis.com/v0.Identity"
+)
+
 func (i *Identity) Put(ctx context.Context, tx *sql.Tx, set *v0.Identity) error {
 	serialized, err := proto.Marshal(set)
 	if err != nil {
 		return err
 	}
 
-	_, err = tx.ExecContext(ctx, `UPDATE identities SET deleted_at = ? WHERE deleted_at = NULL AND name = ?;`, time.Now(), set.Name)
+	_, err = tx.ExecContext(ctx, `
+			UPDATE resources SET 
+                     deleted_at = ?
+			WHERE deleted_at = NULL AND name = ? AND proto_url = ?;`, time.Now(), set.Name, IdentityURL)
 	if err != nil {
 		return err
 	}
-	_, err = tx.ExecContext(ctx, `INSERT INTO identities (created_at, identity, deleted_at, name) VALUES (?, ?, ?, ?)`, time.Now(), serialized, nil, set.Name)
+	_, err = tx.ExecContext(ctx, `
+					INSERT INTO resources 
+					  (created_at, resource, deleted_at, name, proto_url) 
+					VALUES (?, ?, ?, ?, ?)`,
+		time.Now(),
+		serialized,
+		nil,
+		set.Name,
+		IdentityURL,
+	)
 	return err
 }
 
 func (i *Identity) Get(ctx context.Context, tx *sql.Tx, name string) (*v0.Identity, error) {
-	row := tx.QueryRowContext(ctx, `SELECT identity FROM identities WHERE deleted_at IS NULL AND name = ?;`, name)
+	row := tx.QueryRowContext(ctx, `
+			SELECT resource FROM resources 
+			WHERE deleted_at IS NULL AND name = ? AND proto_url = ? ;`, name, IdentityURL)
 
 	var data = []byte{}
 	err := row.Scan(&data)
@@ -47,7 +65,7 @@ func (i *Identity) Get(ctx context.Context, tx *sql.Tx, name string) (*v0.Identi
 }
 
 func (i *Identity) All(ctx context.Context, tx *sql.Tx) ([]*v0.Identity, error) {
-	rows, err := tx.QueryContext(ctx, `SELECT identity FROM identities WHERE deleted_at IS NULL;`)
+	rows, err := tx.QueryContext(ctx, `SELECT resource FROM resources WHERE deleted_at IS NULL AND proto_url = ?;`, IdentityURL)
 	if err != nil {
 		return nil, err
 	}

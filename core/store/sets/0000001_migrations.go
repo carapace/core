@@ -12,24 +12,14 @@ func init() {
 
 func Up0000001(tx *sql.Tx) error {
 	_, err := tx.Exec(`
-			CREATE TABLE IF NOT EXISTS owner_sets
+			CREATE TABLE IF NOT EXISTS resources
 			(
 				ID INTEGER PRIMARY KEY, 
-				created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
-				owner_set BLOB, 
-				deleted_at TIMESTAMP NULL DEFAULT NULL 
-			);`)
-	if err != nil {
-		return err
-	}
-
-	_, err = tx.Exec(
-		`CREATE TABLE IF NOT EXISTS user_sets
-			(
-				ID INTEGER PRIMARY KEY, 
-				created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
 				name string,
-				user_set BLOB, 
+				namespace string DEFAULT 'GLOBAL',
+				proto_url string,
+				created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
+				resource BLOB, 
 				deleted_at TIMESTAMP NULL DEFAULT NULL 
 			);`)
 	if err != nil {
@@ -53,12 +43,12 @@ func Up0000001(tx *sql.Tx) error {
 	}
 
 	// This ensures we can soft delete models, but nothing else
-	err = util.SetUpdateOnly(tx, "owner_sets")
+	err = util.SetUpdateOnly(tx, "resources")
 	if err != nil {
 		return err
 	}
 
-	return util.SetUpdateOnly(tx, "user_sets")
+	return util.SetUpdateOnly(tx, "config_sets")
 }
 
 func Down0000001(tx *sql.Tx) error {

@@ -11,22 +11,26 @@ import (
 
 type UserSet struct{}
 
+const (
+	UserSetURL = "type.googleapis.com/v0.UserSet"
+)
+
 func (u *UserSet) Put(ctx context.Context, tx *sql.Tx, set *v0.UserSet) error {
 	serialized, err := proto.Marshal(set)
 	if err != nil {
 		return err
 	}
 
-	_, err = tx.ExecContext(ctx, `UPDATE user_sets SET deleted_at = ? WHERE deleted_at = NULL AND name = ?;`, time.Now(), set.Set)
+	_, err = tx.ExecContext(ctx, `UPDATE resources SET deleted_at = ? WHERE deleted_at = NULL AND name = ? AND proto_url = ?;`, time.Now(), set.Set, UserSetURL)
 	if err != nil {
 		return err
 	}
-	_, err = tx.ExecContext(ctx, `INSERT INTO user_sets (created_at, user_set, deleted_at, name) VALUES (?, ?, ?, ?)`, time.Now(), serialized, nil, set.Set)
+	_, err = tx.ExecContext(ctx, `INSERT INTO resources (created_at, resource, deleted_at, name, proto_url) VALUES (?, ?, ?, ?, ?)`, time.Now(), serialized, nil, set.Set, UserSetURL)
 	return err
 }
 
 func (u *UserSet) Get(ctx context.Context, tx *sql.Tx, name string) (*v0.UserSet, error) {
-	row := tx.QueryRowContext(ctx, `SELECT user_set FROM user_sets WHERE deleted_at IS NULL AND name = ?;`, name)
+	row := tx.QueryRowContext(ctx, `SELECT resource FROM resources WHERE deleted_at IS NULL AND name = ? AND proto_url = ?;`, name, UserSetURL)
 
 	var data = []byte{}
 	err := row.Scan(&data)
@@ -47,7 +51,7 @@ func (u *UserSet) Get(ctx context.Context, tx *sql.Tx, name string) (*v0.UserSet
 }
 
 func (u *UserSet) All(ctx context.Context, tx *sql.Tx) ([]*v0.UserSet, error) {
-	rows, err := tx.QueryContext(ctx, `SELECT user_set FROM user_sets WHERE deleted_at IS NULL;`)
+	rows, err := tx.QueryContext(ctx, `SELECT resource FROM resources WHERE deleted_at IS NULL AND proto_url = ?;`, UserSetURL)
 	if err != nil {
 		return nil, err
 	}
