@@ -2,6 +2,7 @@ package identity
 
 import (
 	"context"
+
 	"github.com/carapace/core/api/v0/proto"
 	"github.com/carapace/core/core/store/sets"
 	"github.com/golang/protobuf/ptypes"

@@ -2,7 +2,6 @@ package identity
 
 import (
 	"github.com/carapace/core/core"
-	"github.com/ory/ladon"
 )
 
 const (
@@ -11,9 +10,9 @@ const (
 
 type Handler struct {
 	store *core.Store
-	perm  *ladon.Ladon
+	perm  core.PermissionManager
 }
 
-func New(store *core.Store, perm *ladon.Ladon) *Handler {
+func New(store *core.Store, perm core.PermissionManager) *Handler {
 	return &Handler{store: store, perm: perm}
 }
