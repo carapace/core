@@ -1,4 +1,4 @@
-package perm
+package condition
 
 import (
 	"github.com/carapace/core/api/v0/proto"
@@ -7,24 +7,20 @@ import (
 	"github.com/ory/ladon"
 )
 
-var ConditionsFactory = map[string]func(any *any.Any) (ladon.Condition, error){
-	v0.ConditionNames_AuthLevelGreater.String(): newUserAuthGreater,
-}
-
-// UserAuthGreater is an exemplary condition.
-type AuthLevelGreater struct {
+// AuthLevelGTE validates that the auth level is GTE
+type AuthLevelGTE struct {
 	Level int32
 }
 
 // Fulfills returns true the provided user has an AuthLevel >= the conditions level
-func (c AuthLevelGreater) Fulfills(value interface{}, _ *ladon.Request) bool {
+func (c AuthLevelGTE) Fulfills(value interface{}, _ *ladon.Request) bool {
 	s, ok := value.(*v0.User)
 	return ok && s.AuthLevel >= c.Level
 }
 
 // GetName returns the UserAuthGreater condition's name.
-func (c AuthLevelGreater) GetName() string {
-	return "AuthLevelGreater"
+func (c AuthLevelGTE) GetName() string {
+	return "AuthLevelGTE"
 }
 
 func newUserAuthGreater(any *any.Any) (ladon.Condition, error) {
@@ -33,5 +29,5 @@ func newUserAuthGreater(any *any.Any) (ladon.Condition, error) {
 	if err != nil {
 		return nil, err
 	}
-	return AuthLevelGreater{Level: arg.Level}, nil
+	return AuthLevelGTE{Level: arg.Level}, nil
 }

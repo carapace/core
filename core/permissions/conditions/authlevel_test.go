@@ -1,12 +1,13 @@
-package perm
+package condition
 
 import (
+	"testing"
+
 	"github.com/carapace/core/api/v0/proto"
 	"github.com/ory/ladon"
 	manager "github.com/ory/ladon/manager/memory"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"testing"
 )
 
 func TestUserAuthGreater(t *testing.T) {
@@ -36,7 +37,7 @@ func TestUserAuthGreater(t *testing.T) {
 		},
 	}
 
-	condition := AuthLevelGreater{}
+	condition := AuthLevelGTE{}
 
 	for _, tc := range tcs {
 		condition.Level = tc.conditionLevel
@@ -50,7 +51,7 @@ func TestUserAuthGreater(t *testing.T) {
 	err := warden.Manager.Create(&ladon.DefaultPolicy{
 		ID:         "TestUserAuthGreater",
 		Resources:  []string{"wallet1"},
-		Conditions: ladon.Conditions{"AuthLevelGreater": condition},
+		Conditions: ladon.Conditions{"AuthLevelGTE": condition},
 		Actions:    []string{"test"},
 		Subjects:   []string{"test"},
 		Effect:     "allow",
@@ -64,7 +65,7 @@ func TestUserAuthGreater(t *testing.T) {
 			Action:   "test",
 			Subject:  "test",
 			Context: map[string]interface{}{
-				"AuthLevelGreater": tc.user,
+				"AuthLevelGTE": tc.user,
 			},
 		})
 		if !tc.pass {
