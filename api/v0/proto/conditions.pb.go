@@ -29,7 +29,7 @@ func (m *AuthLevelGreaterArg) Reset()         { *m = AuthLevelGreaterArg{} }
 func (m *AuthLevelGreaterArg) String() string { return proto.CompactTextString(m) }
 func (*AuthLevelGreaterArg) ProtoMessage()    {}
 func (*AuthLevelGreaterArg) Descriptor() ([]byte, []int) {
-	return fileDescriptor_conditions_865f38e94ddfcafd, []int{0}
+	return fileDescriptor_conditions_9b3924d1335f2374, []int{0}
 }
 func (m *AuthLevelGreaterArg) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_AuthLevelGreaterArg.Unmarshal(m, b)
@@ -56,18 +56,149 @@ func (m *AuthLevelGreaterArg) GetLevel() int32 {
 	return 0
 }
 
-func init() {
-	proto.RegisterType((*AuthLevelGreaterArg)(nil), "v0.AuthLevelGreaterArg")
+type UserOwnsArg struct {
+	Names                []string `protobuf:"bytes,1,rep,name=Names,proto3" json:"Names,omitempty"`
+	PrimaryPublicKeys    [][]byte `protobuf:"bytes,2,rep,name=PrimaryPublicKeys,proto3" json:"PrimaryPublicKeys,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
 }
 
-func init() { proto.RegisterFile("conditions.proto", fileDescriptor_conditions_865f38e94ddfcafd) }
+func (m *UserOwnsArg) Reset()         { *m = UserOwnsArg{} }
+func (m *UserOwnsArg) String() string { return proto.CompactTextString(m) }
+func (*UserOwnsArg) ProtoMessage()    {}
+func (*UserOwnsArg) Descriptor() ([]byte, []int) {
+	return fileDescriptor_conditions_9b3924d1335f2374, []int{1}
+}
+func (m *UserOwnsArg) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_UserOwnsArg.Unmarshal(m, b)
+}
+func (m *UserOwnsArg) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_UserOwnsArg.Marshal(b, m, deterministic)
+}
+func (dst *UserOwnsArg) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_UserOwnsArg.Merge(dst, src)
+}
+func (m *UserOwnsArg) XXX_Size() int {
+	return xxx_messageInfo_UserOwnsArg.Size(m)
+}
+func (m *UserOwnsArg) XXX_DiscardUnknown() {
+	xxx_messageInfo_UserOwnsArg.DiscardUnknown(m)
+}
 
-var fileDescriptor_conditions_865f38e94ddfcafd = []byte{
-	// 95 bytes of a gzipped FileDescriptorProto
+var xxx_messageInfo_UserOwnsArg proto.InternalMessageInfo
+
+func (m *UserOwnsArg) GetNames() []string {
+	if m != nil {
+		return m.Names
+	}
+	return nil
+}
+
+func (m *UserOwnsArg) GetPrimaryPublicKeys() [][]byte {
+	if m != nil {
+		return m.PrimaryPublicKeys
+	}
+	return nil
+}
+
+type InSetsArg struct {
+	Sets                 []string `protobuf:"bytes,1,rep,name=Sets,proto3" json:"Sets,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *InSetsArg) Reset()         { *m = InSetsArg{} }
+func (m *InSetsArg) String() string { return proto.CompactTextString(m) }
+func (*InSetsArg) ProtoMessage()    {}
+func (*InSetsArg) Descriptor() ([]byte, []int) {
+	return fileDescriptor_conditions_9b3924d1335f2374, []int{2}
+}
+func (m *InSetsArg) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_InSetsArg.Unmarshal(m, b)
+}
+func (m *InSetsArg) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_InSetsArg.Marshal(b, m, deterministic)
+}
+func (dst *InSetsArg) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_InSetsArg.Merge(dst, src)
+}
+func (m *InSetsArg) XXX_Size() int {
+	return xxx_messageInfo_InSetsArg.Size(m)
+}
+func (m *InSetsArg) XXX_DiscardUnknown() {
+	xxx_messageInfo_InSetsArg.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_InSetsArg proto.InternalMessageInfo
+
+func (m *InSetsArg) GetSets() []string {
+	if m != nil {
+		return m.Sets
+	}
+	return nil
+}
+
+type MultiSigArg struct {
+	PrimaryPublicKeys    [][]byte `protobuf:"bytes,1,rep,name=PrimaryPublicKeys,proto3" json:"PrimaryPublicKeys,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *MultiSigArg) Reset()         { *m = MultiSigArg{} }
+func (m *MultiSigArg) String() string { return proto.CompactTextString(m) }
+func (*MultiSigArg) ProtoMessage()    {}
+func (*MultiSigArg) Descriptor() ([]byte, []int) {
+	return fileDescriptor_conditions_9b3924d1335f2374, []int{3}
+}
+func (m *MultiSigArg) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_MultiSigArg.Unmarshal(m, b)
+}
+func (m *MultiSigArg) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_MultiSigArg.Marshal(b, m, deterministic)
+}
+func (dst *MultiSigArg) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MultiSigArg.Merge(dst, src)
+}
+func (m *MultiSigArg) XXX_Size() int {
+	return xxx_messageInfo_MultiSigArg.Size(m)
+}
+func (m *MultiSigArg) XXX_DiscardUnknown() {
+	xxx_messageInfo_MultiSigArg.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MultiSigArg proto.InternalMessageInfo
+
+func (m *MultiSigArg) GetPrimaryPublicKeys() [][]byte {
+	if m != nil {
+		return m.PrimaryPublicKeys
+	}
+	return nil
+}
+
+func init() {
+	proto.RegisterType((*AuthLevelGreaterArg)(nil), "v0.AuthLevelGreaterArg")
+	proto.RegisterType((*UserOwnsArg)(nil), "v0.UserOwnsArg")
+	proto.RegisterType((*InSetsArg)(nil), "v0.InSetsArg")
+	proto.RegisterType((*MultiSigArg)(nil), "v0.MultiSigArg")
+}
+
+func init() { proto.RegisterFile("conditions.proto", fileDescriptor_conditions_9b3924d1335f2374) }
+
+var fileDescriptor_conditions_9b3924d1335f2374 = []byte{
+	// 192 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x12, 0x48, 0xce, 0xcf, 0x4b,
 	0xc9, 0x2c, 0xc9, 0xcc, 0xcf, 0x2b, 0xd6, 0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0x62, 0x2a, 0x33,
 	0x50, 0xd2, 0xe6, 0x12, 0x76, 0x2c, 0x2d, 0xc9, 0xf0, 0x49, 0x2d, 0x4b, 0xcd, 0x71, 0x2f, 0x4a,
 	0x4d, 0x2c, 0x49, 0x2d, 0x72, 0x2c, 0x4a, 0x17, 0x12, 0xe1, 0x62, 0x05, 0x0b, 0x49, 0x30, 0x2a,
-	0x30, 0x6a, 0xb0, 0x06, 0x41, 0x38, 0x4e, 0x2c, 0x51, 0x4c, 0x65, 0x06, 0x49, 0x6c, 0x60, 0xdd,
-	0xc6, 0x80, 0x00, 0x00, 0x00, 0xff, 0xff, 0x32, 0x20, 0xca, 0x86, 0x51, 0x00, 0x00, 0x00,
+	0x30, 0x6a, 0xb0, 0x06, 0x41, 0x38, 0x4a, 0x81, 0x5c, 0xdc, 0xa1, 0xc5, 0xa9, 0x45, 0xfe, 0xe5,
+	0x79, 0xc5, 0x50, 0x45, 0x7e, 0x89, 0xb9, 0xa9, 0xc5, 0x12, 0x8c, 0x0a, 0xcc, 0x1a, 0x9c, 0x41,
+	0x10, 0x8e, 0x90, 0x0e, 0x97, 0x60, 0x40, 0x51, 0x66, 0x6e, 0x62, 0x51, 0x65, 0x40, 0x69, 0x52,
+	0x4e, 0x66, 0xb2, 0x77, 0x6a, 0x65, 0xb1, 0x04, 0x93, 0x02, 0xb3, 0x06, 0x4f, 0x10, 0xa6, 0x84,
+	0x92, 0x3c, 0x17, 0xa7, 0x67, 0x5e, 0x70, 0x6a, 0x09, 0xd8, 0x40, 0x21, 0x2e, 0x16, 0x10, 0x13,
+	0x6a, 0x1e, 0x98, 0xad, 0x64, 0xcd, 0xc5, 0xed, 0x5b, 0x9a, 0x53, 0x92, 0x19, 0x9c, 0x99, 0x0e,
+	0x52, 0x82, 0xd5, 0x74, 0x46, 0x1c, 0xa6, 0x3b, 0xb1, 0x44, 0x31, 0x95, 0x19, 0x24, 0xb1, 0x81,
+	0xbd, 0x6b, 0x0c, 0x08, 0x00, 0x00, 0xff, 0xff, 0x90, 0x5e, 0x4e, 0xaf, 0x02, 0x01, 0x00, 0x00,
 }

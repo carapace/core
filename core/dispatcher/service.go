@@ -2,6 +2,8 @@ package dispatcher
 
 import (
 	"github.com/carapace/core/api/v0/proto"
+	"github.com/carapace/core/core"
+	"github.com/ory/ladon"
 	"sync"
 )
 
@@ -12,8 +14,6 @@ type Provider interface {
 type Service struct {
 	mu        sync.RWMutex
 	providers map[v0.Asset]Provider
-}
-
-func Register() {
-
+	perm      *ladon.Ladon
+	store     *core.Store
 }

@@ -30,7 +30,8 @@ func Up0000001(tx *sql.Tx) error {
 		`CREATE TABLE IF NOT EXISTS config_sets
 			(
 				ID INTEGER PRIMARY KEY, 
-				created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
+				created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+				namespace string DEFAULT 'GLOBAL',
 				incrementID INT,
 				hash BLOB,
 				config_set BLOB

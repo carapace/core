@@ -16,7 +16,8 @@ type StoreController struct {
 		Config   *MockConfigManager
 		Identity *MockIdentitySet
 	}
-	Users *MockUserStore
+	Users    *MockUserStore
+	Policies *MockPolicyManager
 }
 
 func NewStoreMock(t *testing.T, controller *gomock.Controller) (*core.Store, *StoreController, func()) {
@@ -36,7 +37,8 @@ func NewStoreMock(t *testing.T, controller *gomock.Controller) (*core.Store, *St
 			Config:   NewMockConfigManager(controller),
 			Identity: NewMockIdentitySet(controller),
 		},
-		Users: NewMockUserStore(controller),
+		Users:    NewMockUserStore(controller),
+		Policies: NewMockPolicyManager(controller),
 	}
 
 	return &core.Store{
@@ -47,7 +49,8 @@ func NewStoreMock(t *testing.T, controller *gomock.Controller) (*core.Store, *St
 				Config:   ctrl.Sets.Config,
 				Identity: ctrl.Sets.Identity,
 			},
-			Users: ctrl.Users,
+			Users:    ctrl.Users,
+			Policies: ctrl.Policies,
 		}, ctrl, func() {
 			db.Close()
 		}

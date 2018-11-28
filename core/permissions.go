@@ -7,7 +7,6 @@ package core
 import (
 	"context"
 	"database/sql"
-
 	"github.com/carapace/core/api/v0/proto"
 	"github.com/ory/ladon"
 )

@@ -1,0 +1,43 @@
+syntax = "proto3";
+package v0;
+option go_package = "v0";
+
+import "google/protobuf/any.proto";
+import "validate/validate.proto";
+
+
+message Policy {
+    string ID = 1               [(validate.rules).string.min_len = 1];
+    string Description = 2      [(validate.rules).string.min_len = 1];
+    Effect Effect = 3;
+    bytes Meta = 4;
+    repeated string Subjects = 5;
+    repeated Action Actions = 6;
+    repeated Condition Conditions = 7;
+}
+
+message Condition {
+    ConditionNames Name = 1;
+    google.protobuf.Any Args = 2;
+}
+
+enum Effect {
+    EffectUnknown = 0;
+    Allow = 1;
+    Deny = 2;
+}
+
+enum Action {
+    ActionUnknown = 0;
+    Alter = 1;
+    Use = 2;
+    EnableDisable = 3;
+}
+
+enum ConditionNames {
+    ConditionNameUnknown = 0;
+    AuthLevelGTE = 1;
+    UsersOwns = 2;
+    InSets = 3;
+    MultiSig = 4;
+}

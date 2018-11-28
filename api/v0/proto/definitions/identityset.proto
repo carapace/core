@@ -2,7 +2,7 @@ syntax = "proto3";
 package v0;
 option go_package = "v0";
 
-import "permissions.proto";
+import "policy.proto";
 import "assets.proto";
 import "disabled.proto";
 import "enabled.proto";
@@ -15,7 +15,7 @@ message Identity {
                         defined_only: true,     // of course we only accept defined enums.
                         not_in: [0], // AssetUnknown is saved for overflows.
                     }];
-    repeated Permission Permissions = 3 [(validate.rules).repeated.min_items = 1]; // at least a single access protocol must be set
+    repeated Policy Policies = 3 [(validate.rules).repeated.min_items = 1]; // at least a single access protocol must be set
     oneof State {
         Enabled Enabled = 4;
         Disabled Disabled = 5;

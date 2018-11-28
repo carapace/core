@@ -2,6 +2,7 @@ package store
 
 import (
 	"database/sql"
+	"github.com/carapace/core/core/store/policies"
 	"github.com/carapace/core/core/store/sets"
 	"github.com/carapace/core/core/store/users"
 	"github.com/pressly/goose"
@@ -10,8 +11,9 @@ import (
 type Manager struct {
 	db *sql.DB
 
-	Sets  *sets.Manager
-	Users *user.Manager
+	Sets     *sets.Manager
+	Users    *user.Manager
+	Policies *policies.Manager
 }
 
 func (m *Manager) Begin() (*sql.Tx, error) {
@@ -20,9 +22,10 @@ func (m *Manager) Begin() (*sql.Tx, error) {
 
 func New(db *sql.DB) *Manager {
 	return &Manager{
-		db:    db,
-		Sets:  sets.New(),
-		Users: user.New(),
+		db:       db,
+		Sets:     sets.New(),
+		Users:    user.New(),
+		Policies: policies.New(),
 	}
 }
 

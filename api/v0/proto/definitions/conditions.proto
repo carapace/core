@@ -5,3 +5,16 @@ option go_package = "v0";
 message AuthLevelGreaterArg {
     int32 Level = 1;
 }
+
+message UserOwnsArg {
+    repeated string Names = 1;
+    repeated bytes PrimaryPublicKeys = 2;
+}
+
+message InSetsArg {
+    repeated string Sets = 1;
+}
+
+message MultiSigArg {
+    repeated bytes PrimaryPublicKeys = 1;
+}
