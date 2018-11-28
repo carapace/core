@@ -2,9 +2,11 @@ package identity
 
 import (
 	"context"
+	"fmt"
 	"testing"
 
 	"github.com/carapace/core/core/store/sets"
+
 	"github.com/carapace/core/pkg/v0"
 	"github.com/pkg/errors"
 
@@ -55,12 +57,15 @@ func TestHandler_ConfigService(t *testing.T) {
 				Name:  "mywallet",
 				Asset: v0.Asset_BTC,
 				Policies: []*v0.Policy{
-					{Conditions: []*v0.Condition{
-						{
-							Args: mustAnyMarshal(t, &v0.UserOwnsArg{Names: []string{"Karel"}}),
-							Name: v0.ConditionNames_UsersOwns,
-						},
-					}},
+					{
+						ID:          "someID",
+						Description: "some desc",
+						Conditions: []*v0.Condition{
+							{
+								Args: mustAnyMarshal(t, &v0.UserOwnsArg{Names: []string{"Karel"}}),
+								Name: v0.ConditionNames_UsersOwns,
+							},
+						}},
 				},
 			},
 			prep: []*gomock.Call{
@@ -79,12 +84,15 @@ func TestHandler_ConfigService(t *testing.T) {
 				Name:  "mywallet",
 				Asset: v0.Asset_BTC,
 				Policies: []*v0.Policy{
-					{Conditions: []*v0.Condition{
-						{
-							Args: mustAnyMarshal(t, &v0.UserOwnsArg{Names: []string{"Karel"}}),
-							Name: v0.ConditionNames_UsersOwns,
-						},
-					}},
+					{
+						ID:          "someID",
+						Description: "some desc",
+						Conditions: []*v0.Condition{
+							{
+								Args: mustAnyMarshal(t, &v0.UserOwnsArg{Names: []string{"Karel"}}),
+								Name: v0.ConditionNames_UsersOwns,
+							},
+						}},
 				},
 			},
 			prep: []*gomock.Call{
@@ -104,12 +112,15 @@ func TestHandler_ConfigService(t *testing.T) {
 				Name:  "mywallet",
 				Asset: v0.Asset_BTC,
 				Policies: []*v0.Policy{
-					{Conditions: []*v0.Condition{
-						{
-							Args: mustAnyMarshal(t, &v0.UserOwnsArg{Names: []string{"Karel"}}),
-							Name: v0.ConditionNames_UsersOwns,
-						},
-					}},
+					{
+						ID:          "someID",
+						Description: "some desc",
+						Conditions: []*v0.Condition{
+							{
+								Args: mustAnyMarshal(t, &v0.UserOwnsArg{Names: []string{"Karel"}}),
+								Name: v0.ConditionNames_UsersOwns,
+							},
+						}},
 				},
 			},
 			prep: []*gomock.Call{
@@ -124,7 +135,7 @@ func TestHandler_ConfigService(t *testing.T) {
 			res: &v0.Response{Code: v0.Code_OK},
 		},
 		{
-			desc: "exisiting identity will evaluate the existing policies first",
+			desc: "existing identity will evaluate the existing policies first",
 			config: &v0.Config{Header: &v0.Header{
 				Kind: IdentitySet,
 			},
@@ -134,12 +145,15 @@ func TestHandler_ConfigService(t *testing.T) {
 				Name:  "mywallet",
 				Asset: v0.Asset_BTC,
 				Policies: []*v0.Policy{
-					{Conditions: []*v0.Condition{
-						{
-							Args: mustAnyMarshal(t, &v0.UserOwnsArg{Names: []string{"Karel"}}),
-							Name: v0.ConditionNames_UsersOwns,
-						},
-					}},
+					{
+						ID:          "someID",
+						Description: "some desc",
+						Conditions: []*v0.Condition{
+							{
+								Args: mustAnyMarshal(t, &v0.UserOwnsArg{Names: []string{"Karel"}}),
+								Name: v0.ConditionNames_UsersOwns,
+							},
+						}},
 				},
 			},
 			prep: []*gomock.Call{
@@ -176,15 +190,16 @@ func TestHandler_ConfigService(t *testing.T) {
 
 		res, err := handler.ConfigService(core.ContextWithTransaction(context.Background(), tx), tc.config)
 
+		fmt.Println(res)
+
 		if tc.err != nil {
-			assert.EqualError(t, err, tc.err.Error())
+			require.EqualError(t, err, tc.err.Error(), tc.desc)
 		} else {
-			require.NoError(t, err)
+			require.NoError(t, err, tc.desc)
 		}
 
-		if err == nil {
-			assert.Equal(t, tc.res.Code, res.Code)
-
+		if tc.res != nil {
+			assert.Equal(t, tc.res.Code, res.Code, tc.desc)
 		}
 	}
 }
